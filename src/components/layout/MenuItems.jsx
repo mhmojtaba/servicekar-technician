@@ -17,6 +17,14 @@ const MenuItems = ({ setIsShow }) => {
   );
   const pendingRequestsLength = pendingRequests?.length;
 
+  const isActive = (path) => {
+    if (path === "/") {
+      return pathname === "/";
+    }
+
+    return pathname === path || pathname.startsWith(path + "/");
+  };
+
   return (
     <nav className="px-2 py-1">
       <ul className="space-y-1">
@@ -26,7 +34,7 @@ const MenuItems = ({ setIsShow }) => {
               href={item.path}
               onClick={() => setIsShow(false)}
               className={`flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 group ${
-                pathname === item.path
+                isActive(item.path)
                   ? "bg-primary-50 text-primary-700 font-medium shadow-sm"
                   : "text-neutral-700 hover:bg-neutral-100"
               }`}

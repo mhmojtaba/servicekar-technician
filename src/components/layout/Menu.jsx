@@ -93,7 +93,7 @@ const MenuComponent = () => {
         </div>
       </div>
 
-      <div className="hidden md:block w-64 lg:w-72 flex-shrink-0 border-r border-neutral-200 bg-white shadow-sm fixed inset-0">
+      <div className="hidden md:block w-1/4 flex-shrink-0 border-r border-neutral-200 bg-white shadow-sm fixed inset-0">
         <SideBar setIsShow={setIsOpen} isShow={isOpen} isMobile={false} />
       </div>
     </>

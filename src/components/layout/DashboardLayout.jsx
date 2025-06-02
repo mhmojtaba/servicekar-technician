@@ -24,7 +24,7 @@ export default function DashboardLayout({ children }) {
           <MenuComponent />
         </div>
 
-        <div className="col-span-4 md:col-span-3 px-4 md:py-6 overflow-x-hidden mr-4">
+        <div className="col-span-4 md:col-span-3 overflow-x-hidden w-full">
           {children}
         </div>
       </div>
