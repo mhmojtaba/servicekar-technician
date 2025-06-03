@@ -157,3 +157,25 @@ export function addFile(data) {
     },
   });
 }
+
+export function getTasks(data) {
+  return http.post("", {
+    token: data.token,
+    class_name: "tasks",
+    cnt_group: "service",
+    function_name: "tasks_data",
+    id_service: data.id_service,
+    active: 1,
+  });
+}
+
+export function getParts(data) {
+  return http.post("", {
+    token: data.token,
+    class_name: "parts",
+    cnt_group: "service",
+    function_name: "parts_data",
+    id_service: data.id_service,
+    active: 1,
+  });
+}

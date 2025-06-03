@@ -1,4 +1,8 @@
 import { useState } from "react";
+import Image from "next/image";
+
+import { toast } from "react-toastify";
+
 import {
   User,
   Phone,
@@ -13,10 +17,11 @@ import {
   CheckCircle,
   ZoomIn,
 } from "lucide-react";
+
 import { useRequests } from "@/context/RequestsContext";
 import NavigationModal from "./navigationButton";
-import Image from "next/image";
 import ImagePreview from "./ImagePreview";
+import { useAuth } from "@/context/AuthContext";
 
 export default function RequestCard({
   request,
@@ -26,11 +31,17 @@ export default function RequestCard({
   onChangePaymentStatus,
   onLabel,
   onBill,
-  onResendCode,
   onPaymentLink,
 }) {
+  const { token } = useAuth();
   const [isImagePreviewOpen, setIsImagePreviewOpen] = useState(false);
-  const { status_requests, array_type_payment, service } = useRequests();
+  const {
+    status_requests,
+    array_type_payment,
+    service,
+    isResendingCode,
+    mutateResendCode,
+  } = useRequests();
 
   const selectedStatus = status_requests.find((s) => s.value == request.status);
   const selectedPaymentStatus = array_type_payment.find(
@@ -64,9 +75,26 @@ export default function RequestCard({
   const handleChangePaymentStatus = () => onChangePaymentStatus(request);
   const handleLabel = () => onLabel(request);
   const handleBill = () => onBill(request);
-  const handleResendCode = () => onResendCode(request);
   const handlePaymentLink = () => onPaymentLink(request);
   const handleConfirm = () => onConfirm(request);
+
+  const handleResendCode = async () => {
+    try {
+      const data = {
+        token: token,
+        order_id: request.id,
+      };
+
+      const { data: res } = await mutateResendCode(data);
+      if (res.msg === 0) {
+        toast.success(res.msg_text);
+      } else {
+        toast.error(res.msg_text);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div
@@ -266,10 +294,17 @@ export default function RequestCard({
 
               <button
                 onClick={handleResendCode}
-                className="flex items-center justify-center gap-2 h-12 px-4 bg-error-50 hover:bg-error-100 text-error-700 rounded-xl border border-error-200 transition-all duration-200 text-sm font-medium hover:shadow-sm"
+                className="flex items-center justify-center gap-2 h-12 px-4 bg-error-50 hover:bg-error-100 text-error-700 rounded-xl border border-error-200 transition-all duration-200 text-sm font-medium hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isResendingCode}
               >
-                <RefreshCw className="w-4 h-4" />
-                ارسال مجدد کد
+                <RefreshCw
+                  className={`w-4 h-4 ${isResendingCode ? "animate-spin" : ""}`}
+                />
+                {isResendingCode ? (
+                  <span>در حال ارسال...</span>
+                ) : (
+                  <span>ارسال مجدد کد</span>
+                )}
               </button>
 
               <button

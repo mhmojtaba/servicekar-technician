@@ -8,6 +8,7 @@ import RequestCard from "./RequestCard";
 import ConfirmModal from "./ConfirmModal";
 import LocationModal from "./LocationModal";
 import PaymentStatusModal from "./PaymentStatusModal";
+import BillModal from "./BillModal";
 
 export default function RequetsContents() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function RequetsContents() {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [showPaymentStatusModal, setShowPaymentStatusModal] = useState(false);
+  const [showBillModal, setShowBillModal] = useState(false);
 
   const handleConfirm = (request) => {
     setSelectedRequest(request);
@@ -34,6 +36,17 @@ export default function RequetsContents() {
   const handleLabel = (request) => {
     setSelectedRequest(request);
     router.push(`/labels?request_id=${request.id}`);
+  };
+
+  const handleBill = (request) => {
+    setSelectedRequest(request);
+    setShowBillModal(true);
+  };
+
+  // payment link
+  const handlePaymentLink = (request) => {
+    setSelectedRequest(request);
+    setShowPaymentLinkModal(true);
   };
 
   if (isGettingRequest) {
@@ -102,6 +115,8 @@ export default function RequetsContents() {
           onEditAddress={() => handleEditAddress(request)}
           onChangePaymentStatus={() => handleChangePaymentStatus(request)}
           onLabel={() => handleLabel(request)}
+          onBill={() => handleBill(request)}
+          onPaymentLink={() => handlePaymentLink(request)}
         />
       ))}
 
@@ -123,6 +138,13 @@ export default function RequetsContents() {
         <PaymentStatusModal
           isOpen={showPaymentStatusModal}
           onClose={() => setShowPaymentStatusModal(false)}
+        />
+      )}
+
+      {showBillModal && (
+        <BillModal
+          isOpen={showBillModal}
+          onClose={() => setShowBillModal(false)}
         />
       )}
     </div>

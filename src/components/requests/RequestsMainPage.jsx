@@ -1,27 +1,57 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FileText, Search, Filter } from "lucide-react";
 
 import SearchAndAddRequests from "./SearchAndAddRequests";
 import { useRequests } from "@/context/RequestsContext";
 import RequetsContents from "./RequetsContents";
+import Pagination from "@/common/Pagination";
 
 export default function RequestsMainPage() {
-  const { fetchRequests, mainRequests } = useRequests();
+  const { fetchRequests, requestsCount } = useRequests();
 
   const [page, setPage] = useState(1);
-  const perPage = 9;
+  const [searchFilters, setSearchFilters] = useState({});
+  const perPage = 10;
 
-  const onSearch = (data) => {
+  const totalPages = Math.ceil(requestsCount / perPage);
+  const currentPage = Math.min(totalPages, page);
+
+  const onSearch = (data = {}) => {
+    setSearchFilters(data);
+
     const value = {
       count_per_page: perPage,
-      page: page,
+      page: 1,
       ...data,
+    };
+
+    console.log("Fetching requests with params:", value);
+
+    if (page !== 1) {
+      setPage(1);
+    }
+
+    fetchRequests(value);
+  };
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+
+    const value = {
+      count_per_page: perPage,
+      page: newPage,
+      ...searchFilters,
     };
 
     fetchRequests(value);
   };
+
+  useEffect(() => {
+    console.log("Fetching requests with params:", {});
+    handlePageChange(1);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -83,6 +113,14 @@ export default function RequestsMainPage() {
                 <RequetsContents />
               </motion.div>
             </AnimatePresence>
+
+            <div className="mt-4">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </div>
           </div>
         </motion.div>
       </motion.div>

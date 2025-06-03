@@ -6,6 +6,7 @@ import {
   changeRequestPayment,
   getRequests,
   getRequestsMain,
+  ResendConfirmationCode,
 } from "@/services/requestsServices";
 import { toast } from "react-toastify";
 
@@ -45,6 +46,10 @@ export const RequestsProvider = ({ children }) => {
     mutationFn: changeRequestPayment,
   });
 
+  const { isPending: isResendingCode, mutateAsync: mutateResendCode } =
+    useMutation({
+      mutationFn: ResendConfirmationCode,
+    });
   const updateRequestPayment = async (values) => {
     try {
       const data = {
@@ -106,7 +111,6 @@ export const RequestsProvider = ({ children }) => {
 
   useEffect(() => {
     fetchRequestsMain();
-    fetchRequests();
   }, []);
 
   return (
@@ -130,6 +134,8 @@ export const RequestsProvider = ({ children }) => {
         fetchRequestsMain,
         updateRequestPayment,
         isChangingPayment,
+        isResendingCode,
+        mutateResendCode,
       }}
     >
       {children}
