@@ -13,6 +13,7 @@
     "@emotion/styled": "^11.14.0",
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
+    "@heroui/react": "^2.7.9",
     "@mui/icons-material": "^7.0.1",
     "@mui/material": "^7.0.1",
     "@mui/x-date-pickers": "^7.28.2",

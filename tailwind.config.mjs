@@ -1,6 +1,11 @@
 /** @type {import('tailwindcss').Config} */
+import { heroui } from "@heroui/react";
+
 export default {
-  content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
+  content: [
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
+    "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
+  ],
   theme: {
     extend: {
       spacing: {
@@ -102,5 +107,5 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [heroui()],
 };
