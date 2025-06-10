@@ -23,7 +23,7 @@ const apps = [
   },
 ];
 
-const NavigationModal = ({ lat, lng }) => {
+const NavigationModal = ({ lat, lng, disabled }) => {
   const [open, setOpen] = useState(false);
   const [openingApp, setOpeningApp] = useState(null);
 
@@ -84,7 +84,10 @@ const NavigationModal = ({ lat, lng }) => {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="w-full h-12 flex items-center justify-center gap-2 px-4 bg-primary-50 hover:bg-primary-100 text-primary-700 rounded-xl border border-primary-200 transition-all duration-200 text-sm font-medium hover:shadow-sm"
+        className={`w-full h-12 flex items-center justify-center gap-2 px-4 bg-primary-50 hover:bg-primary-100 text-primary-700 rounded-xl border border-primary-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
+          disabled ? "opacity-50 cursor-not-allowed" : ""
+        }`}
+        disabled={disabled}
       >
         <MapPin className="w-4 h-4" />
         مسیریابی

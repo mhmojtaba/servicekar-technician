@@ -106,9 +106,6 @@ const BillModal = ({ isOpen, onClose }) => {
             : selectedRequest.parts;
       }
 
-      console.log("parsedTasks", parsedTasks);
-      console.log("parsedParts", parsedParts);
-
       if (parsedTasks.length > 0 || parsedParts.length > 0) {
         setIsInvoiceCompleted(true);
         setCompletedInvoiceData({
@@ -121,7 +118,7 @@ const BillModal = ({ isOpen, onClose }) => {
           customerSignature: selectedRequest.signature_img,
           deviceCount: selectedRequest.device_count || 1,
           totalPrice: selectedRequest.total_price.toLocaleString(),
-          date: new Date(selectedRequest.update_date * 1000).toLocaleDateString(
+          date: new Date(selectedRequest.date * 1000).toLocaleDateString(
             "fa-IR"
           ),
         });
@@ -252,8 +249,7 @@ const BillModal = ({ isOpen, onClose }) => {
   };
 
   if (!isOpen) return null;
-  console.log("main taskList", taskList);
-  console.log("main partList", partList);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}

@@ -9,14 +9,17 @@ import ConfirmModal from "./ConfirmModal";
 import LocationModal from "./LocationModal";
 import PaymentStatusModal from "./PaymentStatusModal";
 import BillModal from "./BillModal";
+import CompleteModal from "./CompleteModal";
 
 export default function RequetsContents() {
   const router = useRouter();
-  const { mainRequests, isGettingRequest, setSelectedRequest } = useRequests();
+  const { mainRequests, isGettingRequest, setSelectedRequest, url } =
+    useRequests();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [showPaymentStatusModal, setShowPaymentStatusModal] = useState(false);
   const [showBillModal, setShowBillModal] = useState(false);
+  const [showCompleteModal, setShowCompleteModal] = useState(false);
 
   const handleConfirm = (request) => {
     setSelectedRequest(request);
@@ -43,10 +46,9 @@ export default function RequetsContents() {
     setShowBillModal(true);
   };
 
-  // payment link
-  const handlePaymentLink = (request) => {
+  const handleComplete = (request) => {
     setSelectedRequest(request);
-    setShowPaymentLinkModal(true);
+    setShowCompleteModal(true);
   };
 
   if (isGettingRequest) {
@@ -116,7 +118,7 @@ export default function RequetsContents() {
           onChangePaymentStatus={() => handleChangePaymentStatus(request)}
           onLabel={() => handleLabel(request)}
           onBill={() => handleBill(request)}
-          onPaymentLink={() => handlePaymentLink(request)}
+          onComplete={() => handleComplete(request)}
         />
       ))}
 
@@ -145,6 +147,13 @@ export default function RequetsContents() {
         <BillModal
           isOpen={showBillModal}
           onClose={() => setShowBillModal(false)}
+        />
+      )}
+
+      {showCompleteModal && (
+        <CompleteModal
+          isOpen={showCompleteModal}
+          onClose={() => setShowCompleteModal(false)}
         />
       )}
     </div>

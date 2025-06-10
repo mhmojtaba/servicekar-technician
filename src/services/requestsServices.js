@@ -72,13 +72,12 @@ export function addLocation(data) {
   });
 }
 
-export function getUnconfirmedRequests(data) {
+export function getUnconfirmedRequests(token) {
   return http.post("", {
-    token: data.token,
+    token: token,
     class_name: "requests",
     cnt_group: "service",
     function_name: "get_uncompleted_count",
-    id_technician: 0,
     type: "technician",
   });
 }

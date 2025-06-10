@@ -31,7 +31,7 @@ export default function RequestCard({
   onChangePaymentStatus,
   onLabel,
   onBill,
-  onPaymentLink,
+  onComplete,
 }) {
   const { token } = useAuth();
   const [isImagePreviewOpen, setIsImagePreviewOpen] = useState(false);
@@ -41,6 +41,7 @@ export default function RequestCard({
     service,
     isResendingCode,
     mutateResendCode,
+    url,
   } = useRequests();
 
   const selectedStatus = status_requests.find((s) => s.value == request.status);
@@ -75,9 +76,9 @@ export default function RequestCard({
   const handleChangePaymentStatus = () => onChangePaymentStatus(request);
   const handleLabel = () => onLabel(request);
   const handleBill = () => onBill(request);
-  const handlePaymentLink = () => onPaymentLink(request);
-  const handleConfirm = () => onConfirm(request);
 
+  const handleConfirm = () => onConfirm(request);
+  const handleComplete = () => onComplete(request);
   const handleResendCode = async () => {
     try {
       const data = {
@@ -95,6 +96,36 @@ export default function RequestCard({
       console.error(error);
     }
   };
+
+  const handlePaymentLink = async () => {
+    try {
+      const paymentUrl = url + request.id;
+
+      await navigator.clipboard.writeText(paymentUrl);
+
+      toast.success("لینک پرداخت با موفقیت کپی شد");
+    } catch (error) {
+      try {
+        const textArea = document.createElement("textarea");
+        const paymentUrl = url + request.id;
+
+        textArea.value = paymentUrl;
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+
+        toast.success("لینک پرداخت با موفقیت کپی شد");
+      } catch (fallbackError) {
+        toast.error("خطا در کپی کردن لینک پرداخت");
+        console.error("Clipboard error:", error, fallbackError);
+      }
+    }
+  };
+
+  const completedRequest = request.status == 8;
+  const canceledRequest = request.status == 2;
 
   return (
     <div
@@ -245,26 +276,35 @@ export default function RequestCard({
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               <button
                 onClick={handleEditAddress}
-                className="flex items-center justify-center gap-2 h-12 px-4 bg-primary-50 hover:bg-primary-100 text-primary-700 rounded-xl border border-primary-200 transition-all duration-200 text-sm font-medium hover:shadow-sm"
+                className={`flex items-center justify-center gap-2 h-12 px-4 bg-primary-50 hover:bg-primary-100 text-primary-700 rounded-xl border border-primary-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
+                  completedRequest || canceledRequest
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+                disabled={completedRequest || canceledRequest}
               >
                 <MapPin className="w-4 h-4" />
                 ویرایش آدرس
               </button>
 
-              {request.status != 8 && (
-                <button
-                  onClick={handleChangePaymentStatus}
-                  className="flex items-center justify-center gap-2 h-12 px-4 bg-accent-50 hover:bg-accent-100 text-accent-700 rounded-xl border border-accent-200 transition-all duration-200 text-sm font-medium hover:shadow-sm"
-                >
-                  <CreditCard className="w-4 h-4" />
-                  تغییر پرداخت
-                </button>
-              )}
+              <button
+                onClick={handleChangePaymentStatus}
+                className={`flex items-center justify-center gap-2 h-12 px-4 bg-accent-50 hover:bg-accent-100 text-accent-700 rounded-xl border border-accent-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
+                  completedRequest || canceledRequest
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+                disabled={completedRequest || canceledRequest}
+              >
+                <CreditCard className="w-4 h-4" />
+                تغییر پرداخت
+              </button>
 
               <div className="h-12">
                 <NavigationModal
                   lat={request.latitude}
                   lng={request.longitude}
+                  disabled={completedRequest || canceledRequest}
                 />
               </div>
             </div>
@@ -278,7 +318,12 @@ export default function RequestCard({
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               <button
                 onClick={handleLabel}
-                className="flex items-center justify-center gap-2 h-12 px-4 bg-secondary-50 hover:bg-secondary-100 text-secondary-700 rounded-xl border border-secondary-200 transition-all duration-200 text-sm font-medium hover:shadow-sm"
+                className={`flex items-center justify-center gap-2 h-12 px-4 bg-secondary-50 hover:bg-secondary-100 text-secondary-700 rounded-xl border border-secondary-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
+                  completedRequest || canceledRequest
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+                disabled={completedRequest || canceledRequest}
               >
                 <Tag className="w-4 h-4" />
                 برچسب
@@ -286,15 +331,21 @@ export default function RequestCard({
 
               <button
                 onClick={handleBill}
-                className="flex items-center justify-center gap-2 h-12 px-4 bg-neutral-50 hover:bg-neutral-100 text-neutral-700 rounded-xl border border-neutral-200 transition-all duration-200 text-sm font-medium hover:shadow-sm"
+                className={`flex items-center justify-center gap-2 h-12 px-4 bg-neutral-50 hover:bg-neutral-100 text-neutral-700 rounded-xl border border-neutral-200 transition-all duration-200 text-sm font-medium hover:shadow-sm `}
               >
                 <FileText className="w-4 h-4" />
                 فاکتور
               </button>
 
               <button
-                onClick={handleResendCode}
-                className="flex items-center justify-center gap-2 h-12 px-4 bg-error-50 hover:bg-error-100 text-error-700 rounded-xl border border-error-200 transition-all duration-200 text-sm font-medium hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={
+                  completedRequest || canceledRequest ? null : handleResendCode
+                }
+                className={`flex items-center justify-center gap-2 h-12 px-4 bg-error-50 hover:bg-error-100 text-error-700 rounded-xl border border-error-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
+                  isResendingCode || completedRequest || canceledRequest
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
                 disabled={isResendingCode}
               >
                 <RefreshCw
@@ -309,7 +360,12 @@ export default function RequestCard({
 
               <button
                 onClick={handlePaymentLink}
-                className="flex items-center justify-center gap-2 h-12 px-4 bg-success-50 hover:bg-success-100 text-success-700 rounded-xl border border-success-200 transition-all duration-200 text-sm font-medium hover:shadow-sm"
+                className={`flex items-center justify-center gap-2 h-12 px-4 bg-success-50 hover:bg-success-100 text-success-700 rounded-xl border border-success-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
+                  completedRequest || canceledRequest
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+                disabled={completedRequest || canceledRequest}
               >
                 <Link className="w-4 h-4" />
                 لینک پرداخت
@@ -322,13 +378,33 @@ export default function RequestCard({
               <CheckCircle className="w-4 h-4" />
               تایید نهایی
             </h4>
-            <button
-              onClick={handleConfirm}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 h-12 px-8 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-xl transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl transform hover:scale-105"
-            >
-              <CheckCircle className="w-4 h-4" />
-              تایید فاکتور
-            </button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3">
+              <button
+                onClick={handleConfirm}
+                className={`w-full sm:w-auto flex items-center justify-center gap-2 h-12 px-8 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-xl transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl transform hover:scale-105 ${
+                  completedRequest || canceledRequest
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+                disabled={completedRequest || canceledRequest}
+              >
+                <CheckCircle className="w-4 h-4" />
+                تایید فاکتور
+              </button>
+
+              <button
+                onClick={handleComplete}
+                className={`w-full sm:w-auto flex items-center justify-center gap-2 h-12 px-8 bg-gradient-to-r from-success-500 to-success-600 hover:from-success-600 hover:to-success-700 text-white rounded-xl transition-all duration-200 text-sm font-medium shadow-lg hover:shadow-xl transform hover:scale-105 ${
+                  completedRequest || canceledRequest
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+                disabled={completedRequest || canceledRequest}
+              >
+                <CheckCircle className="w-4 h-4" />
+                تکمیل
+              </button>
+            </div>
           </div>
         </div>
       </div>

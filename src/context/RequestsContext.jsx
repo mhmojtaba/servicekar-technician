@@ -4,8 +4,10 @@ import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "./AuthContext";
 import {
   changeRequestPayment,
+  changeRequestStatus,
   getRequests,
   getRequestsMain,
+  getUnconfirmedRequests,
   ResendConfirmationCode,
 } from "@/services/requestsServices";
 import { toast } from "react-toastify";
@@ -16,7 +18,7 @@ export const RequestsProvider = ({ children }) => {
   const { token } = useAuth();
   const [mainRequests, setMainRequests] = useState([]);
   const [requestsCount, setRequestsCount] = useState(null);
-
+  const [url, setUrl] = useState(null);
   const [operation_type, setOperation_type] = useState([]);
   const [status_requests, setStatus_requests] = useState([]);
   const [array_type_payment, setArray_type_payment] = useState([]);
@@ -24,7 +26,10 @@ export const RequestsProvider = ({ children }) => {
   const [service, setService] = useState([]);
   const [technician, setTechnician] = useState([]);
   const [zones, setZones] = useState([]);
-
+  const [uncompleteRequests, setUncompleteRequests] = useState([]);
+  const [payment_to_technician_type, setPayment_to_technician_type] = useState(
+    []
+  );
   const [selectedRequest, setSelectedRequest] = useState(null);
 
   const { isPending: isGettingRequest, mutateAsync: mutateGetRequests } =
@@ -44,6 +49,20 @@ export const RequestsProvider = ({ children }) => {
     mutateAsync: mutateChangeRequestPayment,
   } = useMutation({
     mutationFn: changeRequestPayment,
+  });
+
+  const {
+    isPending: isChangingStatus,
+    mutateAsync: mutateChangeRequestStatus,
+  } = useMutation({
+    mutationFn: changeRequestStatus,
+  });
+
+  const {
+    isPending: isGettingUncompleteRequests,
+    mutateAsync: mutateGetUncompleteRequests,
+  } = useMutation({
+    mutationFn: getUnconfirmedRequests,
   });
 
   const { isPending: isResendingCode, mutateAsync: mutateResendCode } =
@@ -70,6 +89,26 @@ export const RequestsProvider = ({ children }) => {
     }
   };
 
+  const updateRequestStatus = async (values) => {
+    try {
+      const data = {
+        token,
+        ...values,
+      };
+      const { data: response } = await mutateChangeRequestStatus(data);
+      if (response?.msg === 0) {
+        toast.success(response?.msg_text);
+        setSelectedRequest(null);
+        fetchRequests();
+        return response;
+      } else {
+        toast.error(response?.msg_text);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const fetchRequests = async (value) => {
     try {
       const data = {
@@ -81,6 +120,7 @@ export const RequestsProvider = ({ children }) => {
       if (response?.msg === 0) {
         setMainRequests(response?.requests);
         setRequestsCount(response?.count);
+        setUrl(response?.url);
       } else {
         toast.error(response?.msg_text);
       }
@@ -96,6 +136,7 @@ export const RequestsProvider = ({ children }) => {
       if (response?.msg === 0) {
         setOperation_type(response?.operation_type);
         setStatus_requests(response?.status_requests);
+        setPayment_to_technician_type(response?.payment_to_technician_type);
         setArray_type_payment(response?.array_type_payment);
         setRequester_type(response?.requester_type);
         setService(response?.service);
@@ -109,8 +150,22 @@ export const RequestsProvider = ({ children }) => {
     }
   };
 
+  const fetchUncompleteRequests = async () => {
+    try {
+      const { data: response } = await mutateGetUncompleteRequests(token);
+      if (response?.msg === 0) {
+        setUncompleteRequests(response?.count);
+      } else {
+        toast.error(response?.msg_text);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     fetchRequestsMain();
+    fetchUncompleteRequests();
   }, []);
 
   return (
@@ -136,6 +191,12 @@ export const RequestsProvider = ({ children }) => {
         isChangingPayment,
         isResendingCode,
         mutateResendCode,
+        uncompleteRequests,
+        isGettingUncompleteRequests,
+        updateRequestStatus,
+        isChangingStatus,
+        payment_to_technician_type,
+        url,
       }}
     >
       {children}

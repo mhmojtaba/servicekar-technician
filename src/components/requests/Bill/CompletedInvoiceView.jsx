@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import generatePDF, { Resolution, Margin } from "react-to-pdf";
 import {
   Calendar,
@@ -49,6 +49,7 @@ const options = {
 
 const CompletedInvoiceView = ({ data, taskList, partList, isLoading }) => {
   const targetRef = useRef();
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
   if (!data) return null;
 
@@ -81,87 +82,96 @@ const CompletedInvoiceView = ({ data, taskList, partList, isLoading }) => {
 
   const handleGeneratePDF = async () => {
     const element = targetRef.current;
-    if (!element) return;
+    if (!element || isGeneratingPDF) return;
 
-    const originalStyles = {
-      width: element.style.width,
-      maxWidth: element.style.maxWidth,
-      transform: element.style.transform,
-      transformOrigin: element.style.transformOrigin,
-    };
-
-    element.style.width = "210mm";
-    element.style.maxWidth = "210mm";
-    element.style.transform = "scale(1)";
-    element.style.transformOrigin = "top left";
-
-    element.classList.add("pdf-generation-mode");
-
-    const tempStyle = document.createElement("style");
-    tempStyle.id = "pdf-temp-styles";
-    tempStyle.innerHTML = `
-      .pdf-generation-mode {
-        width: 210mm !important;
-        max-width: 210mm !important;
-        font-size: 14px !important;
-      }
-      .pdf-generation-mode .grid {
-        display: grid !important;
-      }
-      .pdf-generation-mode .md\\:grid-cols-2 {
-        grid-template-columns: repeat(2, 1fr) !important;
-      }
-      .pdf-generation-mode .overflow-x-auto {
-        overflow-x: visible !important;
-      }
-      .pdf-generation-mode table {
-        width: 100% !important;
-        font-size: 12px !important;
-      }
-      .pdf-generation-mode .text-sm {
-        font-size: 12px !important;
-      }
-      .pdf-generation-mode .text-lg {
-        font-size: 16px !important;
-      }
-      .pdf-generation-mode .text-xl {
-        font-size: 18px !important;
-      }
-      .pdf-generation-mode .text-2xl {
-        font-size: 22px !important;
-      }
-    `;
-    document.head.appendChild(tempStyle);
+    setIsGeneratingPDF(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      const originalStyles = {
+        width: element.style.width,
+        maxWidth: element.style.maxWidth,
+        transform: element.style.transform,
+        transformOrigin: element.style.transformOrigin,
+      };
 
-      await generatePDF(targetRef, {
-        ...options,
-        canvas: {
-          ...options.canvas,
-          scale: 2,
-          width: 794,
-          height: 1123,
-        },
-        page: {
-          ...options.page,
-          format: "a4",
-          orientation: "portrait",
-          margin: Margin.SMALL,
-        },
-      });
-    } finally {
-      element.style.width = originalStyles.width;
-      element.style.maxWidth = originalStyles.maxWidth;
-      element.style.transform = originalStyles.transform;
-      element.style.transformOrigin = originalStyles.transformOrigin;
+      element.style.width = "210mm";
+      element.style.maxWidth = "210mm";
+      element.style.transform = "scale(1)";
+      element.style.transformOrigin = "top left";
 
-      element.classList.remove("pdf-generation-mode");
-      const tempStyleElement = document.getElementById("pdf-temp-styles");
-      if (tempStyleElement) {
-        document.head.removeChild(tempStyleElement);
+      element.classList.add("pdf-generation-mode");
+
+      const tempStyle = document.createElement("style");
+      tempStyle.id = "pdf-temp-styles";
+      tempStyle.innerHTML = `
+        .pdf-generation-mode {
+          width: 210mm !important;
+          max-width: 210mm !important;
+          font-size: 14px !important;
+        }
+        .pdf-generation-mode .grid {
+          display: grid !important;
+        }
+        .pdf-generation-mode .md\\:grid-cols-2 {
+          grid-template-columns: repeat(2, 1fr) !important;
+        }
+        .pdf-generation-mode .overflow-x-auto {
+          overflow-x: visible !important;
+        }
+        .pdf-generation-mode table {
+          width: 100% !important;
+          font-size: 12px !important;
+        }
+        .pdf-generation-mode .text-sm {
+          font-size: 12px !important;
+        }
+        .pdf-generation-mode .text-lg {
+          font-size: 16px !important;
+        }
+        .pdf-generation-mode .text-xl {
+          font-size: 18px !important;
+        }
+        .pdf-generation-mode .text-2xl {
+          font-size: 22px !important;
+        }
+      `;
+      document.head.appendChild(tempStyle);
+
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        await generatePDF(targetRef, {
+          ...options,
+          canvas: {
+            ...options.canvas,
+            scale: 2,
+            width: 794,
+            height: 1123,
+          },
+          page: {
+            ...options.page,
+            format: "a4",
+            orientation: "portrait",
+            margin: Margin.SMALL,
+          },
+        });
+      } finally {
+        element.style.width = originalStyles.width;
+        element.style.maxWidth = originalStyles.maxWidth;
+        element.style.transform = originalStyles.transform;
+        element.style.transformOrigin = originalStyles.transformOrigin;
+
+        element.classList.remove("pdf-generation-mode");
+        const tempStyleElement = document.getElementById("pdf-temp-styles");
+        if (tempStyleElement) {
+          document.head.removeChild(tempStyleElement);
+        }
       }
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      // You can add a toast notification here if needed
+    } finally {
+      setIsGeneratingPDF(false);
     }
   };
 
@@ -340,10 +350,24 @@ const CompletedInvoiceView = ({ data, taskList, partList, isLoading }) => {
       <div className="flex justify-center absolute top-0 left-0">
         <button
           onClick={handleGeneratePDF}
-          className="flex items-center gap-2 px-6 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
+          disabled={isGeneratingPDF}
+          className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all duration-200 ${
+            isGeneratingPDF
+              ? "bg-primary-400 cursor-not-allowed"
+              : "bg-primary-500 hover:bg-primary-600"
+          } text-white shadow-lg`}
         >
-          <Download className="w-5 h-5" />
-          <span>دانلود PDF</span>
+          {isGeneratingPDF ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin" />
+              <span>در حال تولید PDF...</span>
+            </>
+          ) : (
+            <>
+              <Download className="w-5 h-5" />
+              <span>دانلود PDF</span>
+            </>
+          )}
         </button>
       </div>
     </div>

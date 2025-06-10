@@ -33,7 +33,7 @@ const PartContent = ({ partList, selectedParts, onAddPart }) => {
 
   return (
     <div className="h-full flex flex-col min-h-0">
-      <div className="p-4 sm:p-6 border-b border-neutral-100 flex-shrink-0">
+      <div className="p-4 border-b border-neutral-100 flex-shrink-0">
         <div className="relative">
           <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-400 w-4 h-4" />
           <input
@@ -46,7 +46,7 @@ const PartContent = ({ partList, selectedParts, onAddPart }) => {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6 min-h-[40vh] max-h-[40vh]">
+      <div className="flex-1 overflow-y-auto p-4 min-h-[30vh] max-h-[30vh]">
         {filteredPartList.length === 0 ? (
           <div className="text-center py-8">
             <div className="p-3 bg-neutral-100 rounded-full w-12 h-12 mx-auto mb-3">
