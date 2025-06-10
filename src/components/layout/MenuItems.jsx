@@ -6,16 +6,12 @@ import Link from "next/link";
 
 import { useRequests } from "@/context/RequestsContext";
 import { mainMeniRoutes } from "@/constants/constants";
+import { Loader2 } from "lucide-react";
 
 const MenuItems = ({ setIsShow }) => {
-  const { mainRequests } = useRequests();
+  const { isGettingUncompleteRequests, uncompleteRequests } = useRequests();
 
   const pathname = usePathname();
-
-  const pendingRequests = mainRequests.filter(
-    (item) => item.status != 8 && item.status != 2
-  );
-  const pendingRequestsLength = pendingRequests?.length;
 
   const isActive = (path) => {
     if (path === "/") {
@@ -43,9 +39,16 @@ const MenuItems = ({ setIsShow }) => {
                 {item.icon}
                 {item.name}
               </span>
-              {item.name === "داشبورد" && pendingRequestsLength > 0 && (
+              {item.name === "داشبورد" &&
+                uncompleteRequests > 0 &&
+                !isGettingUncompleteRequests && (
+                  <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-medium rounded-full bg-error-500 text-white">
+                    {uncompleteRequests}
+                  </span>
+                )}
+              {item.name === "داشبورد" && isGettingUncompleteRequests && (
                 <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-medium rounded-full bg-error-500 text-white">
-                  {pendingRequestsLength}
+                  <Loader2 className="w-4 h-4 animate-spin" />
                 </span>
               )}
             </Link>
