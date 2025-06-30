@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { useRequests } from "@/context/RequestsContext";
 import { CheckCircle, Loader2, X } from "lucide-react";

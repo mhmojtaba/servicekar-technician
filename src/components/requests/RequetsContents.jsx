@@ -10,6 +10,7 @@ import LocationModal from "./LocationModal";
 import PaymentStatusModal from "./PaymentStatusModal";
 import BillModal from "./BillModal";
 import CompleteModal from "./CompleteModal";
+import AddImageModal from "./AddImageModal";
 
 export default function RequetsContents() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function RequetsContents() {
   const [showPaymentStatusModal, setShowPaymentStatusModal] = useState(false);
   const [showBillModal, setShowBillModal] = useState(false);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
+  const [showAddImageModal, setShowAddImageModal] = useState(false);
 
   const handleConfirm = (request) => {
     setSelectedRequest(request);
@@ -49,6 +51,11 @@ export default function RequetsContents() {
   const handleComplete = (request) => {
     setSelectedRequest(request);
     setShowCompleteModal(true);
+  };
+
+  const handleAddImage = (request) => {
+    setSelectedRequest(request);
+    setShowAddImageModal(true);
   };
 
   if (isGettingRequest) {
@@ -87,7 +94,11 @@ export default function RequetsContents() {
     );
   }
 
-  if (!mainRequests || mainRequests.length === 0) {
+  const uncompletedRequests = mainRequests.filter(
+    (r) => r.status != 8 && r.status != 2
+  );
+
+  if (!uncompletedRequests || uncompletedRequests.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 px-4">
         <div className="text-center max-w-md">
@@ -108,7 +119,7 @@ export default function RequetsContents() {
 
   return (
     <div className="">
-      {mainRequests.map((request, index) => (
+      {uncompletedRequests.map((request, index) => (
         <RequestCard
           key={request.id}
           request={request}
@@ -119,6 +130,7 @@ export default function RequetsContents() {
           onLabel={() => handleLabel(request)}
           onBill={() => handleBill(request)}
           onComplete={() => handleComplete(request)}
+          onAddImage={() => handleAddImage(request)}
         />
       ))}
 
@@ -154,6 +166,13 @@ export default function RequetsContents() {
         <CompleteModal
           isOpen={showCompleteModal}
           onClose={() => setShowCompleteModal(false)}
+        />
+      )}
+
+      {showAddImageModal && (
+        <AddImageModal
+          isOpen={showAddImageModal}
+          onClose={() => setShowAddImageModal(false)}
         />
       )}
     </div>

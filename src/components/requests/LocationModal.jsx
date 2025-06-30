@@ -1,13 +1,29 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import { X, MapPin, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
+import dynamic from "next/dynamic";
 
-import SelectLocation from "@/components/SelectLocation/SelectLocation";
 import { useMutation } from "@tanstack/react-query";
 import { addLocation } from "@/services/requestsServices";
 import { useAuth } from "@/context/AuthContext";
 import { useRequests } from "@/context/RequestsContext";
+
+const SelectLocation = dynamic(
+  () => import("@/components/SelectLocation/SelectLocation"),
+  {
+    loading: () => (
+      <div className="flex items-center justify-center h-[250px] sm:h-[350px] md:h-[400px] bg-neutral-100">
+        <div className="text-center">
+          <Loader2 className="w-6 h-6 animate-spin text-primary-500 mx-auto mb-2" />
+          <p className="text-sm text-neutral-600">بارگذاری نقشه...</p>
+        </div>
+      </div>
+    ),
+    ssr: false,
+  }
+);
 
 const LocationModal = ({ isOpen, onClose }) => {
   const { token } = useAuth();

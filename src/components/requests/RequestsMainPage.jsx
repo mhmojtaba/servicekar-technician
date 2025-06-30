@@ -1,14 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, Search, Filter } from "lucide-react";
+import { FileText } from "lucide-react";
 
 import SearchAndAddRequests from "./SearchAndAddRequests";
 import { useRequests } from "@/context/RequestsContext";
 import RequetsContents from "./RequetsContents";
 import Pagination from "@/common/Pagination";
+import { useAuth } from "@/context/AuthContext";
 
 export default function RequestsMainPage() {
+  const { token } = useAuth();
   const { fetchRequests, requestsCount } = useRequests();
 
   const [page, setPage] = useState(1);
@@ -26,8 +28,6 @@ export default function RequestsMainPage() {
       page: 1,
       ...data,
     };
-
-    console.log("Fetching requests with params:", value);
 
     if (page !== 1) {
       setPage(1);
@@ -49,9 +49,10 @@ export default function RequestsMainPage() {
   };
 
   useEffect(() => {
-    console.log("Fetching requests with params:", {});
-    handlePageChange(1);
-  }, []);
+    if (token) {
+      handlePageChange(1);
+    }
+  }, [token]);
 
   return (
     <div className="min-h-screen bg-background">

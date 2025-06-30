@@ -1,6 +1,7 @@
+"use client";
 import React, { useState, useRef, useEffect } from "react";
 import Select from "react-select";
-import SignaturePad from "react-signature-canvas";
+import dynamic from "next/dynamic";
 import {
   X,
   CheckCircle,
@@ -9,18 +10,30 @@ import {
   AlertCircle,
   Trash2,
 } from "lucide-react";
+import { toast } from "react-toastify";
 
 import { useAuth } from "@/context/AuthContext";
 import { useRequests } from "@/context/RequestsContext";
 import { customSelectStyles } from "@/styles/customeStyles";
 import { ConfirmRequest } from "@/services/requestsServices";
-import { toast } from "react-toastify";
+
+const SignaturePad = dynamic(() => import("react-signature-canvas"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[180px] bg-neutral-100 rounded-xl flex items-center justify-center">
+      <div className="animate-pulse text-neutral-500">
+        در حال بارگذاری امضا...
+      </div>
+    </div>
+  ),
+});
 
 const ConfirmModal = ({ isOpen, onClose }) => {
   const { token } = useAuth();
   const { array_type_payment, selectedRequest } = useRequests();
   const sigPadRef = useRef();
   const canvasContainerRef = useRef();
+  const [isClient, setIsClient] = useState(false);
 
   const [formData, setFormData] = useState({
     code: "",
@@ -30,17 +43,21 @@ const ConfirmModal = ({ isOpen, onClose }) => {
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [canvasSize, setCanvasSize] = useState({ width: 600, height: 180 });
+  const [canvasSize, setCanvasSize] = useState({ width: 600, height: 250 });
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
     const updateCanvasSize = () => {
-      if (canvasContainerRef.current) {
+      if (canvasContainerRef.current && isClient) {
         const containerWidth = canvasContainerRef.current.offsetWidth;
         const isMobile = window.innerWidth < 768;
 
         const newSize = {
           width: containerWidth - 4,
-          height: isMobile ? 150 : 180,
+          height: isMobile ? 250 : 300,
         };
 
         setCanvasSize((prevSize) => {
@@ -55,20 +72,26 @@ const ConfirmModal = ({ isOpen, onClose }) => {
       }
     };
 
-    updateCanvasSize();
-    window.addEventListener("resize", updateCanvasSize);
-
-    return () => window.removeEventListener("resize", updateCanvasSize);
-  }, [isOpen]);
+    if (isClient) {
+      updateCanvasSize();
+      window.addEventListener("resize", updateCanvasSize);
+      return () => window.removeEventListener("resize", updateCanvasSize);
+    }
+  }, [isOpen, isClient]);
 
   useEffect(() => {
-    if (isOpen && sigPadRef.current) {
+    if (isOpen && sigPadRef.current && isClient) {
       setTimeout(() => {
-        sigPadRef.current.clear();
-        setFormData((prev) => ({ ...prev, signature: null }));
+        if (
+          sigPadRef.current &&
+          typeof sigPadRef.current.clear === "function"
+        ) {
+          sigPadRef.current.clear();
+          setFormData((prev) => ({ ...prev, signature: null }));
+        }
       }, 100);
     }
-  }, [isOpen]);
+  }, [isOpen, isClient]);
 
   const handleInputChange = (field, value) => {
     if (field === "code") {
@@ -85,16 +108,39 @@ const ConfirmModal = ({ isOpen, onClose }) => {
   };
 
   const handleSignatureEnd = () => {
-    if (sigPadRef.current) {
-      const signatureData = sigPadRef.current.getTrimmedCanvas().toDataURL();
-      handleInputChange("signature", signatureData);
+    if (sigPadRef.current && isClient) {
+      try {
+        if (typeof sigPadRef.current.getTrimmedCanvas === "function") {
+          const signatureData = sigPadRef.current
+            .getTrimmedCanvas()
+            .toDataURL();
+          handleInputChange("signature", signatureData);
+        }
+      } catch (error) {
+        console.error("Error getting signature data:", error);
+        try {
+          const canvas = sigPadRef.current.getCanvas();
+          if (canvas) {
+            const signatureData = canvas.toDataURL();
+            handleInputChange("signature", signatureData);
+          }
+        } catch (fallbackError) {
+          console.error("Fallback signature capture failed:", fallbackError);
+        }
+      }
     }
   };
 
   const clearSignature = () => {
-    if (sigPadRef.current) {
-      sigPadRef.current.clear();
-      handleInputChange("signature", null);
+    if (sigPadRef.current && isClient) {
+      try {
+        if (typeof sigPadRef.current.clear === "function") {
+          sigPadRef.current.clear();
+          handleInputChange("signature", null);
+        }
+      } catch (error) {
+        console.error("Error clearing signature:", error);
+      }
     }
   };
 
@@ -132,10 +178,10 @@ const ConfirmModal = ({ isOpen, onClose }) => {
         signature_img: formData.signature,
         type_payment: formData.type_payment.value,
       };
-
+      console.log("submitData", submitData);
       const response = await ConfirmRequest(submitData);
-
-      const responseData = response?.data || response;
+      console.log("response", response);
+      const responseData = response?.data;
 
       if (responseData.msg === 0) {
         onClose();
@@ -176,9 +222,11 @@ const ConfirmModal = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
+  console.log("formData", formData);
+
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4">
-      <div className="bg-surface rounded-2xl w-full max-w-2xl max-h-[95vh] shadow-2xl border border-neutral-200 overflow-hidden transform transition-all duration-300 flex flex-col">
+      <div className="bg-surface rounded-2xl w-full max-w-2xl max-h-[92vh] shadow-2xl border border-neutral-200 overflow-hidden transform transition-all duration-300 flex flex-col">
         <div className="bg-gradient-to-r from-primary-50 via-white to-primary-50 px-4 sm:px-6 py-4 sm:py-5 border-b border-neutral-100 relative flex-shrink-0">
           <button
             onClick={handleClose}
@@ -259,29 +307,36 @@ const ConfirmModal = ({ isOpen, onClose }) => {
                 ref={canvasContainerRef}
                 className={`border-2 rounded-xl overflow-hidden relative ${
                   errors.signature
-                    ? "border-error-300 bg-error-50"
+                    ? "border-error-300 bg-error-50 "
                     : "border-neutral-200"
                 }`}
               >
-                <SignaturePad
-                  ref={sigPadRef}
-                  penColor="#1Ef93B"
-                  canvasProps={{
-                    width: canvasSize.width,
-                    height: canvasSize.height,
+                {isClient ? (
+                  <SignaturePad
+                    ref={sigPadRef}
+                    penColor="#22c55e"
+                    canvasProps={{
+                      width: canvasSize.width,
+                      height: canvasSize.height,
+                      style: {
+                        width: "100%",
+                        height: `${canvasSize.height}px`,
+                        display: "block",
+                        touchAction: "none",
+                      },
+                      className: "bg-white cursor-crosshair",
+                    }}
+                    onEnd={handleSignatureEnd}
+                  />
+                ) : (
+                  <div className="w-full h-[180px] bg-neutral-100 rounded-xl flex items-center justify-center">
+                    <div className="animate-pulse text-neutral-500">
+                      در حال بارگذاری امضا...
+                    </div>
+                  </div>
+                )}
 
-                    style: {
-                      width: "100%",
-                      height: `${canvasSize.height}px`,
-                      display: "block",
-                      touchAction: "none",
-                    },
-                    className: "bg-white cursor-crosshair",
-                  }}
-                  onEnd={handleSignatureEnd}
-                />
-
-                {!formData.signature && (
+                {!formData.signature && isClient && (
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                     <p className="text-neutral-400 text-sm sm:text-base text-center px-4">
                       برای امضا، انگشت خود را روی صفحه بکشید

@@ -18,6 +18,7 @@ export function checkOtp(data) {
     function_name: "start",
     mobile: data.phoneNumber,
     code: data.otp,
+    type: "technician",
   });
 }
 
@@ -28,6 +29,7 @@ export function userUpdate(data) {
     function_name: "set",
     first_name: data.first_name,
     last_name: data.last_name,
+    type: "technician",
   });
 }
 
@@ -36,5 +38,6 @@ export function settings_main(token) {
     token: token,
     class_name: "main",
     function_name: "setting_main",
+    type: "technician",
   });
 }

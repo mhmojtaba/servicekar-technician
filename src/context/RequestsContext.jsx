@@ -164,9 +164,11 @@ export const RequestsProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    fetchRequestsMain();
-    fetchUncompleteRequests();
-  }, []);
+    if (token) {
+      fetchRequestsMain();
+      fetchUncompleteRequests();
+    }
+  }, [token]);
 
   return (
     <RequestsContext.Provider

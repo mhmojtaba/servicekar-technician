@@ -18,6 +18,7 @@ export function getRequestsMain(token) {
     class_name: "requests",
     cnt_group: "service",
     function_name: "main",
+    type: "technician",
   });
 }
 
@@ -28,6 +29,7 @@ export function addUpdateRequest(data) {
     cnt_group: "service",
     function_name: "register_service_request",
     registered_by_type: "technician",
+    type: "technician",
     ...data,
   });
 }
@@ -38,6 +40,7 @@ export function assignTechnician(data) {
     class_name: "requests",
     cnt_group: "service",
     function_name: "assign_technician",
+    type: "technician",
     ...data,
   });
 }
@@ -48,6 +51,7 @@ export function changeRequestStatus(data) {
     class_name: "requests",
     cnt_group: "service",
     function_name: "update_status",
+    type: "technician",
     ...data,
   });
 }
@@ -58,6 +62,7 @@ export function changeRequestPayment(data) {
     class_name: "requests",
     cnt_group: "service",
     function_name: "update_payment_status",
+    type: "technician",
     ...data,
   });
 }
@@ -68,6 +73,7 @@ export function addLocation(data) {
     class_name: "requests",
     cnt_group: "service",
     function_name: "add_location",
+    type: "technician",
     ...data,
   });
 }
@@ -89,6 +95,7 @@ export function ResendConfirmationCode(data) {
     cnt_group: "service",
     function_name: "send_code",
     order_id: data.order_id,
+    type: "technician",
   });
 }
 
@@ -98,6 +105,7 @@ export function ConfirmRequest(data) {
     class_name: "requests",
     cnt_group: "service",
     function_name: "confirm_invoice",
+    type: "technician",
     ...data,
   });
 }
@@ -109,6 +117,7 @@ export function getDeviceTags(data) {
     cnt_group: "service",
     function_name: "list_device_tags",
     order_id: data.order_id,
+    type: "technician",
   });
 }
 
@@ -118,6 +127,7 @@ export function register_device_tags(data) {
     class_name: "requests",
     cnt_group: "service",
     function_name: "register_device_tags",
+    type: "technician",
     ...data,
   });
 }
@@ -128,6 +138,7 @@ export function cancel_device_tag(data) {
     class_name: "requests",
     cnt_group: "service",
     function_name: "cancel_device_tag",
+    type: "technician",
     ...data,
   });
 }
@@ -138,6 +149,7 @@ export function register_invoice(data) {
     class_name: "requests",
     cnt_group: "service",
     function_name: "register_invoice",
+    type: "technician",
     ...data,
   });
 }
@@ -165,6 +177,7 @@ export function getTasks(data) {
     function_name: "tasks_data",
     id_service: data.id_service,
     active: 1,
+    type: "technician",
   });
 }
 
@@ -176,5 +189,6 @@ export function getParts(data) {
     function_name: "parts_data",
     id_service: data.id_service,
     active: 1,
+    type: "technician",
   });
 }

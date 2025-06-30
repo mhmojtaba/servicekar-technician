@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import Image from "next/image";
 
@@ -16,6 +17,7 @@ import {
   Link,
   CheckCircle,
   ZoomIn,
+  ImagePlus,
 } from "lucide-react";
 
 import { useRequests } from "@/context/RequestsContext";
@@ -32,9 +34,11 @@ export default function RequestCard({
   onLabel,
   onBill,
   onComplete,
+  onAddImage,
 }) {
   const { token } = useAuth();
   const [isImagePreviewOpen, setIsImagePreviewOpen] = useState(false);
+
   const {
     status_requests,
     array_type_payment,
@@ -76,7 +80,7 @@ export default function RequestCard({
   const handleChangePaymentStatus = () => onChangePaymentStatus(request);
   const handleLabel = () => onLabel(request);
   const handleBill = () => onBill(request);
-
+  const handleAddImage = () => onAddImage(request);
   const handleConfirm = () => onConfirm(request);
   const handleComplete = () => onComplete(request);
   const handleResendCode = async () => {
@@ -101,26 +105,30 @@ export default function RequestCard({
     try {
       const paymentUrl = url + request.id;
 
-      await navigator.clipboard.writeText(paymentUrl);
-
-      toast.success("لینک پرداخت با موفقیت کپی شد");
-    } catch (error) {
-      try {
+      if (typeof window !== "undefined" && navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(paymentUrl);
+        toast.success("لینک پرداخت با موفقیت کپی شد");
+      } else {
         const textArea = document.createElement("textarea");
-        const paymentUrl = url + request.id;
-
         textArea.value = paymentUrl;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
         document.body.appendChild(textArea);
         textArea.focus();
         textArea.select();
-        document.execCommand("copy");
+
+        const successful = document.execCommand("copy");
         document.body.removeChild(textArea);
 
-        toast.success("لینک پرداخت با موفقیت کپی شد");
-      } catch (fallbackError) {
-        toast.error("خطا در کپی کردن لینک پرداخت");
-        console.error("Clipboard error:", error, fallbackError);
+        if (successful) {
+          toast.success("لینک پرداخت با موفقیت کپی شد");
+        } else {
+          toast.error("خطا در کپی کردن لینک پرداخت");
+        }
       }
+    } catch (error) {
+      console.error("خطا در کپی کردن لینک پرداخت:", error);
     }
   };
 
@@ -315,7 +323,7 @@ export default function RequestCard({
               <FileText className="w-4 h-4" />
               مدیریت سند و پرداخت
             </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
               <button
                 onClick={handleLabel}
                 className={`flex items-center justify-center gap-2 h-12 px-4 bg-secondary-50 hover:bg-secondary-100 text-secondary-700 rounded-xl border border-secondary-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
@@ -335,6 +343,14 @@ export default function RequestCard({
               >
                 <FileText className="w-4 h-4" />
                 فاکتور
+              </button>
+
+              <button
+                onClick={handleAddImage}
+                className={`flex items-center justify-center gap-2 h-12 px-4 bg-neutral-50 hover:bg-neutral-100 text-neutral-700 rounded-xl border border-neutral-200 transition-all duration-200 text-sm font-medium hover:shadow-sm `}
+              >
+                <ImagePlus className="w-4 h-4" />
+                اضافه کردن عکس
               </button>
 
               <button

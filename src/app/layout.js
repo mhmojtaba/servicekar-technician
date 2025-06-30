@@ -6,8 +6,6 @@ import { AuthProvider } from "@/context/AuthContext";
 import { RequestsProvider } from "@/context/RequestsContext";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 
-import "leaflet/dist/leaflet.css";
-import "leaflet-draw/dist/leaflet.draw.css";
 import "./globals.css";
 
 export const metadata = {

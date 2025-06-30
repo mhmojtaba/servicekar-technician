@@ -126,7 +126,8 @@ const AccountingTable = ({ thead, tbody }) => {
                         <div className="font-medium text-gray-900 text-sm leading-5">
                           {item?.title}
                         </div>
-                        {item?.request_id ? (
+
+                        {/* {item?.request_id ? (
                           <div className="flex items-center space-x-2 space-x-reverse">
                             <span className="text-xs text-gray-500">
                               درخواست #{item?.request_id}
@@ -147,7 +148,7 @@ const AccountingTable = ({ thead, tbody }) => {
                               </PopoverTrigger>
                               <PopoverContent>
                                 <div className="bg-white rounded-lg shadow-xl border border-gray-200 p-4 min-w-[300px]">
-                                  {/* Header */}
+                                 
                                   <div className="border-b border-gray-100 pb-3 mb-3">
                                     <h3 className="text-sm font-semibold text-gray-900">
                                       درخواست #{item?.request_id}
@@ -157,7 +158,7 @@ const AccountingTable = ({ thead, tbody }) => {
                                     </p>
                                   </div>
 
-                                  {/* Details Grid */}
+                                 
                                   <div className="space-y-3">
                                     <div className="grid grid-cols-2 gap-3">
                                       <div className="bg-gray-50 rounded-lg p-2">
@@ -217,7 +218,8 @@ const AccountingTable = ({ thead, tbody }) => {
                               </PopoverContent>
                             </Popover>
                           </div>
-                        ) : null}
+                        ) : null} 
+                        */}
                       </div>
                     </td>
 

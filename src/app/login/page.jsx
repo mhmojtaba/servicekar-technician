@@ -11,7 +11,7 @@ import { useAuth } from "@/context/AuthContext";
 import logo from "@/assets/images/logo.png";
 
 const LoginPage = () => {
-  const { setUser, setIsSecretary } = useAuth();
+  const { setUser } = useAuth();
   const router = useRouter();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [step, setStep] = useState(1);
@@ -53,22 +53,22 @@ const LoginPage = () => {
 
       setCheckOtpTimer(5);
 
-      if (response && response.token.length > 0) {
+      if (response.msg === 0 && response.token.length > 0) {
         const userData = {
           first_name: response?.value?.first_name,
           last_name: response?.value?.last_name,
           mobile: response?.value?.mobile,
         };
         setUser(userData);
-        setIsSecretary(response?.is_monshi == 1 ? true : false);
         localStorage.setItem("tech-token", response?.token);
         localStorage.setItem("user", JSON.stringify(userData));
         router.push("/");
+        toast.success("ورود با موفقیت انجام شد");
+      } else {
+        toast.error(response.msg_text);
       }
-      toast.success("ورود با موفقیت انجام شد");
     } catch (err) {
-      err?.msg && console.error(err?.msg);
-      toast.error("کد تایید نامعتبر است");
+      console.error(err);
     }
   };
 

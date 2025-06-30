@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, Suspense } from "react";
 import { notFound, useSearchParams, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { Plus, Loader2, Tag, RefreshCw, ArrowLeft } from "lucide-react";
@@ -16,13 +16,14 @@ import { useAuth } from "@/context/AuthContext";
 import LabelCard from "./components/LabelCard";
 import AddLabelModal from "./components/AddLabelModal";
 
-export default function LabelsPage() {
+function LabelsContent() {
   const searchParams = useSearchParams();
   const requestId = searchParams.get("request_id");
   const router = useRouter();
 
   const { token } = useAuth();
-  const { selectedRequest, setSelectedRequest, mainRequests } = useRequests();
+  const { selectedRequest, setSelectedRequest, mainRequests, fetchRequests } =
+    useRequests();
   const [labelList, setLabelList] = useState([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isRequestFound, setIsRequestFound] = useState(false);
@@ -44,15 +45,11 @@ export default function LabelsPage() {
     });
 
   useEffect(() => {
-    if (!requestId) {
-      return notFound();
-    }
+    fetchRequests();
+  }, []);
 
+  useEffect(() => {
     const numericRequestId = parseInt(requestId, 10);
-
-    if (isNaN(numericRequestId)) {
-      return notFound();
-    }
 
     if (mainRequests && mainRequests.length > 0) {
       const request = mainRequests.find(
@@ -264,7 +261,7 @@ export default function LabelsPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {labelList.map((label) => (
                     <LabelCard
-                      key={label.id}
+                      key={label.code}
                       label={label}
                       onDelete={handleDeleteLabel}
                       isDeleting={isDeletingDeviceTag}
@@ -284,5 +281,24 @@ export default function LabelsPage() {
         isSubmitting={isAddingDeviceTag}
       />
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="text-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary-500 mx-auto mb-4" />
+        <p className="text-neutral-600">در حال بارگذاری صفحه...</p>
+      </div>
+    </div>
+  );
+}
+
+export default function LabelsPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <LabelsContent />
+    </Suspense>
   );
 }
