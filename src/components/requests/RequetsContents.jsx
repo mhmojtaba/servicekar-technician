@@ -99,11 +99,7 @@ export default function RequetsContents() {
     );
   }
 
-  const uncompletedRequests = mainRequests.filter(
-    (r) => r.status != 8 && r.status != 2
-  );
-
-  if (!uncompletedRequests || uncompletedRequests.length === 0) {
+  if (!mainRequests || mainRequests.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 px-4">
         <div className="text-center max-w-md">
@@ -124,7 +120,7 @@ export default function RequetsContents() {
 
   return (
     <div className="">
-      {uncompletedRequests.map((request, index) => (
+      {mainRequests.map((request, index) => (
         <RequestCard
           key={request.id}
           request={request}

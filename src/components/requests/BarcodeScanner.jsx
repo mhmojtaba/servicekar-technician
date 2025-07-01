@@ -69,15 +69,15 @@ const BarcodeScanner = ({ isOpen, onClose, onScan }) => {
       }
 
       // Check if camera access is available
-      // if (
-      //   !navigator ||
-      //   !navigator.mediaDevices ||
-      //   !navigator.mediaDevices.getUserMedia
-      // ) {
-      //   throw new Error(
-      //     "دسترسی به دوربین در دسترس نیست. لطفاً اطمینان حاصل کنید که مرورگر شما از دسترسی به دوربین پشتیبانی می‌کند."
-      //   );
-      // }
+      if (
+        !navigator ||
+        !navigator.mediaDevices ||
+        !navigator.mediaDevices.getUserMedia
+      ) {
+        throw new Error(
+          "دسترسی به دوربین در دسترس نیست. لطفاً اطمینان حاصل کنید که مرورگر شما از دسترسی به دوربین پشتیبانی می‌کند."
+        );
+      }
 
       // Check HTTPS requirement (more lenient for development)
       const isLocalhost =
