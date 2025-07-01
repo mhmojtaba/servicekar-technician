@@ -32,11 +32,11 @@ const MainWrapper = ({ children }) => {
       }
     }
 
-    // if (pathname !== "/login" && !token) {
-    //   router.push("/login");
-    //   setIsLoading(false);
-    //   return false;
-    // }
+    if (pathname !== "/login" && !token) {
+      router.push("/login");
+      setIsLoading(false);
+      return false;
+    }
 
     if (storedUser) {
       const userObject = JSON.parse(storedUser);

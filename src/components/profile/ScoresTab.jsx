@@ -1,15 +1,15 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import { TrendingUp } from "lucide-react";
-import BarcodeInput from "../BarcodeInput";
+// import BarcodeInput from "../BarcodeInput";
 
 const ScoresTab = () => {
-  const [inputValue, setInputValue] = useState("");
+  // const [inputValue, setInputValue] = useState("");
 
-  const handleChange = (e) => {
-    setInputValue(e);
-  };
+  // const handleChange = (e) => {
+  //   setInputValue(e);
+  // };
 
   return (
     <div className="space-y-6">
@@ -32,13 +32,13 @@ const ScoresTab = () => {
             در این بخش نمودار امتیازات و عملکرد شما نمایش داده خواهد شد
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
+          {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
             <BarcodeInput
               id={"tag"}
               inputValue={inputValue}
               setInputValue={(e) => handleChange(e)}
             />
-          </div>
+          </div> */}
         </div>
       </motion.div>
     </div>

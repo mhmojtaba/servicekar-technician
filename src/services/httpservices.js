@@ -15,8 +15,8 @@ const getBaseUrl = () => {
 
 const app = axios.create({
   // baseURL: getBaseUrl(),
-  // baseURL: "http://192.168.100.208/saha03/serviskar/serviskar_api",
-  baseURL: "http://oh2.ir/serviskar_api",
+  baseURL: "http://192.168.100.208/saha03/serviskar/serviskar_api",
+  // baseURL: "http://oh2.ir/serviskar_api",
 });
 
 const http = {
