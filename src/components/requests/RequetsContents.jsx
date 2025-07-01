@@ -22,6 +22,7 @@ export default function RequetsContents() {
   const [showBillModal, setShowBillModal] = useState(false);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
   const [showAddImageModal, setShowAddImageModal] = useState(false);
+  const [expandedCardId, setExpandedCardId] = useState(null);
 
   const handleConfirm = (request) => {
     setSelectedRequest(request);
@@ -56,6 +57,10 @@ export default function RequetsContents() {
   const handleAddImage = (request) => {
     setSelectedRequest(request);
     setShowAddImageModal(true);
+  };
+
+  const handleToggleExpand = (requestId) => {
+    setExpandedCardId(expandedCardId === requestId ? null : requestId);
   };
 
   if (isGettingRequest) {
@@ -131,6 +136,8 @@ export default function RequetsContents() {
           onBill={() => handleBill(request)}
           onComplete={() => handleComplete(request)}
           onAddImage={() => handleAddImage(request)}
+          isExpanded={expandedCardId === request.id}
+          onToggleExpand={() => handleToggleExpand(request.id)}
         />
       ))}
 

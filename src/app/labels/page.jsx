@@ -206,13 +206,13 @@ function LabelsContent() {
                   <span className="hidden sm:inline text-sm">بروزرسانی</span>
                 </button>
 
-                <button
+                {/* <button
                   onClick={() => setIsAddModalOpen(true)}
                   className="flex items-center justify-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-all duration-200 shadow-sm hover:shadow-md"
                 >
                   <Plus className="w-4 h-4" />
                   <span className="text-sm sm:text-base">ثبت برچسب</span>
-                </button>
+                </button> */}
               </div>
             </div>
           </div>

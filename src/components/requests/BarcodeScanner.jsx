@@ -69,15 +69,15 @@ const BarcodeScanner = ({ isOpen, onClose, onScan }) => {
       }
 
       // Check if camera access is available
-      if (
-        !navigator ||
-        !navigator.mediaDevices ||
-        !navigator.mediaDevices.getUserMedia
-      ) {
-        throw new Error(
-          "دسترسی به دوربین در دسترس نیست. لطفاً اطمینان حاصل کنید که مرورگر شما از دسترسی به دوربین پشتیبانی می‌کند."
-        );
-      }
+      // if (
+      //   !navigator ||
+      //   !navigator.mediaDevices ||
+      //   !navigator.mediaDevices.getUserMedia
+      // ) {
+      //   throw new Error(
+      //     "دسترسی به دوربین در دسترس نیست. لطفاً اطمینان حاصل کنید که مرورگر شما از دسترسی به دوربین پشتیبانی می‌کند."
+      //   );
+      // }
 
       // Check HTTPS requirement (more lenient for development)
       const isLocalhost =
@@ -89,9 +89,9 @@ const BarcodeScanner = ({ isOpen, onClose, onScan }) => {
       const isHttps = window.location.protocol === "https:";
       const isFileProtocol = window.location.protocol === "file:";
 
-      if (!isHttps && !isLocalhost && !isFileProtocol) {
-        throw new Error("دسترسی به دوربین نیازمند اتصال امن (HTTPS) است.");
-      }
+      // if (!isHttps && !isLocalhost && !isFileProtocol) {
+      //   throw new Error("دسترسی به دوربین نیازمند اتصال امن (HTTPS) است.");
+      // }
 
       if (!codeReader.current) {
         codeReader.current = new BrowserMultiFormatReader();
@@ -291,7 +291,7 @@ const BarcodeScanner = ({ isOpen, onClose, onScan }) => {
                 muted
               />
               <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-                <div className="w-48 h-24 border-2 border-accent-500 rounded-lg shadow-lg">
+                <div className="w-48 h-48 border-2 border-accent-500 rounded-lg shadow-lg -mt-14">
                   <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-accent-500"></div>
                   <div className="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-accent-500"></div>
                   <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-accent-500"></div>

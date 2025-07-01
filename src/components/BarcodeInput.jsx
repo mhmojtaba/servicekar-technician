@@ -21,7 +21,10 @@ const BarcodeInput = ({ inputValue, setInputValue, id }) => {
   const [isScannerOpen, setIsScannerOpen] = useState(false);
 
   const handleScan = (scannedValue) => {
-    setInputValue(scannedValue);
+    const match = scannedValue.match(/id=(\d+)/);
+
+    const finalCode = match ? match[1] : null;
+    setInputValue(finalCode);
     setIsScannerOpen(false);
     console.log("Scanned value:", scannedValue);
   };

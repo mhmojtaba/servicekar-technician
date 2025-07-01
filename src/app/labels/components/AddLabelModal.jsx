@@ -25,7 +25,7 @@ const AddLabelModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
     e.preventDefault();
     const validLabels = labels.filter((label) => label.tag.trim() !== "");
     if (validLabels.length === 0) {
-      toast.error("لطفا حداقل یک برچسب وارد کنید");
+      toast.error("لطفا یک برچسب وارد کنید");
       return;
     }
     onSubmit(validLabels);
@@ -160,7 +160,7 @@ const AddLabelModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
                         </span>
                       </>
                     ) : (
-                      <span className="text-sm sm:text-base">ثبت برچسب‌ها</span>
+                      <span className="text-sm sm:text-base">ثبت برچسب‌</span>
                     )}
                   </button>
                 </div>

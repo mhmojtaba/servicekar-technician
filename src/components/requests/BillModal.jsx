@@ -83,15 +83,12 @@ const BillModal = ({ isOpen, onClose }) => {
   const checkInvoiceStatus = useCallback(async () => {
     if (!selectedRequest) return;
 
-    // First fetch task and part lists
     await fetchTaskAndPartList();
 
-    // Check if invoice is already completed
     let parsedTasks = [];
     let parsedParts = [];
 
     try {
-      // Parse tasks
       if (selectedRequest.tasks && selectedRequest.tasks !== "") {
         parsedTasks =
           typeof selectedRequest.tasks === "string"
@@ -99,7 +96,6 @@ const BillModal = ({ isOpen, onClose }) => {
             : selectedRequest.tasks;
       }
 
-      // Parse parts
       if (selectedRequest.parts && selectedRequest.parts !== "") {
         parsedParts =
           typeof selectedRequest.parts === "string"
@@ -107,7 +103,7 @@ const BillModal = ({ isOpen, onClose }) => {
             : selectedRequest.parts;
       }
 
-      if (parsedTasks.length > 0 || parsedParts.length > 0) {
+      if (selectedRequest.status == 9) {
         setIsInvoiceCompleted(true);
         setCompletedInvoiceData({
           tasks: parsedTasks,
@@ -225,9 +221,7 @@ const BillModal = ({ isOpen, onClose }) => {
           quantity: task.quantity,
         })),
       };
-      console.log("billData", billData);
       const { data: response } = await mutateRegisterBill(billData);
-      console.log("response", response);
       if (response.msg === 0) {
         toast.success(response.msg_text);
         handleClose();

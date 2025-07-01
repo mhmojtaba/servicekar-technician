@@ -3,7 +3,7 @@ const nextConfig = {
   trailingSlash: true,
   basePath: "/servicekar/technician",
   assetPrefix: "/servicekar/technician",
-  output: "export",
+  // output: "export",
   transpilePackages: ["@zxing/library"],
   images: {
     unoptimized: true,
