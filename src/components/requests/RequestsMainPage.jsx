@@ -8,10 +8,12 @@ import { useRequests } from "@/context/RequestsContext";
 import RequetsContents from "./RequetsContents";
 import Pagination from "@/common/Pagination";
 import { useAuth } from "@/context/AuthContext";
+import AddRequestModal from "./AddRequestModal";
 
 export default function RequestsMainPage() {
   const { token } = useAuth();
   const { fetchRequests, requestsCount } = useRequests();
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const [page, setPage] = useState(1);
   const [searchFilters, setSearchFilters] = useState({});
@@ -19,6 +21,10 @@ export default function RequestsMainPage() {
 
   const totalPages = Math.ceil(requestsCount / perPage);
   const currentPage = Math.min(totalPages, page);
+
+  const openAddModal = () => {
+    setIsAddModalOpen(true);
+  };
 
   const onSearch = (data = {}) => {
     setSearchFilters(data);
@@ -98,7 +104,10 @@ export default function RequestsMainPage() {
                 transition={{ duration: 0.3 }}
                 className="p-6"
               >
-                <SearchAndAddRequests onSearch={onSearch} />
+                <SearchAndAddRequests
+                  openAddModal={openAddModal}
+                  onSearch={onSearch}
+                />
               </motion.div>
             </AnimatePresence>
           </div>
@@ -123,6 +132,10 @@ export default function RequestsMainPage() {
               />
             </div>
           </div>
+          <AddRequestModal
+            isOpen={isAddModalOpen}
+            onClose={() => setIsAddModalOpen(false)}
+          />
         </motion.div>
       </motion.div>
     </div>

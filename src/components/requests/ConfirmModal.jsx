@@ -30,7 +30,8 @@ const SignaturePad = dynamic(() => import("react-signature-canvas"), {
 
 const ConfirmModal = ({ isOpen, onClose }) => {
   const { token } = useAuth();
-  const { array_type_payment, selectedRequest } = useRequests();
+  const { array_type_payment, selectedRequest, message_confirm_work } =
+    useRequests();
   const sigPadRef = useRef();
   const canvasContainerRef = useRef();
   const [isClient, setIsClient] = useState(false);
@@ -335,6 +336,13 @@ const ConfirmModal = ({ isOpen, onClose }) => {
                     </div>
                   </div>
                 )}
+
+                <div className="absolute bottom-4 flex items-center justify-center pointer-events-none">
+                  <p className="text-error-400 text-sm sm:text-base text-center px-4 flex gap-2 items-center">
+                    <AlertCircle className="w-4 h-4" />
+                    {message_confirm_work}
+                  </p>
+                </div>
 
                 {!formData.signature && isClient && (
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">

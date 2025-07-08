@@ -147,6 +147,25 @@ const SearchAndAddRequests = ({ openAddModal, onSearch }) => {
             </p>
           </div>
         </div>
+        <motion.button
+          onClick={openAddModal}
+          whileHover={{ scale: 1.02, y: -1 }}
+          whileTap={{ scale: 0.98 }}
+          disabled={isUpdating}
+          className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-hover disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none min-w-[160px]"
+        >
+          {isUpdating ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              <span>در حال ذخیره...</span>
+            </>
+          ) : (
+            <>
+              <Plus size={18} />
+              <span>ثبت درخواست جدید</span>
+            </>
+          )}
+        </motion.button>
       </motion.div>
 
       <div className="flex flex-col md:flex-row items-center justify-between gap-2">

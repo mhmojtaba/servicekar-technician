@@ -1,4 +1,4 @@
-import { FileIcon, HomeIcon, UserIcon } from "lucide-react";
+import { FileIcon, HomeIcon, TrendingUpIcon, UserIcon } from "lucide-react";
 
 export const mainMeniRoutes = [
   {
@@ -10,13 +10,19 @@ export const mainMeniRoutes = [
   {
     id: 2,
     name: "حسابداری",
-    path: "/accounting",
+    path: "/accounting/",
     icon: <FileIcon size={16} />,
   },
   {
     id: 3,
     name: "پروفایل",
-    path: "/profile",
+    path: "/profile/",
     icon: <UserIcon size={16} />,
+  },
+  {
+    id: 4,
+    name: "امتیازات",
+    path: "/scores/",
+    icon: <TrendingUpIcon size={16} />,
   },
 ];

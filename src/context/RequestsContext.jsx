@@ -9,6 +9,9 @@ import {
   getRequestsMain,
   getUnconfirmedRequests,
   ResendConfirmationCode,
+  get_address_with_mobile,
+  getByBarcode,
+  addUpdateRequest,
 } from "@/services/requestsServices";
 import { toast } from "react-toastify";
 
@@ -26,7 +29,16 @@ export const RequestsProvider = ({ children }) => {
   const [service, setService] = useState([]);
   const [technician, setTechnician] = useState([]);
   const [zones, setZones] = useState([]);
-  const [uncompleteRequests, setUncompleteRequests] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [brand_models, setBrand_models] = useState([]);
+  const [garanti_type_request, setGaranti_type_request] = useState([]);
+  const [message_confirm_work, setMessage_confirm_work] = useState("");
+
+  const [suggestedAddresses, setSuggestedAddresses] = useState([]);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const [reasonBlock, setReasonBlock] = useState(null);
+
+  const [incompleteRequests, setIncompleteRequests] = useState([]);
   const [payment_to_technician_type, setPayment_to_technician_type] = useState(
     []
   );
@@ -59,8 +71,8 @@ export const RequestsProvider = ({ children }) => {
   });
 
   const {
-    isPending: isGettingUncompleteRequests,
-    mutateAsync: mutateGetUncompleteRequests,
+    isPending: isGettingIncompleteRequests,
+    mutateAsync: mutateGetIncompleteRequests,
   } = useMutation({
     mutationFn: getUnconfirmedRequests,
   });
@@ -69,6 +81,80 @@ export const RequestsProvider = ({ children }) => {
     useMutation({
       mutationFn: ResendConfirmationCode,
     });
+
+  const {
+    isPending: isGettingAddress,
+    mutateAsync: mutateGetAddressWithMobile,
+  } = useMutation({
+    mutationFn: get_address_with_mobile,
+  });
+
+  const {
+    isPending: isGettingDeviceWithBarcode,
+    mutateAsync: mutateGetDeviceWithBarcode,
+  } = useMutation({
+    mutationFn: getByBarcode,
+  });
+
+  const { isPending: isUpdating, mutateAsync: mutateAddUpdateRequest } =
+    useMutation({
+      mutationFn: addUpdateRequest,
+    });
+
+  const getDeviceWithBarcode = async (barcode) => {
+    try {
+      const data = {
+        token,
+        barcode,
+      };
+      const { data: response } = await mutateGetDeviceWithBarcode(data);
+      return response;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const addUpdateRequests = async (values) => {
+    try {
+      const data = {
+        token,
+        ...values,
+        id: selectedRequest ? selectedRequest.id : 0,
+      };
+      const { data: response } = await mutateAddUpdateRequest(data);
+      if (response?.msg === 0) {
+        toast.success(response?.msg_text);
+        setSelectedRequest(null);
+        fetchRequests();
+        return response;
+      } else {
+        toast.error(response?.msg_text);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getAddressWithMobile = async (mobile) => {
+    try {
+      const data = {
+        token,
+        mobile,
+      };
+      const { data: response } = await mutateGetAddressWithMobile(data);
+
+      if (response?.msg === 0) {
+        setSuggestedAddresses(response?.value);
+      } else {
+        toast.error(response?.msg_text);
+        setReasonBlock(response?.reason_block);
+      }
+      return response;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const updateRequestPayment = async (values) => {
     try {
       const data = {
@@ -142,6 +228,10 @@ export const RequestsProvider = ({ children }) => {
         setService(response?.service);
         setTechnician(response?.technician?.technicians);
         setZones(response?.zones);
+        setBrands(response?.brands);
+        setBrand_models(response?.brand_models);
+        setGaranti_type_request(response?.garanti_type_request);
+        setMessage_confirm_work(response?.message_confirm_work);
       } else {
         toast.error(response?.msg_text);
       }
@@ -150,11 +240,12 @@ export const RequestsProvider = ({ children }) => {
     }
   };
 
-  const fetchUncompleteRequests = async () => {
+  const fetchIncompleteRequests = async () => {
     try {
-      const { data: response } = await mutateGetUncompleteRequests(token);
+      const { data: response } = await mutateGetIncompleteRequests(token);
+
       if (response?.msg === 0) {
-        setUncompleteRequests(response?.count);
+        setIncompleteRequests(response?.count);
       } else {
         toast.error(response?.msg_text);
       }
@@ -166,7 +257,7 @@ export const RequestsProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       fetchRequestsMain();
-      fetchUncompleteRequests();
+      fetchIncompleteRequests();
     }
   }, [token]);
 
@@ -193,12 +284,28 @@ export const RequestsProvider = ({ children }) => {
         isChangingPayment,
         isResendingCode,
         mutateResendCode,
-        uncompleteRequests,
-        isGettingUncompleteRequests,
+        incompleteRequests,
+        isGettingIncompleteRequests,
         updateRequestStatus,
         isChangingStatus,
         payment_to_technician_type,
         url,
+        brands,
+        brand_models,
+        garanti_type_request,
+        message_confirm_work,
+        suggestedAddresses,
+        setSuggestedAddresses,
+        selectedAddress,
+        setSelectedAddress,
+        reasonBlock,
+        setReasonBlock,
+        isGettingAddress,
+        getAddressWithMobile,
+        getDeviceWithBarcode,
+        isGettingDeviceWithBarcode,
+        addUpdateRequests,
+        isUpdating,
       }}
     >
       {children}

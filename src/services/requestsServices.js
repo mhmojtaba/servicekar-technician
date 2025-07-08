@@ -192,3 +192,48 @@ export function getParts(data) {
     type: "technician",
   });
 }
+
+export function get_address_with_mobile(data) {
+  return http.post("", {
+    token: data.token,
+    class_name: "requests",
+    cnt_group: "service",
+    function_name: "get_with_mobile",
+    mobile: data.mobile,
+    type: "technician",
+  });
+}
+
+export function getByBarcode(data) {
+  return http.post("", {
+    token: data.token,
+    class_name: "requests",
+    cnt_group: "service",
+    function_name: "get_by_barcode",
+    barcode: data.barcode,
+    type: "technician",
+  });
+}
+
+// chart_review_report
+export function chart_review_report(data) {
+  // تبدیل تاریخ‌ها به فرمت مناسب
+  const formatDate = (date) => {
+    if (!date) return null;
+    if (typeof date === "string") return date;
+    if (date.format) return date.format("YYYY-MM-DD");
+    return date;
+  };
+
+  return http.post("", {
+    token: data.token,
+    class_name: "reviews",
+    cnt_group: "service",
+    function_name: "chart_review_report",
+    type_report: data.type_report,
+    start_time: formatDate(data.start_time),
+    end_time: formatDate(data.end_time),
+    group_type: data.group_type, // daily | weekly | monthly | yearly
+    type: "technician",
+  });
+}
