@@ -139,7 +139,7 @@ function OTPInput({
           value={
             checkOtpTimer > 0
               ? `${checkOtpTimer} ثانیه تا تلاش مجدد`
-              : "ورود به سرویس کار"
+              : "ورود به خدمات گستر جزائری"
           }
           isLoading={isChecking}
           valid={otpValues.join("").length === numInputs && checkOtpTimer === 0}

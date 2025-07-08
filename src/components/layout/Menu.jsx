@@ -67,7 +67,7 @@ const MenuComponent = () => {
                 className="bg-white object-cover"
               />
             </div>
-            سرویس کار
+            شرکت خدمات گستر جزائری
           </div>
         </div>
       </div>

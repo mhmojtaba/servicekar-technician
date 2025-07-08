@@ -21,16 +21,17 @@ const SideBar = ({ setIsShow, isShow, isMobile }) => {
                 loading="lazy"
                 fill
                 sizes="100%"
-                className="bg-white object-cover"
+                className="bg-white object-contain"
               />
             </div>
             <div>
-              <div className="flex items-baseline">
+              <div className="flex flex-col items-start">
                 <span className="text-primary-700 font-bold text-lg ml-1">
-                  سرویس کار
+                  شرکت خدمات گستر جزائری
                 </span>
                 <span className="text-neutral-600 text-sm">پنل تکنسین</span>
               </div>
+
               <div className="text-sm text-neutral-500 mt-0.5">
                 {user?.first_name
                   ? `${user.first_name} ${user.last_name || ""}`

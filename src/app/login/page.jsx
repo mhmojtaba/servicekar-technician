@@ -129,12 +129,14 @@ const LoginPage = () => {
                   src={logo}
                   width={100}
                   height={100}
-                  alt="اصفهان سرویس کار"
+                  alt="خدمات گستر جزائری"
                   className="rounded-full object-cover"
                 />
               </div>
             </div>
-            <h1 className="text-2xl font-bold text-white">اصفهان سرویس کار</h1>
+            <h1 className="text-2xl font-bold text-white">
+              شرکت خدمات گستر جزائری
+            </h1>
             <p className="text-primary-100 text-sm mt-1">پنل تکنسین</p>
           </div>
 

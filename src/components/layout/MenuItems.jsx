@@ -9,7 +9,7 @@ import { mainMeniRoutes } from "@/constants/constants";
 import { Loader2 } from "lucide-react";
 
 const MenuItems = ({ setIsShow }) => {
-  const { isGettingUncompleteRequests, uncompleteRequests } = useRequests();
+  const { isGettingIncompleteRequests, incompleteRequests } = useRequests();
 
   const pathname = usePathname();
 
@@ -40,13 +40,13 @@ const MenuItems = ({ setIsShow }) => {
                 {item.name}
               </span>
               {item.name === "داشبورد" &&
-                uncompleteRequests > 0 &&
-                !isGettingUncompleteRequests && (
+                incompleteRequests > 0 &&
+                !isGettingIncompleteRequests && (
                   <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-medium rounded-full bg-error-500 text-white">
-                    {uncompleteRequests}
+                    {incompleteRequests}
                   </span>
                 )}
-              {item.name === "داشبورد" && isGettingUncompleteRequests && (
+              {item.name === "داشبورد" && isGettingIncompleteRequests && (
                 <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-medium rounded-full bg-error-500 text-white">
                   <Loader2 className="w-4 h-4 animate-spin" />
                 </span>
