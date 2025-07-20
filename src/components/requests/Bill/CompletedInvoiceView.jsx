@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import generatePDF, { Resolution, Margin } from "react-to-pdf";
 import {
   Calendar,
@@ -9,6 +9,7 @@ import {
   Wrench,
   Loader2,
 } from "lucide-react";
+import { useRequests } from "@/context/RequestsContext";
 
 const options = {
   filename: "invoice.pdf",
@@ -47,13 +48,22 @@ const options = {
   },
 };
 
-const CompletedInvoiceView = ({ data, taskList, partList, isLoading }) => {
+const CompletedInvoiceView = () => {
+  const {
+    selectedRequest,
+    isGettingInvoiceData,
+    invoiceData,
+    invoiceItems,
+    fetchInvoiceData,
+  } = useRequests();
   const targetRef = useRef();
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
-  if (!data) return null;
+  useEffect(() => {
+    fetchInvoiceData(selectedRequest.id);
+  }, [selectedRequest.id]);
 
-  if (isLoading || !taskList || !partList) {
+  if (isGettingInvoiceData) {
     return (
       <div className="h-full flex items-center justify-center">
         <div className="text-center">
@@ -66,19 +76,10 @@ const CompletedInvoiceView = ({ data, taskList, partList, isLoading }) => {
     );
   }
 
-  const task = data.tasks
-    .map((t) => {
-      const task = taskList.find((task) => task.id === t.id);
-      return task ? { ...task, quantity: t.quantity } : null;
-    })
-    .filter((t) => t !== null);
+  const tasks = invoiceItems.filter((item) => item.type === "task");
+  const parts = invoiceItems.filter((item) => item.type === "part");
 
-  const part = data.parts
-    .map((p) => {
-      const part = partList.find((part) => part.id === p.id);
-      return part ? { ...part, quantity: p.quantity } : null;
-    })
-    .filter((p) => p !== null);
+  const customerName = invoiceData.first_name + " " + invoiceData.last_name;
 
   const handleGeneratePDF = async () => {
     const element = targetRef.current;
@@ -194,29 +195,38 @@ const CompletedInvoiceView = ({ data, taskList, partList, isLoading }) => {
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4 text-neutral-500" />
                 <span className="text-sm text-neutral-600">نام مشتری:</span>
-                <span className="font-medium">{data.customerName}</span>
+                <span className="font-medium">{customerName}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-neutral-500" />
                 <span className="text-sm text-neutral-600">شماره موبایل:</span>
-                <span className="font-medium">{data.customerPhone}</span>
+                <span className="font-medium">{invoiceData.mobile}</span>
               </div>
             </div>
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-neutral-500" />
                 <span className="text-sm text-neutral-600">تاریخ:</span>
-                <span className="font-medium">{data.date}</span>
+                <span className="font-medium">
+                  {new Date(invoiceData.date * 1000).toLocaleDateString(
+                    "fa-IR",
+                    {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    }
+                  )}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <Wrench className="w-4 h-4 text-neutral-500" />
                 <span className="text-sm text-neutral-600">تعداد دستگاه:</span>
-                <span className="font-medium">{data.deviceCount}</span>
+                <span className="font-medium">{invoiceData.device_count}</span>
               </div>
             </div>
           </div>
 
-          {task.length > 0 && (
+          {tasks.length > 0 && (
             <div className="mb-6">
               <h3 className="text-lg font-semibold text-neutral-800 mb-3 flex items-center gap-2">
                 <Wrench className="w-5 h-5" />
@@ -244,22 +254,22 @@ const CompletedInvoiceView = ({ data, taskList, partList, isLoading }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {task.map((t, index) => (
+                    {tasks.map((t, index) => (
                       <tr key={t.id}>
                         <td className="border border-neutral-300 px-4 py-2">
                           {index + 1}
                         </td>
                         <td className="border border-neutral-300 px-4 py-2">
-                          {t.title}
+                          {t?.title}
                         </td>
                         <td className="border border-neutral-300 px-4 py-2">
-                          {t.quantity}
+                          {t?.quantity}
                         </td>
                         <td className="border border-neutral-300 px-4 py-2">
-                          {t.price.toLocaleString()} تومان
+                          {t?.unit_price?.toLocaleString()} تومان
                         </td>
                         <td className="border border-neutral-300 px-4 py-2">
-                          {(t.quantity * t.price).toLocaleString()} تومان
+                          {t?.total_price?.toLocaleString()} تومان
                         </td>
                       </tr>
                     ))}
@@ -269,7 +279,7 @@ const CompletedInvoiceView = ({ data, taskList, partList, isLoading }) => {
             </div>
           )}
 
-          {part.length > 0 && (
+          {parts.length > 0 && (
             <div className="mb-6">
               <h3 className="text-lg font-semibold text-neutral-800 mb-3 flex items-center gap-2">
                 <ShoppingCart className="w-5 h-5" />
@@ -297,7 +307,7 @@ const CompletedInvoiceView = ({ data, taskList, partList, isLoading }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {part.map((p, index) => (
+                    {parts.map((p, index) => (
                       <tr key={p.id}>
                         <td className="border border-neutral-300 px-4 py-2">
                           {index + 1}
@@ -309,10 +319,10 @@ const CompletedInvoiceView = ({ data, taskList, partList, isLoading }) => {
                           {p?.quantity}
                         </td>
                         <td className="border border-neutral-300 px-4 py-2">
-                          {p?.price.toLocaleString()} تومان
+                          {p?.unit_price.toLocaleString()} تومان
                         </td>
                         <td className="border border-neutral-300 px-4 py-2">
-                          {(p?.quantity * p?.price).toLocaleString()} تومان
+                          {p?.total_price.toLocaleString()} تومان
                         </td>
                       </tr>
                     ))}
@@ -322,16 +332,24 @@ const CompletedInvoiceView = ({ data, taskList, partList, isLoading }) => {
             </div>
           )}
 
+          {invoiceData?.discount_percent ? (
+            <div className="bg-primary-50 rounded-lg p-4 h-fit">
+              <div className="text-xl font-bold text-primary-800">
+                {invoiceData?.discount_percent}% تخفیف در جشنواره{" "}
+                {invoiceData?.discount_reason_title}
+              </div>
+            </div>
+          ) : null}
           <div className="border-t border-neutral-200 pt-4 mb-6">
             <div className="flex justify-between">
-              {data?.customerSignature !== "" ? (
+              {invoiceData?.signature_img !== "" ? (
                 <div className="mb-6">
                   <h4 className="text-sm font-medium text-neutral-700 mb-2">
                     امضای مشتری:
                   </h4>
                   <div className="border border-neutral-300 rounded-lg p-4 bg-neutral-50">
                     <img
-                      src={data?.customerSignature}
+                      src={invoiceData?.signature_img}
                       alt="امضای مشتری"
                       className="max-h-20 mx-auto"
                     />
@@ -340,14 +358,14 @@ const CompletedInvoiceView = ({ data, taskList, partList, isLoading }) => {
               ) : null}
               <div className="bg-primary-50 rounded-lg p-4 h-fit">
                 <div className="text-xl font-bold text-primary-800">
-                  مبلغ کل: {data.totalPrice.toLocaleString()} تومان
+                  مبلغ کل: {invoiceData?.total_price?.toLocaleString()} تومان
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="flex justify-center absolute top-0 left-0">
+      {/* <div className="flex justify-center absolute top-0 left-0">
         <button
           onClick={handleGeneratePDF}
           disabled={isGeneratingPDF}
@@ -369,7 +387,7 @@ const CompletedInvoiceView = ({ data, taskList, partList, isLoading }) => {
             </>
           )}
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

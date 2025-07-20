@@ -12,8 +12,11 @@ import {
   get_address_with_mobile,
   getByBarcode,
   addUpdateRequest,
+  completeRequestByTechnician,
+  getInvoiceData,
 } from "@/services/requestsServices";
 import { toast } from "react-toastify";
+import { unreadCount } from "@/services/messageService";
 
 const RequestsContext = createContext();
 
@@ -32,16 +35,28 @@ export const RequestsProvider = ({ children }) => {
   const [brands, setBrands] = useState([]);
   const [brand_models, setBrand_models] = useState([]);
   const [garanti_type_request, setGaranti_type_request] = useState([]);
+  const [install_garanti_type_request, setInstall_garanti_type_request] =
+    useState([]);
+  const [garanti_sherkati, setGaranti_sherkati] = useState([]);
+  const [status_requests_technician, setStatus_requests_technician] = useState(
+    []
+  );
   const [message_confirm_work, setMessage_confirm_work] = useState("");
-
   const [suggestedAddresses, setSuggestedAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [reasonBlock, setReasonBlock] = useState(null);
+
+  const [unreadMessagesCount, setUnreadMessagesCount] = useState(null);
 
   const [incompleteRequests, setIncompleteRequests] = useState([]);
   const [payment_to_technician_type, setPayment_to_technician_type] = useState(
     []
   );
+
+  const [invoiceData, setInvoiceData] = useState([]);
+  const [invoiceItems, setInvoiceItems] = useState([]);
+  const [technician_travel_cost, setTechnician_travel_cost] = useState(0);
+
   const [selectedRequest, setSelectedRequest] = useState(null);
 
   const { isPending: isGettingRequest, mutateAsync: mutateGetRequests } =
@@ -100,6 +115,42 @@ export const RequestsProvider = ({ children }) => {
     useMutation({
       mutationFn: addUpdateRequest,
     });
+
+  const {
+    isPending: isCompleteRequestByTechnician,
+    mutateAsync: mutateCompleteRequestByTechnician,
+  } = useMutation({
+    mutationFn: completeRequestByTechnician,
+  });
+
+  const { isPending: isGettingUnreadCount, mutateAsync: mutateUnreadCount } =
+    useMutation({
+      mutationFn: unreadCount,
+    });
+
+  const { isPending: isGettingInvoiceData, mutateAsync: mutateGetInvoiceData } =
+    useMutation({
+      mutationFn: getInvoiceData,
+    });
+
+  const fetchInvoiceData = async (order_id) => {
+    try {
+      const data = {
+        token,
+        order_id,
+      };
+      const { data: response } = await mutateGetInvoiceData(data);
+      if (response?.msg === 0) {
+        setInvoiceData(response?.order);
+        setInvoiceItems(response?.items);
+      } else {
+        toast.error(response?.msg_text);
+      }
+      return response;
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const getDeviceWithBarcode = async (barcode) => {
     try {
@@ -232,6 +283,10 @@ export const RequestsProvider = ({ children }) => {
         setBrand_models(response?.brand_models);
         setGaranti_type_request(response?.garanti_type_request);
         setMessage_confirm_work(response?.message_confirm_work);
+        setStatus_requests_technician(response?.status_requests_technician);
+        setInstall_garanti_type_request(response?.install_garanti_type_request);
+        setGaranti_sherkati(response?.garanti_sherkati);
+        setTechnician_travel_cost(response?.technician_travel_cost);
       } else {
         toast.error(response?.msg_text);
       }
@@ -254,10 +309,25 @@ export const RequestsProvider = ({ children }) => {
     }
   };
 
+  const fetchUnreadMessagesCount = async () => {
+    try {
+      const { data: response } = await mutateUnreadCount(token);
+
+      if (response?.msg === 0) {
+        setUnreadMessagesCount(response?.count);
+      } else {
+        toast.error(response?.msg_text);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     if (token) {
       fetchRequestsMain();
       fetchIncompleteRequests();
+      fetchUnreadMessagesCount();
     }
   }, [token]);
 
@@ -306,6 +376,19 @@ export const RequestsProvider = ({ children }) => {
         isGettingDeviceWithBarcode,
         addUpdateRequests,
         isUpdating,
+        status_requests_technician,
+        isCompleteRequestByTechnician,
+        mutateCompleteRequestByTechnician,
+        install_garanti_type_request,
+        garanti_sherkati,
+        unreadMessagesCount,
+        isGettingUnreadCount,
+        fetchUnreadMessagesCount,
+        fetchInvoiceData,
+        isGettingInvoiceData,
+        invoiceData,
+        invoiceItems,
+        technician_travel_cost,
       }}
     >
       {children}

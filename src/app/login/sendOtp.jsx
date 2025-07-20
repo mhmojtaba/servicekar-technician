@@ -19,11 +19,10 @@ const SendOtp = ({
           </div>
 
           <h2 className="text-2xl font-bold text-neutral-800 mb-3">
-            ورود به خدمات گستر جزائری
+            ورود به پنل تکنسین
           </h2>
           <p className="text-neutral-500 text-sm">
-            برای ورود به پنل تکنسین شرکت خدمات گستر جزائری، شماره موبایل خود را
-            وارد کنید
+            برای ورود به پنل تکنسین، شماره موبایل خود را وارد کنید
           </p>
         </div>
         <div className="mb-6">
@@ -74,19 +73,6 @@ const SendOtp = ({
           value={timer > 0 ? `${timer} ثانیه تا ارسال مجدد` : "دریافت کد تایید"}
           isLoading={isLoading}
         />
-
-        <div className="mt-6 text-center">
-          <p className="text-sm text-neutral-500">
-            با ورود به سیستم، شما
-            <a
-              href="#"
-              className="text-primary-600 hover:text-primary-700 mx-1 font-medium"
-            >
-              شرایط و قوانین
-            </a>{" "}
-            استفاده از شرکت خدمات گستر جزائری را می‌پذیرید
-          </p>
-        </div>
       </form>
     </div>
   );

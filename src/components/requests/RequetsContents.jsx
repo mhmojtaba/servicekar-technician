@@ -10,7 +10,9 @@ import LocationModal from "./LocationModal";
 import PaymentStatusModal from "./PaymentStatusModal";
 import BillModal from "./BillModal";
 import CompleteModal from "./CompleteModal";
-import AddImageModal from "./AddImageModal";
+// import AddImageModal from "./AddImage";
+import RequestStatusModal from "./RequestStatusModal";
+import SetPeriodicServiceModal from "./SetPeriodicServiceModal";
 
 export default function RequetsContents() {
   const router = useRouter();
@@ -21,8 +23,11 @@ export default function RequetsContents() {
   const [showPaymentStatusModal, setShowPaymentStatusModal] = useState(false);
   const [showBillModal, setShowBillModal] = useState(false);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
-  const [showAddImageModal, setShowAddImageModal] = useState(false);
+  // const [showAddImageModal, setShowAddImageModal] = useState(false);
   const [expandedCardId, setExpandedCardId] = useState(null);
+  const [showRequestStatusModal, setShowRequestStatusModal] = useState(false);
+  const [showSetPeriodicServiceModal, setShowSetPeriodicServiceModal] =
+    useState(false);
 
   const handleConfirm = (request) => {
     setSelectedRequest(request);
@@ -37,6 +42,11 @@ export default function RequetsContents() {
   const handleChangePaymentStatus = (request) => {
     setSelectedRequest(request);
     setShowPaymentStatusModal(true);
+  };
+
+  const handleChangeRequestStatus = (request) => {
+    setSelectedRequest(request);
+    setShowRequestStatusModal(true);
   };
 
   const handleLabel = (request) => {
@@ -54,10 +64,15 @@ export default function RequetsContents() {
     setShowCompleteModal(true);
   };
 
-  const handleAddImage = (request) => {
+  const handleSetPeriodicService = (request) => {
     setSelectedRequest(request);
-    setShowAddImageModal(true);
+    setShowSetPeriodicServiceModal(true);
   };
+
+  // const handleAddImage = (request) => {
+  //   setSelectedRequest(request);
+  //   setShowAddImageModal(true);
+  // };
 
   const handleToggleExpand = (requestId) => {
     setExpandedCardId(expandedCardId === requestId ? null : requestId);
@@ -128,10 +143,12 @@ export default function RequetsContents() {
           onConfirm={() => handleConfirm(request)}
           onEditAddress={() => handleEditAddress(request)}
           onChangePaymentStatus={() => handleChangePaymentStatus(request)}
+          onChangeRequestStatus={() => handleChangeRequestStatus(request)}
           onLabel={() => handleLabel(request)}
           onBill={() => handleBill(request)}
           onComplete={() => handleComplete(request)}
-          onAddImage={() => handleAddImage(request)}
+          onSetPeriodicService={() => handleSetPeriodicService(request)}
+          // onAddImage={() => handleAddImage(request)}
           isExpanded={expandedCardId === request.id}
           onToggleExpand={() => handleToggleExpand(request.id)}
         />
@@ -172,10 +189,24 @@ export default function RequetsContents() {
         />
       )}
 
-      {showAddImageModal && (
+      {/* {showAddImageModal && (
         <AddImageModal
           isOpen={showAddImageModal}
           onClose={() => setShowAddImageModal(false)}
+        />
+      )} */}
+
+      {showRequestStatusModal && (
+        <RequestStatusModal
+          isOpen={showRequestStatusModal}
+          onClose={() => setShowRequestStatusModal(false)}
+        />
+      )}
+
+      {showSetPeriodicServiceModal && (
+        <SetPeriodicServiceModal
+          isOpen={showSetPeriodicServiceModal}
+          onClose={() => setShowSetPeriodicServiceModal(false)}
         />
       )}
     </div>

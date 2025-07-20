@@ -24,6 +24,10 @@ const TechnicianRatings = () => {
   const [chartData, setChartData] = useState([]);
   const [hasSearched, setHasSearched] = useState(false);
 
+  useEffect(() => {
+    handleSearch();
+  }, []);
+
   const type_report_options = [
     { value: "user", label: "کاربران" },
     { value: "admin", label: "مدیران" },
@@ -58,15 +62,11 @@ const TechnicianRatings = () => {
         ...filter,
       };
 
-      console.log("Searching with data:", requestData);
-
       const { data: response } = await fetchChartData(requestData);
-
-      console.log("API Response:", response);
 
       if (response?.msg === 0) {
         const newChartData = response?.chart_data || [];
-        console.log("Setting chart data:", newChartData);
+
         setChartData(newChartData);
         if (newChartData.length === 0) {
           toast.info("داده‌ای برای نمایش یافت نشد");
@@ -85,12 +85,10 @@ const TechnicianRatings = () => {
   }, [token, filter, fetchChartData]);
 
   const handleFilterChange = useCallback((newFilter) => {
-    console.log("Filter changed:", newFilter);
     setFilter(newFilter);
     setHasSearched(false);
   }, []);
 
-  // محاسبه آمار کلی
   const stats = useMemo(() => {
     if (!chartData.length) return null;
 

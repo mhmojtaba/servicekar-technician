@@ -9,7 +9,12 @@ import { mainMeniRoutes } from "@/constants/constants";
 import { Loader2 } from "lucide-react";
 
 const MenuItems = ({ setIsShow }) => {
-  const { isGettingIncompleteRequests, incompleteRequests } = useRequests();
+  const {
+    isGettingIncompleteRequests,
+    incompleteRequests,
+    unreadMessagesCount,
+    isGettingUnreadCount,
+  } = useRequests();
 
   const pathname = usePathname();
 
@@ -48,6 +53,18 @@ const MenuItems = ({ setIsShow }) => {
                 )}
               {item.name === "داشبورد" && isGettingIncompleteRequests && (
                 <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-medium rounded-full bg-error-500 text-white">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                </span>
+              )}
+              {item.name === "پیام رسان" &&
+                unreadMessagesCount > 0 &&
+                !isGettingUnreadCount && (
+                  <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-medium rounded-full bg-success-500 text-white">
+                    {unreadMessagesCount}
+                  </span>
+                )}
+              {item.name === "پیام رسان" && isGettingUnreadCount && (
+                <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-medium rounded-full bg-success-500 text-white">
                   <Loader2 className="w-4 h-4 animate-spin" />
                 </span>
               )}

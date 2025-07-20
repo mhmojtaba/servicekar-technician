@@ -237,3 +237,37 @@ export function chart_review_report(data) {
     type: "technician",
   });
 }
+
+export function completeRequestByTechnician(data) {
+  return http.post("", {
+    token: data.token,
+    class_name: "requests",
+    cnt_group: "service",
+    function_name: "complete_request_by_technician",
+    type: "technician",
+    ...data,
+  });
+}
+
+export function setPeriodicService(data) {
+  return http.post("", {
+    token: data.token,
+    class_name: "requests",
+    cnt_group: "service",
+    function_name: "set_periodic_service",
+    order_id: data.order_id,
+    service_period_months: data.service_period_months,
+    type: "technician",
+  });
+}
+
+export function getInvoiceData(data) {
+  return http.post("", {
+    token: data.token,
+    class_name: "requests",
+    cnt_group: "service",
+    function_name: "get_invoice_details",
+    order_id: data.order_id,
+    type: "technician",
+  });
+}

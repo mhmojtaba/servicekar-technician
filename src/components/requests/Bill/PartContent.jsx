@@ -55,7 +55,7 @@ const PartContent = ({ partList, selectedParts, onAddPart }) => {
             <p className="text-neutral-500">هیچ قطعه‌ای یافت نشد</p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {filteredPartList.map((part) => (
               <div
                 key={part.id}
@@ -66,9 +66,9 @@ const PartContent = ({ partList, selectedParts, onAddPart }) => {
                     <h5 className="font-medium text-neutral-800 truncate">
                       {part.title}
                     </h5>
-                    <p className="text-sm text-neutral-600 mt-1">
+                    {/* <p className="text-sm text-neutral-600 mt-1">
                       {part.price.toLocaleString()} تومان
-                    </p>
+                    </p> */}
                   </div>
                   <div className="flex items-center gap-2 mr-4 flex-shrink-0">
                     <label className="text-sm text-neutral-600">تعداد:</label>

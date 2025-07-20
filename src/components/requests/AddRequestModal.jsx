@@ -89,6 +89,7 @@ const AddRequestModal = ({ isOpen, onClose }) => {
     install_as: "",
     building_area: "",
     postal_code: "",
+    recommender_mobile: "",
   });
 
   const [location, setLocation] = useState([32.644397, 51.667455]);
@@ -474,7 +475,7 @@ const AddRequestModal = ({ isOpen, onClose }) => {
             <div>
               <h3 className="text-2xl font-bold mb-2">ثبت درخواست جدید</h3>
               <p className="text-primary-100 text-sm">
-                فرم زیر را تکمیل کرده و درخواست خود را ثبت کنید
+                فرم زیر را تکمیل کرده و درخواست را ثبت کنید
               </p>
             </div>
             <button
@@ -638,8 +639,34 @@ const AddRequestModal = ({ isOpen, onClose }) => {
                         placeholder="انتخاب تاریخ تولد"
                         inputClass="w-full px-4 py-3 border border-neutral-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all placeholder:text-right z-10"
                         calendarPosition="bottom-start"
+                        calendarClassName="z-[9999]"
+                        portalClassName="z-[9999]"
+                        portal={true}
                       />
                     </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-neutral-700 mb-2">
+                      شماره موبایل معرف
+                    </label>
+                    <input
+                      type="tel"
+                      style={{ direction: "ltr" }}
+                      value={requestData.recommender_mobile}
+                      onChange={(e) => {
+                        const value = e.target.value
+                          .replace(/\D/g, "")
+                          .slice(0, 11);
+                        setRequestData({
+                          ...requestData,
+                          recommender_mobile: value,
+                        });
+                      }}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all `}
+                      placeholder="09xxxxxxxxx"
+                      maxLength={11}
+                    />
                   </div>
                 </div>
               </div>
@@ -1255,34 +1282,33 @@ const AddRequestModal = ({ isOpen, onClose }) => {
                 </div>
               </div>
             </DataWrapper>
+            <div className="bg-gradient-to-r from-neutral-50 to-white border-t border-neutral-200 p-6">
+              <div className="flex flex-col sm:flex-row gap-4 justify-end">
+                <button
+                  type="button"
+                  onClick={handleClose}
+                  className="px-8 py-4 text-neutral-700 bg-white border-2 border-neutral-300 rounded-xl hover:bg-neutral-50 hover:border-neutral-400 focus:ring-4 focus:ring-neutral-200 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] font-medium"
+                >
+                  لغو
+                </button>
+
+                <button
+                  disabled={!validateForm() || isBlocked}
+                  type="submit"
+                  className={`px-8 py-4 text-white rounded-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] font-medium min-w-[160px] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none ${"bg-gradient-to-r from-success-500 to-success-600 hover:from-success-600 hover:to-success-700 focus:ring-4 focus:ring-success-200 shadow-lg shadow-success-500/25"}`}
+                >
+                  {isUpdating ? (
+                    <div className="flex items-center justify-center">
+                      <FaSpinner className="animate-spin ml-2" />
+                      لطفا صبر کنید...
+                    </div>
+                  ) : (
+                    "ثبت درخواست"
+                  )}
+                </button>
+              </div>
+            </div>
           </form>
-        </div>
-
-        <div className="bg-gradient-to-r from-neutral-50 to-white border-t border-neutral-200 p-6">
-          <div className="flex flex-col sm:flex-row gap-4 justify-end">
-            <button
-              type="button"
-              onClick={handleClose}
-              className="px-8 py-4 text-neutral-700 bg-white border-2 border-neutral-300 rounded-xl hover:bg-neutral-50 hover:border-neutral-400 focus:ring-4 focus:ring-neutral-200 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] font-medium"
-            >
-              لغو
-            </button>
-
-            <button
-              disabled={!validateForm() || isBlocked}
-              type="submit"
-              className={`px-8 py-4 text-white rounded-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] font-medium min-w-[160px] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none ${"bg-gradient-to-r from-success-500 to-success-600 hover:from-success-600 hover:to-success-700 focus:ring-4 focus:ring-success-200 shadow-lg shadow-success-500/25"}`}
-            >
-              {isUpdating ? (
-                <div className="flex items-center justify-center">
-                  <FaSpinner className="animate-spin ml-2" />
-                  لطفا صبر کنید...
-                </div>
-              ) : (
-                "ثبت درخواست"
-              )}
-            </button>
-          </div>
         </div>
       </motion.div>
     </motion.div>

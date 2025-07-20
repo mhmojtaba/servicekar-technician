@@ -2,6 +2,7 @@
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import MenuComponent from "./Menu";
+import QuoteComponent from "./QuoteComponent";
 
 export default function DashboardLayout({ children }) {
   const pathname = usePathname();
@@ -24,7 +25,8 @@ export default function DashboardLayout({ children }) {
           <MenuComponent />
         </div>
 
-        <div className="col-span-4 md:col-span-3 overflow-x-hidden w-full">
+        <div className="col-span-4 md:col-span-3 overflow-x-hidden w-full relative">
+          <QuoteComponent />
           {children}
         </div>
       </div>

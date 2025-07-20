@@ -1,4 +1,10 @@
-import { FileIcon, HomeIcon, TrendingUpIcon, UserIcon } from "lucide-react";
+import {
+  FileIcon,
+  HomeIcon,
+  MessageCircle,
+  TrendingUpIcon,
+  UserIcon,
+} from "lucide-react";
 
 export const mainMeniRoutes = [
   {
@@ -24,5 +30,11 @@ export const mainMeniRoutes = [
     name: "امتیازات",
     path: "/scores/",
     icon: <TrendingUpIcon size={16} />,
+  },
+  {
+    id: 5,
+    name: "پیام رسان",
+    path: "/messages/",
+    icon: <MessageCircle size={16} />,
   },
 ];

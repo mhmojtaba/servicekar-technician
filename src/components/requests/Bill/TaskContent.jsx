@@ -55,20 +55,20 @@ const TaskContent = ({ taskList, selectedTasks, onAddTask }) => {
             <p className="text-neutral-500">هیچ خدمتی یافت نشد</p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {filteredTaskList.map((task) => (
               <div
                 key={task.id}
-                className="p-4 rounded-lg border border-neutral-200 hover:border-neutral-300 bg-white transition-all"
+                className="p-4  rounded-lg border border-neutral-200 hover:border-neutral-300 bg-white transition-all"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0">
                     <h5 className="font-medium text-neutral-800 truncate">
                       {task.title}
                     </h5>
-                    <p className="text-sm text-neutral-600 mt-1">
+                    {/* <p className="text-sm text-neutral-600 mt-1">
                       {task.price.toLocaleString()} تومان
-                    </p>
+                    </p> */}
                   </div>
                   <div className="flex items-center gap-2 mr-4 flex-shrink-0">
                     <label className="text-sm text-neutral-600">تعداد:</label>

@@ -219,8 +219,8 @@ const LoginPage = () => {
 
           <div className="bg-gray-50 py-4 px-8 text-center border-t border-gray-100">
             <p className="text-gray-500 text-xs">
-              © {new Date().getFullYear()} اصفهان سرویس کار - تمامی حقوق محفوظ
-              است
+              © {new Date().getFullYear()} شرکت خدمات گستر جزائری - تمامی حقوق
+              محفوظ است
             </p>
           </div>
         </div>

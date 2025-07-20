@@ -36,7 +36,9 @@ export default function RequestCard({
   onLabel,
   onBill,
   onComplete,
-  onAddImage,
+  onChangeRequestStatus,
+  onSetPeriodicService,
+  // onAddImage,
   isExpanded,
   onToggleExpand,
 }) {
@@ -84,7 +86,9 @@ export default function RequestCard({
   const handleChangePaymentStatus = () => onChangePaymentStatus(request);
   const handleLabel = () => onLabel(request);
   const handleBill = () => onBill(request);
-  const handleAddImage = () => onAddImage(request);
+  const handleChangeRequestStatus = () => onChangeRequestStatus(request);
+  const handleSetPeriodicService = () => onSetPeriodicService(request);
+  // const handleAddImage = () => onAddImage(request);
   const handleConfirm = () => onConfirm(request);
   const handleComplete = () => onComplete(request);
   const handleResendCode = async () => {
@@ -136,7 +140,7 @@ export default function RequestCard({
     }
   };
 
-  const completedRequest = request.status == 8;
+  const completedRequest = request.status == 8 || request.status == 9;
   const canceledRequest = request.status == 2;
 
   return (
@@ -144,7 +148,6 @@ export default function RequestCard({
       className="bg-surface rounded-xl mb-4 border border-neutral-200 shadow-card hover:shadow-hover transition-all duration-300 overflow-hidden"
       style={{ animationDelay: `${index * 100}ms` }}
     >
-      {/* header */}
       <div
         className="bg-gradient-to-r from-primary-50 via-white to-primary-50 px-6 py-4 border-b border-neutral-100 cursor-pointer"
         onClick={onToggleExpand}
@@ -163,7 +166,7 @@ export default function RequestCard({
           </div>
           <div className="flex items-center gap-3">
             <div
-              className={`px-3 py-1 rounded-full border text-sm font-medium ${getStatusColor(request.status)}`}
+              className={`px-3 py-1 rounded-full border text-[10px] sm:text-sm font-medium ${getStatusColor(request.status)}`}
             >
               {selectedStatus?.label}
             </div>
@@ -181,7 +184,6 @@ export default function RequestCard({
         </div>
       </div>
 
-      {/* body */}
       <div
         className={`overflow-hidden transition-all duration-500 ease-in-out ${
           isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
@@ -309,7 +311,7 @@ export default function RequestCard({
                 <Settings className="w-4 h-4" />
                 عملیات اصلی
               </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                 <button
                   onClick={handleEditAddress}
                   className={`flex items-center justify-center gap-2 h-12 px-4 bg-primary-50 hover:bg-primary-100 text-primary-700 rounded-xl border border-primary-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
@@ -336,6 +338,32 @@ export default function RequestCard({
                   تغییر پرداخت
                 </button>
 
+                <button
+                  onClick={handleChangeRequestStatus}
+                  className={`flex items-center justify-center gap-2 h-12 px-4 bg-secondary-50 hover:bg-secondary-100 text-secondary-700 rounded-xl border border-secondary-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
+                    completedRequest || canceledRequest
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
+                  disabled={completedRequest || canceledRequest}
+                >
+                  <CreditCard className="w-4 h-4" />
+                  تغییر وضعیت
+                </button>
+
+                <button
+                  onClick={handleSetPeriodicService}
+                  className={`flex items-center justify-center gap-2 h-12 px-4 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl border border-gray-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
+                    completedRequest || canceledRequest
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
+                  disabled={completedRequest || canceledRequest}
+                >
+                  <CreditCard className="w-4 h-4" />
+                  تنظیم سرویس دوره ای
+                </button>
+
                 <div className="h-12">
                   <NavigationModal
                     lat={request.latitude}
@@ -351,7 +379,7 @@ export default function RequestCard({
                 <FileText className="w-4 h-4" />
                 مدیریت سند و پرداخت
               </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 <button
                   onClick={handleLabel}
                   className={`flex items-center justify-center gap-2 h-12 px-4 bg-secondary-50 hover:bg-secondary-100 text-secondary-700 rounded-xl border border-secondary-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
@@ -373,13 +401,13 @@ export default function RequestCard({
                   فاکتور
                 </button>
 
-                <button
+                {/* <button
                   onClick={handleAddImage}
                   className={`flex items-center justify-center gap-2 h-12 px-4 bg-neutral-50 hover:bg-neutral-100 text-neutral-700 rounded-xl border border-neutral-200 transition-all duration-200 text-sm font-medium hover:shadow-sm `}
                 >
                   <ImagePlus className="w-4 h-4" />
                   اضافه کردن عکس
-                </button>
+                </button> */}
 
                 <button
                   onClick={
