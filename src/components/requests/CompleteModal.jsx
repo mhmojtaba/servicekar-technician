@@ -128,8 +128,8 @@ const CompleteModal = ({ isOpen, onClose }) => {
     brand_models,
     fetchRequests,
   } = useRequests();
-  console.log("install_garanti_type_request", install_garanti_type_request);
 
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [formData, setFormData] = useState({
     install_date: "",
     national_id: "",
@@ -152,8 +152,6 @@ const CompleteModal = ({ isOpen, onClose }) => {
   const [errors, setErrors] = useState({});
   const [uploadingImages, setUploadingImages] = useState({});
 
-  console.log("selectedRequest", selectedRequest);
-
   useEffect(() => {
     if (selectedRequest) {
       setFormData({
@@ -162,7 +160,9 @@ const CompleteModal = ({ isOpen, onClose }) => {
         manufacturer_serial: selectedRequest?.manufacturer_serial || "",
         brand_id: selectedRequest?.brand_id || "",
         model_id: selectedRequest?.model_id || "",
-        images: JSON.parse(selectedRequest?.images) || [],
+        images: selectedRequest?.images
+          ? JSON.parse(selectedRequest?.images)
+          : [],
         install_location: selectedRequest?.install_location || "",
         install_date: selectedRequest?.install_date || "",
         usage_location: selectedRequest?.usage_location || "",
@@ -207,6 +207,7 @@ const CompleteModal = ({ isOpen, onClose }) => {
         usage_location: "محل استفاده الزامی است",
         construction_status: "وضعیت ساختمان الزامی است",
         install_as: "نوع نصب الزامی است",
+        install_date: "تاریخ نصب الزامی است",
         building_area: "متراژ ساختمان الزامی است",
         postal_code: "کد پستی الزامی است",
         description: "توضیحات الزامی است",
@@ -296,8 +297,6 @@ const CompleteModal = ({ isOpen, onClose }) => {
   };
 
   const handleSubmit = async () => {
-    if (!validateForm()) return;
-
     try {
       const data = {
         token,
@@ -309,6 +308,7 @@ const CompleteModal = ({ isOpen, onClose }) => {
       if (response?.msg === 0) {
         console.log("response success", response);
         toast.success(response?.msg_text);
+        setShowConfirmModal(false);
         onClose();
         fetchRequests();
       } else {
@@ -320,428 +320,573 @@ const CompleteModal = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleConfirm = () => {
+    if (!validateForm()) {
+      toast.error("لطفا فیلدهای مورد نیاز را پر کنید");
+      return;
+    }
+    setShowConfirmModal(true);
+  };
+
   const isFieldRequired = (fieldName) => {
     const requiredFields = getRequiredFields();
     return fieldName in requiredFields;
   };
 
   if (!isOpen) return null;
-  console.log("formData", formData);
+
   return (
     <>
       <div dangerouslySetInnerHTML={{ __html: customStyles }} />
 
-      <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-2 sm:p-4"
+      >
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-2 sm:p-4"
+          initial={{ scale: 0.9, opacity: 0, y: 50 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          exit={{ scale: 0.9, opacity: 0, y: 50 }}
+          transition={{ type: "spring", damping: 20, stiffness: 300 }}
+          className="w-full max-w-7xl max-h-[95vh]  bg-white rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden"
         >
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 50 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 50 }}
-            transition={{ type: "spring", damping: 20, stiffness: 300 }}
-            className="w-full max-w-7xl max-h-[95vh]  bg-white rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden"
-          >
-            <div className="relative bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 px-4 sm:px-6 pt-4 sm:pt-6 pb-2 sm:pb-3">
-              <div className="absolute inset-0 bg-grid-white/10 bg-[size:20px_20px] opacity-20"></div>
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/20 to-transparent"></div>
+          <div className="relative bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 px-4 sm:px-6 pt-4 sm:pt-6 pb-2 sm:pb-3">
+            <div className="absolute inset-0 bg-grid-white/10 bg-[size:20px_20px] opacity-20"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/20 to-transparent"></div>
 
-              <div className="relative text-center">
-                <motion.div
-                  initial={{ scale: 0, rotate: -180 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                  className="w-12 h-12 sm:w-14 sm:h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg float-animation"
-                >
-                  <CheckCircle className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
-                </motion.div>
-
-                <motion.h3
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2 tracking-tight flex items-center gap-2 justify-center"
-                >
-                  تکمیل درخواست
-                  <span className="bg-white/20 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full font-semibold text-xs sm:text-sm">
-                    {selectedRequest?.id} #
-                  </span>
-                </motion.h3>
-              </div>
-
-              <motion.button
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5 }}
-                onClick={onClose}
-                className="absolute top-3 sm:top-4 right-3 sm:right-4 p-1.5 sm:p-2 text-white/80 hover:text-white hover:bg-white/20 rounded-full transition-all duration-200 backdrop-blur-sm"
+            <div className="relative text-center">
+              <motion.div
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                className="w-12 h-12 sm:w-14 sm:h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg float-animation"
               >
-                <X className="w-4 h-4 sm:w-5 sm:h-5" />
-              </motion.button>
+                <CheckCircle className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+              </motion.div>
 
-              {selectedRequest?.operation_type && (
-                <motion.div
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.6 }}
-                  className="absolute top-3 sm:top-4 left-3 sm:left-4"
-                >
-                  <div className="bg-white/20 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full text-white font-medium text-xs">
-                    {selectedRequest.operation_type === 1 ? "نصب" : "سرویس"}
-                  </div>
-                </motion.div>
-              )}
+              <motion.h3
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2 tracking-tight flex items-center gap-2 justify-center"
+              >
+                تکمیل درخواست
+                <span className="bg-white/20 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full font-semibold text-xs sm:text-sm">
+                  {selectedRequest?.id} #
+                </span>
+              </motion.h3>
             </div>
 
-            <div className="p-4 sm:p-6 lg:p-8 max-h-[calc(80vh-200px)] sm:max-h-[calc(85vh-220px)] overflow-y-auto custom-scrollbar">
-              <div className="max-w-6xl mx-auto">
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 h-full">
-                  <div className="space-y-6 sm:space-y-8">
-                    <motion.section
-                      initial={{ opacity: 0, x: -50 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.2 }}
-                      className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 border border-blue-100 shadow-sm"
-                    >
-                      <div className="flex items-center gap-3 mb-4 sm:mb-6">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
-                          <User className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                        </div>
-                        <div>
-                          <h2 className="text-lg sm:text-2xl font-bold text-gray-800">
-                            اطلاعات شخصی
-                          </h2>
-                          <p className="text-blue-600 text-xs sm:text-sm">
-                            اطلاعات هویتی و شخصی
-                          </p>
-                        </div>
-                      </div>
+            <motion.button
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5 }}
+              onClick={onClose}
+              className="absolute top-3 sm:top-4 right-3 sm:right-4 p-1.5 sm:p-2 text-white/80 hover:text-white hover:bg-white/20 rounded-full transition-all duration-200 backdrop-blur-sm"
+            >
+              <X className="w-4 h-4 sm:w-5 sm:h-5" />
+            </motion.button>
 
-                      <div className="space-y-4 sm:space-y-6">
+            {selectedRequest?.operation_type && (
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.6 }}
+                className="absolute top-3 sm:top-4 left-3 sm:left-4"
+              >
+                <div className="bg-white/20 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full text-white font-medium text-xs">
+                  {selectedRequest.operation_type === 1 ? "نصب" : "سرویس"}
+                </div>
+              </motion.div>
+            )}
+          </div>
+
+          <div className="p-4 sm:p-6 lg:p-8 max-h-[calc(80vh-200px)] sm:max-h-[calc(85vh-220px)] overflow-y-auto custom-scrollbar">
+            <div className="max-w-6xl mx-auto">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 h-full">
+                <div className="space-y-6 sm:space-y-8">
+                  <motion.section
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 border border-blue-100 shadow-sm"
+                  >
+                    <div className="flex items-center gap-3 mb-4 sm:mb-6">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
+                        <User className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                      </div>
+                      <div>
+                        <h2 className="text-lg sm:text-2xl font-bold text-gray-800">
+                          اطلاعات شخصی
+                        </h2>
+                        <p className="text-blue-600 text-xs sm:text-sm">
+                          اطلاعات هویتی و شخصی
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 sm:space-y-6">
+                      <InputField
+                        label="کد ملی"
+                        value={formData.national_id}
+                        onChange={(e) => {
+                          const value = e.target.value
+                            .replace(/\D/g, "")
+                            .slice(0, 10);
+                          updateField("national_id", value);
+                        }}
+                        required={isFieldRequired("national_id")}
+                        error={errors.national_id}
+                        icon={<Hash className="w-4 h-4 sm:w-5 sm:h-5" />}
+                        placeholder="1234567890"
+                        maxLength={10}
+                      />
+
+                      <DateField
+                        label="تاریخ تولد"
+                        value={formData.birth_date}
+                        onChange={(value) =>
+                          updateField(
+                            "birth_date",
+                            convertToEnglishDigits(
+                              new DateObject(value).format("YYYY/MM/DD")
+                            )
+                          )
+                        }
+                        required={isFieldRequired("birth_date")}
+                        error={errors.birth_date}
+                        icon={<Calendar className="w-4 h-4 sm:w-5 sm:h-5" />}
+                      />
+
+                      <InputField
+                        label="سریال سازنده"
+                        value={formData.manufacturer_serial}
+                        onChange={(e) =>
+                          updateField("manufacturer_serial", e.target.value)
+                        }
+                        required={isFieldRequired("manufacturer_serial")}
+                        error={errors.manufacturer_serial}
+                        icon={<Hash className="w-4 h-4 sm:w-5 sm:h-5" />}
+                        placeholder="ABC123456"
+                      />
+                    </div>
+                  </motion.section>
+
+                  <motion.section
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 border border-green-100 shadow-sm"
+                  >
+                    <div className="flex items-center gap-3 mb-4 sm:mb-6">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
+                        <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                      </div>
+                      <div>
+                        <h2 className="text-lg sm:text-2xl font-bold text-gray-800">
+                          اطلاعات مکانی
+                        </h2>
+                        <p className="text-green-600 text-xs sm:text-sm">
+                          آدرس و مشخصات مکان
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 sm:space-y-6">
+                      <InputField
+                        label="محل نصب"
+                        value={formData.install_location}
+                        onChange={(e) =>
+                          updateField("install_location", e.target.value)
+                        }
+                        required={isFieldRequired("install_location")}
+                        error={errors.install_location}
+                        icon={<Home className="w-4 h-4 sm:w-5 sm:h-5" />}
+                        placeholder="زیرزمین، آشپزخانه، تراس"
+                      />
+
+                      <InputField
+                        label="محل استفاده"
+                        value={formData.usage_location}
+                        onChange={(e) =>
+                          updateField("usage_location", e.target.value)
+                        }
+                        required={isFieldRequired("usage_location")}
+                        error={errors.usage_location}
+                        icon={<MapPin className="w-4 h-4 sm:w-5 sm:h-5" />}
+                        placeholder="مسکونی، تجاری، اداری"
+                      />
+
+                      <InputField
+                        label="وضعیت ساختمان"
+                        value={formData.construction_status}
+                        onChange={(e) =>
+                          updateField("construction_status", e.target.value)
+                        }
+                        required={isFieldRequired("construction_status")}
+                        error={errors.construction_status}
+                        icon={<Building className="w-4 h-4 sm:w-5 sm:h-5" />}
+                        placeholder="نوساز، قدیمی"
+                      />
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                         <InputField
-                          label="کد ملی"
-                          value={formData.national_id}
+                          label="متراژ ساختمان"
+                          value={formData.building_area}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, "");
+                            updateField("building_area", value);
+                          }}
+                          required={isFieldRequired("building_area")}
+                          error={errors.building_area}
+                          icon={<Building className="w-4 h-4 sm:w-5 sm:h-5" />}
+                          placeholder="متر مربع"
+                        />
+
+                        <InputField
+                          label="کد پستی"
+                          value={formData.postal_code}
                           onChange={(e) => {
                             const value = e.target.value
                               .replace(/\D/g, "")
                               .slice(0, 10);
-                            updateField("national_id", value);
+                            updateField("postal_code", value);
                           }}
-                          required={isFieldRequired("national_id")}
-                          error={errors.national_id}
+                          required={isFieldRequired("postal_code")}
+                          error={errors.postal_code}
                           icon={<Hash className="w-4 h-4 sm:w-5 sm:h-5" />}
                           placeholder="1234567890"
                           maxLength={10}
                         />
-
-                        <DateField
-                          label="تاریخ تولد"
-                          value={formData.birth_date}
-                          onChange={(value) =>
-                            updateField(
-                              "birth_date",
-                              convertToEnglishDigits(
-                                new DateObject(value).format("YYYY/MM/DD")
-                              )
-                            )
-                          }
-                          required={isFieldRequired("birth_date")}
-                          error={errors.birth_date}
-                          icon={<Calendar className="w-4 h-4 sm:w-5 sm:h-5" />}
-                        />
-
-                        <InputField
-                          label="سریال سازنده"
-                          value={formData.manufacturer_serial}
-                          onChange={(e) =>
-                            updateField("manufacturer_serial", e.target.value)
-                          }
-                          required={isFieldRequired("manufacturer_serial")}
-                          error={errors.manufacturer_serial}
-                          icon={<Hash className="w-4 h-4 sm:w-5 sm:h-5" />}
-                          placeholder="ABC123456"
-                        />
                       </div>
-                    </motion.section>
+                    </div>
+                  </motion.section>
+                </div>
 
-                    <motion.section
-                      initial={{ opacity: 0, x: -50 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.3 }}
-                      className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 border border-green-100 shadow-sm"
-                    >
-                      <div className="flex items-center gap-3 mb-4 sm:mb-6">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
-                          <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                        </div>
-                        <div>
-                          <h2 className="text-lg sm:text-2xl font-bold text-gray-800">
-                            اطلاعات مکانی
-                          </h2>
-                          <p className="text-green-600 text-xs sm:text-sm">
-                            آدرس و مشخصات مکان
-                          </p>
-                        </div>
+                <div className="space-y-6 sm:space-y-8">
+                  <motion.section
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="bg-gradient-to-br from-purple-50 to-violet-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 border border-purple-100 shadow-sm"
+                  >
+                    <div className="flex items-center gap-3 mb-4 sm:mb-6">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
+                        <Building className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                       </div>
-
-                      <div className="space-y-4 sm:space-y-6">
-                        <InputField
-                          label="محل نصب"
-                          value={formData.install_location}
-                          onChange={(e) =>
-                            updateField("install_location", e.target.value)
-                          }
-                          required={isFieldRequired("install_location")}
-                          error={errors.install_location}
-                          icon={<Home className="w-4 h-4 sm:w-5 sm:h-5" />}
-                          placeholder="زیرزمین، آشپزخانه، تراس"
-                        />
-
-                        <InputField
-                          label="محل استفاده"
-                          value={formData.usage_location}
-                          onChange={(e) =>
-                            updateField("usage_location", e.target.value)
-                          }
-                          required={isFieldRequired("usage_location")}
-                          error={errors.usage_location}
-                          icon={<MapPin className="w-4 h-4 sm:w-5 sm:h-5" />}
-                          placeholder="مسکونی، تجاری، اداری"
-                        />
-
-                        <InputField
-                          label="وضعیت ساختمان"
-                          value={formData.construction_status}
-                          onChange={(e) =>
-                            updateField("construction_status", e.target.value)
-                          }
-                          required={isFieldRequired("construction_status")}
-                          error={errors.construction_status}
-                          icon={<Building className="w-4 h-4 sm:w-5 sm:h-5" />}
-                          placeholder="نوساز، قدیمی"
-                        />
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                          <InputField
-                            label="متراژ ساختمان"
-                            value={formData.building_area}
-                            onChange={(e) => {
-                              const value = e.target.value.replace(/\D/g, "");
-                              updateField("building_area", value);
-                            }}
-                            required={isFieldRequired("building_area")}
-                            error={errors.building_area}
-                            icon={
-                              <Building className="w-4 h-4 sm:w-5 sm:h-5" />
-                            }
-                            placeholder="متر مربع"
-                          />
-
-                          <InputField
-                            label="کد پستی"
-                            value={formData.postal_code}
-                            onChange={(e) => {
-                              const value = e.target.value
-                                .replace(/\D/g, "")
-                                .slice(0, 10);
-                              updateField("postal_code", value);
-                            }}
-                            required={isFieldRequired("postal_code")}
-                            error={errors.postal_code}
-                            icon={<Hash className="w-4 h-4 sm:w-5 sm:h-5" />}
-                            placeholder="1234567890"
-                            maxLength={10}
-                          />
-                        </div>
+                      <div>
+                        <h2 className="text-lg sm:text-2xl font-bold text-gray-800">
+                          محصول و نصب
+                        </h2>
+                        <p className="text-purple-600 text-xs sm:text-sm">
+                          اطلاعات محصول و نحوه نصب
+                        </p>
                       </div>
-                    </motion.section>
-                  </div>
+                    </div>
 
-                  <div className="space-y-6 sm:space-y-8">
-                    <motion.section
-                      initial={{ opacity: 0, x: 50 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.4 }}
-                      className="bg-gradient-to-br from-purple-50 to-violet-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 border border-purple-100 shadow-sm"
-                    >
-                      <div className="flex items-center gap-3 mb-4 sm:mb-6">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
-                          <Building className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                        </div>
-                        <div>
-                          <h2 className="text-lg sm:text-2xl font-bold text-gray-800">
-                            محصول و نصب
-                          </h2>
-                          <p className="text-purple-600 text-xs sm:text-sm">
-                            اطلاعات محصول و نحوه نصب
-                          </p>
-                        </div>
+                    <div className="space-y-4 sm:space-y-6">
+                      <SelectField
+                        label="برند"
+                        value={formData.brand_id}
+                        onChange={(value) => updateField("brand_id", value)}
+                        options={brandOptions}
+                        required={isFieldRequired("brand_id")}
+                        error={errors.brand_id}
+                        icon={<Star className="w-4 h-4 sm:w-5 sm:h-5" />}
+                      />
+
+                      <SelectField
+                        label="مدل"
+                        value={formData.model_id}
+                        onChange={(value) => updateField("model_id", value)}
+                        options={modelOptions}
+                        required={isFieldRequired("model_id")}
+                        error={errors.model_id}
+                        icon={<Building className="w-4 h-4 sm:w-5 sm:h-5" />}
+                      />
+
+                      <SelectField
+                        label="نوع نصب"
+                        value={formData.install_as}
+                        onChange={(value) => updateField("install_as", value)}
+                        options={INSTALL_AS_OPTIONS}
+                        required={isFieldRequired("install_as")}
+                        error={errors.install_as}
+                        icon={<Star className="w-4 h-4 sm:w-5 sm:h-5" />}
+                      />
+
+                      <DateField
+                        label="تاریخ نصب"
+                        value={formData.install_date}
+                        onChange={(value) =>
+                          updateField(
+                            "install_date",
+                            value
+                              ? convertToEnglishDigits(
+                                  new DateObject(value).format("YYYY/MM/DD")
+                                )
+                              : ""
+                          )
+                        }
+                        required={isFieldRequired("install_date")}
+                        error={errors.install_date}
+                        icon={<Calendar className="w-4 h-4 sm:w-5 sm:h-5" />}
+                      />
+
+                      <SelectField
+                        label="نوع گارانتی"
+                        value={formData.install_garanti_type_request}
+                        onChange={(value) =>
+                          updateField("install_garanti_type_request", value)
+                        }
+                        options={install_garanti_type_request}
+                        required={isFieldRequired(
+                          "install_garanti_type_request"
+                        )}
+                        error={errors.install_garanti_type_request}
+                        icon={<Shield className="w-4 h-4 sm:w-5 sm:h-5" />}
+                      />
+
+                      <SelectField
+                        label="گارانتی شرکت"
+                        value={formData.garanti_sherkati}
+                        onChange={(value) =>
+                          updateField("garanti_sherkati", value)
+                        }
+                        options={garanti_sherkati}
+                        required={isFieldRequired("garanti_sherkati")}
+                        error={errors.garanti_sherkati}
+                        icon={<Shield className="w-4 h-4 sm:w-5 sm:h-5" />}
+                      />
+                    </div>
+                  </motion.section>
+
+                  <motion.section
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.5 }}
+                    className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 border border-pink-100 shadow-sm"
+                  >
+                    <div className="flex items-center gap-3 mb-4 sm:mb-6">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-pink-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
+                        <ImageIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                       </div>
-
-                      <div className="space-y-4 sm:space-y-6">
-                        <SelectField
-                          label="برند"
-                          value={formData.brand_id}
-                          onChange={(value) => updateField("brand_id", value)}
-                          options={brandOptions}
-                          required={isFieldRequired("brand_id")}
-                          error={errors.brand_id}
-                          icon={<Star className="w-4 h-4 sm:w-5 sm:h-5" />}
-                        />
-
-                        <SelectField
-                          label="مدل"
-                          value={formData.model_id}
-                          onChange={(value) => updateField("model_id", value)}
-                          options={modelOptions}
-                          required={isFieldRequired("model_id")}
-                          error={errors.model_id}
-                          icon={<Building className="w-4 h-4 sm:w-5 sm:h-5" />}
-                        />
-
-                        <SelectField
-                          label="نوع نصب"
-                          value={formData.install_as}
-                          onChange={(value) => updateField("install_as", value)}
-                          options={INSTALL_AS_OPTIONS}
-                          required={isFieldRequired("install_as")}
-                          error={errors.install_as}
-                          icon={<Star className="w-4 h-4 sm:w-5 sm:h-5" />}
-                        />
-
-                        <DateField
-                          label="تاریخ نصب"
-                          value={formData.install_date}
-                          onChange={(value) =>
-                            updateField(
-                              "install_date",
-                              convertToEnglishDigits(
-                                new DateObject(value).format("YYYY/MM/DD")
-                              )
-                            )
-                          }
-                          required={isFieldRequired("install_date")}
-                          error={errors.install_date}
-                          icon={<Calendar className="w-4 h-4 sm:w-5 sm:h-5" />}
-                        />
-
-                        <SelectField
-                          label="نوع گارانتی"
-                          value={formData.install_garanti_type_request}
-                          onChange={(value) =>
-                            updateField("install_garanti_type_request", value)
-                          }
-                          options={install_garanti_type_request}
-                          required={isFieldRequired(
-                            "install_garanti_type_request"
-                          )}
-                          error={errors.install_garanti_type_request}
-                          icon={<Shield className="w-4 h-4 sm:w-5 sm:h-5" />}
-                        />
-
-                        <SelectField
-                          label="گارانتی شرکت"
-                          value={formData.garanti_sherkati}
-                          onChange={(value) =>
-                            updateField("garanti_sherkati", value)
-                          }
-                          options={garanti_sherkati}
-                          required={isFieldRequired("garanti_sherkati")}
-                          error={errors.garanti_sherkati}
-                          icon={<Shield className="w-4 h-4 sm:w-5 sm:h-5" />}
-                        />
+                      <div>
+                        <h2 className="text-lg sm:text-2xl font-bold text-gray-800">
+                          تصاویر و توضیحات
+                        </h2>
+                        <p className="text-pink-600 text-xs sm:text-sm">
+                          مستندات و توضیحات تکمیلی
+                        </p>
                       </div>
-                    </motion.section>
+                    </div>
 
-                    <motion.section
-                      initial={{ opacity: 0, x: 50 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.5 }}
-                      className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 border border-pink-100 shadow-sm"
-                    >
-                      <div className="flex items-center gap-3 mb-4 sm:mb-6">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-pink-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
-                          <ImageIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                        </div>
-                        <div>
-                          <h2 className="text-lg sm:text-2xl font-bold text-gray-800">
-                            تصاویر و توضیحات
-                          </h2>
-                          <p className="text-pink-600 text-xs sm:text-sm">
-                            مستندات و توضیحات تکمیلی
-                          </p>
-                        </div>
-                      </div>
+                    <div className="space-y-4 sm:space-y-6">
+                      <TextareaField
+                        label="توضیحات"
+                        value={formData.description}
+                        onChange={(value) => updateField("description", value)}
+                        required={isFieldRequired("description")}
+                        error={errors.description}
+                        rows={4}
+                        placeholder="توضیحات تکمیلی در مورد کار انجام شده..."
+                      />
 
-                      <div className="space-y-4 sm:space-y-6">
-                        <TextareaField
-                          label="توضیحات"
-                          value={formData.description}
-                          onChange={(value) =>
-                            updateField("description", value)
-                          }
-                          required={isFieldRequired("description")}
-                          error={errors.description}
-                          rows={4}
-                          placeholder="توضیحات تکمیلی در مورد کار انجام شده..."
-                        />
-
-                        <ImageUploadField
-                          images={formData.images}
-                          onUpload={handleImageUpload}
-                          onRemove={removeImage}
-                          uploading={uploadingImages}
-                          required={isFieldRequired("images")}
-                          error={errors.images}
-                          minImages={
-                            selectedRequest?.operation_type === 1 ? 3 : 0
-                          }
-                        />
-                      </div>
-                    </motion.section>
-                  </div>
+                      <ImageUploadField
+                        images={formData.images}
+                        onUpload={handleImageUpload}
+                        onRemove={removeImage}
+                        uploading={uploadingImages}
+                        required={isFieldRequired("images")}
+                        error={errors.images}
+                        minImages={
+                          selectedRequest?.operation_type === 1 ? 3 : 0
+                        }
+                      />
+                    </div>
+                  </motion.section>
                 </div>
               </div>
             </div>
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="bg-gradient-to-r from-gray-50 to-gray-100 border-t border-gray-200 px-4 sm:px-6 lg:px-8 py-4 sm:py-6"
-            >
-              <div className="flex flex-col-reverse sm:flex-row items-center justify-center gap-3 sm:gap-4">
+          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="bg-gradient-to-r from-gray-50 to-gray-100 border-t border-gray-200 px-4 sm:px-6 lg:px-8 py-4 sm:py-6"
+          >
+            <div className="flex flex-col-reverse sm:flex-row items-center justify-center gap-3 sm:gap-4">
+              <button
+                onClick={onClose}
+                disabled={isChangingStatus}
+                className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-white hover:bg-gray-50 text-gray-700 font-semibold rounded-lg sm:rounded-xl border border-gray-300 transition-all duration-200 disabled:opacity-50 shadow-sm hover:shadow-md text-sm sm:text-base"
+              >
+                انصراف
+              </button>
+              <button
+                onClick={handleConfirm}
+                disabled={isChangingStatus}
+                className="w-full sm:w-auto px-8 sm:px-12 py-3 sm:py-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-2 sm:gap-3 shadow-lg hover:shadow-xl transform hover:scale-[1.02] text-sm sm:text-base"
+              >
+                {isChangingStatus ? (
+                  <>
+                    <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                    در حال پردازش...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+                    تکمیل درخواست
+                  </>
+                )}
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      </motion.div>
+
+      {showConfirmModal && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-lg flex items-center justify-center p-4"
+        >
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0, y: 50 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.8, opacity: 0, y: 50 }}
+            transition={{ type: "spring", damping: 25, stiffness: 400 }}
+            className="bg-white rounded-3xl shadow-2xl w-full max-w-md mx-auto overflow-hidden"
+          >
+            <div className="bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 px-6 py-8 text-center relative">
+              <div className="absolute inset-0 bg-grid-white/10 bg-[size:20px_20px] opacity-30"></div>
+              <motion.div
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg"
+              >
+                <AlertCircle className="w-8 h-8 text-white" />
+              </motion.div>
+              <motion.h3
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="text-2xl font-bold text-white mb-2"
+              >
+                تایید تکنسین
+              </motion.h3>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="text-white/90 text-sm"
+              >
+                این عملیات قابل بازگشت نیست
+              </motion.p>
+            </div>
+
+            <div className="p-6 space-y-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="text-center"
+              >
+                <p className="text-gray-700 text-lg font-medium mb-4">
+                  آیا از تکمیل سفارش مطمئن هستید؟
+                </p>
+
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-4 border border-blue-100">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600 font-medium">
+                        شماره سفارش:
+                      </span>
+                      <span className="bg-blue-500 text-white px-3 py-1 rounded-full font-bold text-sm">
+                        #{selectedRequest?.id}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600 font-medium">بارکد:</span>
+                      <span className="bg-gray-700 text-white px-3 py-1 rounded-lg font-mono text-sm">
+                        {selectedRequest?.barcode || "ندارد"}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600 font-medium">
+                        نوع عملیات:
+                      </span>
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm font-medium ${
+                          selectedRequest?.operation_type === 1
+                            ? "bg-green-100 text-green-700"
+                            : "bg-orange-100 text-orange-700"
+                        }`}
+                      >
+                        {selectedRequest?.operation_type === 1
+                          ? "نصب"
+                          : "سرویس"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.6 }}
+                  className="bg-red-50 border border-red-200 rounded-xl p-4 mt-4"
+                >
+                  <div className="flex items-center gap-2 text-red-700">
+                    <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                    <p className="text-sm font-medium">
+                      توجه: پس از تایید، امکان ویرایش وجود نخواهد داشت
+                    </p>
+                  </div>
+                </motion.div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 }}
+                className="flex flex-col-reverse sm:flex-row gap-3"
+              >
                 <button
-                  onClick={onClose}
+                  onClick={() => setShowConfirmModal(false)}
                   disabled={isChangingStatus}
-                  className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-white hover:bg-gray-50 text-gray-700 font-semibold rounded-lg sm:rounded-xl border border-gray-300 transition-all duration-200 disabled:opacity-50 shadow-sm hover:shadow-md text-sm sm:text-base"
+                  className="flex-1 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all duration-200 disabled:opacity-50"
                 >
                   انصراف
                 </button>
                 <button
                   onClick={handleSubmit}
                   disabled={isChangingStatus}
-                  className="w-full sm:w-auto px-8 sm:px-12 py-3 sm:py-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-2 sm:gap-3 shadow-lg hover:shadow-xl transform hover:scale-[1.02] text-sm sm:text-base"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isChangingStatus ? (
                     <>
-                      <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin" />
                       در حال پردازش...
                     </>
                   ) : (
                     <>
-                      <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
-                      تکمیل درخواست
+                      <CheckCircle className="w-4 h-4" />
+                      تایید و تکمیل
                     </>
                   )}
                 </button>
-              </div>
-            </motion.div>
+              </motion.div>
+            </div>
           </motion.div>
         </motion.div>
-      </AnimatePresence>
+      )}
     </>
   );
 };
@@ -907,7 +1052,7 @@ const DateField = ({ label, value, onChange, required, error, icon }) => (
         format="YYYY/MM/DD"
         style={{ direction: "ltr" }}
         placeholder={`انتخاب ${label}`}
-        inputClass={`w-full px-4 py-4 text-lg border-2 rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-100 ${
+        inputClass={`w-full px-4 py-4 text-lg border-2 rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-100 placeholder:text-right ${
           error
             ? "border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-100"
             : "border-gray-200 bg-white hover:border-blue-300 focus:border-blue-500"

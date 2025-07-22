@@ -48,7 +48,6 @@ const BarcodeScanner = ({ isOpen, onClose, onScan }) => {
     };
   }, [isOpen, isBrowser]);
 
-  // Restart scanning when camera index changes (only when switching cameras)
   useEffect(() => {
     if (isOpen && isBrowser && cameras.length > 0 && !isInitialLoad) {
       stopScanning();
@@ -63,12 +62,10 @@ const BarcodeScanner = ({ isOpen, onClose, onScan }) => {
       setError("");
       setIsScanning(true);
 
-      // Check if we're in browser environment
       if (!isBrowser || typeof window === "undefined") {
         throw new Error("این ویژگی فقط در محیط مرورگر قابل استفاده است.");
       }
 
-      // Check if camera access is available
       if (
         !navigator ||
         !navigator.mediaDevices ||
@@ -79,7 +76,6 @@ const BarcodeScanner = ({ isOpen, onClose, onScan }) => {
         );
       }
 
-      // Check HTTPS requirement (more lenient for development)
       const isLocalhost =
         window.location.hostname === "localhost" ||
         window.location.hostname === "127.0.0.1" ||
@@ -112,20 +108,35 @@ const BarcodeScanner = ({ isOpen, onClose, onScan }) => {
 
         if (isInitialLoad) {
           setIsInitialLoad(false);
-        }
-
-        if (videoInputDevices.length > selectedCameraIndex) {
-          selectedDeviceId = videoInputDevices[selectedCameraIndex].deviceId;
-        } else {
-          const rearCamera = videoInputDevices.find(
+          // Find back camera with "facing back" in label and set as default
+          const backCameraIndex = videoInputDevices.findIndex(
             (device) =>
+              device.label.toLowerCase().includes("facing back") ||
               device.label.toLowerCase().includes("back") ||
-              device.label.toLowerCase().includes("rear") ||
               device.label.toLowerCase().includes("environment")
           );
-          selectedDeviceId = rearCamera
-            ? rearCamera.deviceId
-            : videoInputDevices[0].deviceId;
+
+          if (backCameraIndex !== -1) {
+            setSelectedCameraIndex(backCameraIndex);
+            selectedDeviceId = videoInputDevices[backCameraIndex].deviceId;
+          } else {
+            selectedDeviceId = videoInputDevices[0].deviceId;
+          }
+        } else {
+          console.log(videoInputDevices);
+          if (videoInputDevices.length > selectedCameraIndex) {
+            selectedDeviceId = videoInputDevices[selectedCameraIndex].deviceId;
+          } else {
+            const backCamera = videoInputDevices.find(
+              (device) =>
+                device.label.toLowerCase().includes("facing back") ||
+                device.label.toLowerCase().includes("back") ||
+                device.label.toLowerCase().includes("environment")
+            );
+            selectedDeviceId = backCamera
+              ? backCamera.deviceId
+              : videoInputDevices[0].deviceId;
+          }
         }
       } catch (enumerationError) {
         console.warn(
@@ -195,6 +206,13 @@ const BarcodeScanner = ({ isOpen, onClose, onScan }) => {
       setIsScanning(false);
     }
   };
+  console.log("cameras", cameras);
+
+  // useEffect(() => {
+  //   if (cameras.length > 0) {
+  //     alert(JSON.stringify(cameras));
+  //   }
+  // }, [cameras]);
 
   const stopScanning = () => {
     if (codeReader.current) {
@@ -216,23 +234,26 @@ const BarcodeScanner = ({ isOpen, onClose, onScan }) => {
   const getCameraLabel = (index) => {
     if (!cameras[index]) return "";
 
-    // Handle default camera fallback
     if (cameras[index].deviceId === "default") return "دوربین پیش‌فرض";
 
     const label = cameras[index].label.toLowerCase();
-    if (label.includes("front") || label.includes("user")) return "جلو";
     if (
+      label.includes("facing back") ||
       label.includes("back") ||
-      label.includes("rear") ||
       label.includes("environment")
     )
       return "عقب";
+    if (
+      label.includes("facing front") ||
+      label.includes("front") ||
+      label.includes("user")
+    )
+      return "جلو";
     return `دوربین ${index + 1}`;
   };
 
   if (!isOpen) return null;
 
-  // Don't render in SSR environment
   if (!isBrowser) return null;
 
   return (
@@ -244,17 +265,18 @@ const BarcodeScanner = ({ isOpen, onClose, onScan }) => {
             اسکن بارکد
           </h2>
           <div className="flex items-center gap-2">
-            {cameras.length > 1 &&
-              !(cameras.length === 1 && cameras[0].deviceId === "default") && (
-                <button
-                  onClick={switchCamera}
-                  className="flex items-center gap-1 px-3 py-1 bg-primary-100 text-primary-700 rounded-full hover:bg-primary-200 transition-colors text-sm font-medium"
-                  disabled={!isScanning}
-                >
-                  <RotateCcw size={16} />
-                  <span>{getCameraLabel(selectedCameraIndex)}</span>
-                </button>
-              )}
+            {cameras.length > 1 && (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  switchCamera();
+                }}
+                className="flex items-center gap-1 px-3 py-1 bg-primary-100 text-primary-700 rounded-full hover:bg-primary-200 transition-colors text-sm font-medium"
+                disabled={!isScanning}
+              >
+                <RotateCcw size={16} />
+              </button>
+            )}
             <button
               onClick={onClose}
               className="p-2 hover:bg-neutral-100 rounded-full transition-colors"

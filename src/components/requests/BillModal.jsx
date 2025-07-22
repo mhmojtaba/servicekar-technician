@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useRequests } from "@/context/RequestsContext";
 import { X } from "lucide-react";
@@ -8,7 +8,14 @@ import CompletedInvoiceView from "./Bill/CompletedInvoiceView";
 import BillForm from "./Bill/BillForm";
 
 const BillModal = ({ isOpen, onClose }) => {
-  const { selectedRequest } = useRequests();
+  const {
+    selectedRequest,
+    isGettingInvoiceData,
+    invoiceData,
+    invoiceItems,
+    fetchInvoiceData,
+  } = useRequests();
+
   const [currentTab, setCurrentTab] = useState("task");
 
   const [selectedTasks, setSelectedTasks] = useState([]);
@@ -16,6 +23,10 @@ const BillModal = ({ isOpen, onClose }) => {
   const [isInvoiceCompleted, setIsInvoiceCompleted] = useState(false);
   const [completedInvoiceData, setCompletedInvoiceData] = useState(null);
   const [isPreviewInvoice, setIsPreviewInvoice] = useState(false);
+
+  useEffect(() => {
+    fetchInvoiceData(selectedRequest.id);
+  }, [selectedRequest.id]);
 
   const handleClose = () => {
     setSelectedTasks([]);
@@ -88,9 +99,15 @@ const BillModal = ({ isOpen, onClose }) => {
             handleClose={handleClose}
             setSelectedTasks={setSelectedTasks}
             setSelectedParts={setSelectedParts}
+            invoiceItems={invoiceItems}
           />
         ) : (
-          <CompletedInvoiceView />
+          <CompletedInvoiceView
+            invoiceData={invoiceData}
+            invoiceItems={invoiceItems}
+            isGettingInvoiceData={isGettingInvoiceData}
+            handleClose={handleClose}
+          />
         )}
       </div>
     </motion.div>

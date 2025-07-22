@@ -42,6 +42,18 @@ const ConfirmModal = ({ isOpen, onClose }) => {
     type_payment: null,
   });
 
+  useEffect(() => {
+    setFormData({
+      code: "",
+      signature: null,
+      type_payment: selectedRequest?.type_payment
+        ? array_type_payment.find(
+            (item) => item.value == selectedRequest?.type_payment
+          )
+        : null,
+    });
+  }, [selectedRequest?.type_payment]);
+
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [canvasSize, setCanvasSize] = useState({ width: 600, height: 250 });

@@ -23,6 +23,8 @@ const page = () => {
   const [total_paid, setTotal_paid] = useState(0);
   const [accounting_list, setAccounting_list] = useState([]);
   const [total_count, setTotal_count] = useState(0);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   const totalPages = Math.ceil(total_count / count_per_page);
 
@@ -58,6 +60,14 @@ const page = () => {
         page,
         type_payment,
         count_per_page,
+        start_date: startDate
+          ? convertToEnglishDigits(
+              new DateObject(startDate).format("YYYY-MM-DD")
+            )
+          : "",
+        end_date: endDate
+          ? convertToEnglishDigits(new DateObject(endDate).format("YYYY-MM-DD"))
+          : "",
       };
       const { data: response } = await mutateGetPaymentToTechnicianList(data);
       if (response.msg === 0) {
@@ -138,6 +148,10 @@ const page = () => {
               setSelectedPayment_to_technician_type={
                 setSelectedPayment_to_technician_type
               }
+              startDate={startDate}
+              setStartDate={setStartDate}
+              endDate={endDate}
+              setEndDate={setEndDate}
             />
           </div>
 

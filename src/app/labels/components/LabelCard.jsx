@@ -43,7 +43,7 @@ const LabelCard = ({ label, onDelete, isDeleting }) => {
           )}
 
           {label?.data?.used_at && (
-            <div className="flex items-center gap-2 p-2.5 bg-gradient-to-r from-success-50/80 to-success-100/40 rounded-lg border border-success-200/40">
+            <div className="flex items-center gap-2 p-2.5 bg-gradient-to-r from-success-50/80 to-success-100/40 rounded-lg border border-success-200/40 w-[160px]">
               <Calendar className="w-4 h-4 text-success-600 flex-shrink-0" />
               <span className="text-sm font-medium text-success-800">
                 تاریخ :

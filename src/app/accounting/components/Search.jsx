@@ -1,13 +1,21 @@
 import React from "react";
 import Select from "react-select";
 import { FiSearch, FiCreditCard, FiFilter } from "react-icons/fi";
+import DatePicker from "react-multi-date-picker";
+import persian from "react-date-object/calendars/persian";
+import persian_fa from "react-date-object/locales/persian_fa";
 
 import { useRequests } from "@/context/RequestsContext";
+import { Calendar } from "lucide-react";
 
 const Search = ({
   handleSearch,
   selectedPayment_to_technician_type,
   setSelectedPayment_to_technician_type,
+  startDate,
+  setStartDate,
+  endDate,
+  setEndDate,
 }) => {
   const { payment_to_technician_type, isGettingRequestsMain } = useRequests();
 
@@ -131,6 +139,53 @@ const Search = ({
               classNamePrefix="react-select"
               isClearable
             />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                  <Calendar className="w-4 h-4 text-primary-600" />
+                  تاریخ شروع
+                  <span className="text-red-500">*</span>
+                </label>
+                <DatePicker
+                  style={{
+                    direction: "ltr",
+                  }}
+                  calendar={persian}
+                  locale={persian_fa}
+                  placeholder="انتخاب تاریخ شروع"
+                  value={startDate}
+                  onChange={(date) => {
+                    setStartDate(date);
+                  }}
+                  inputClass={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 transition-all duration-200 placeholder:text-right ${"border-gray-300 focus:ring-primary-500 focus:border-primary-500 bg-gray-50 hover:bg-white"}`}
+                  containerStyle={{ width: "100%" }}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                  <Calendar className="w-4 h-4 text-primary-600" />
+                  تاریخ پایان
+                  <span className="text-red-500">*</span>
+                </label>
+                <DatePicker
+                  style={{
+                    direction: "ltr",
+                  }}
+                  calendar={persian}
+                  locale={persian_fa}
+                  placeholder="انتخاب تاریخ پایان"
+                  value={endDate}
+                  onChange={(date) => {
+                    setEndDate(date);
+                  }}
+                  minDate={startDate}
+                  inputClass={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 transition-all duration-200 placeholder:text-right ${"border-gray-300 focus:ring-primary-500 focus:border-primary-500 bg-gray-50 hover:bg-white"}`}
+                  containerStyle={{ width: "100%" }}
+                />
+              </div>
+            </div>
 
             <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl -z-10 opacity-0 group-hover:opacity-30 transition-opacity duration-300"></div>
           </div>

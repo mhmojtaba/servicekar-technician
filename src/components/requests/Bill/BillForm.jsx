@@ -22,9 +22,15 @@ const BillForm = ({
   handleClose,
   setSelectedTasks,
   setSelectedParts,
+  invoiceItems,
 }) => {
   const { token } = useAuth();
   const { selectedRequest, technician_travel_cost } = useRequests();
+
+  console.log("selectedRequest", selectedRequest);
+  console.log("technician_travel_cost", technician_travel_cost);
+  console.log("selectedTasks", selectedTasks);
+  console.log("selectedParts", selectedParts);
 
   const [taskList, setTaskList] = useState([]);
   const [partList, setPartList] = useState([]);
@@ -95,6 +101,41 @@ const BillForm = ({
     fetchTaskAndPartList();
   }, []);
 
+  useEffect(() => {
+    if (invoiceItems && invoiceItems.length > 0) {
+      const tasks = invoiceItems
+        .filter((item) => item.type === "task")
+        .filter((item) => item.id_item !== 0)
+        .map((item) => ({
+          id: item.id_item,
+          title: item.title,
+          quantity: item.quantity,
+          price: item.unit_price,
+        }));
+
+      const parts = invoiceItems
+        .filter((item) => item.type === "part")
+        .map((item) => ({
+          id: item.id_item,
+          title: item.title,
+          quantity: item.quantity,
+          price: item.unit_price,
+        }));
+
+      const hasTravelCostItem = invoiceItems.some(
+        (item) => item.type === "task" && item.id_item === 0
+      );
+
+      setSelectedTasks(tasks);
+      setSelectedParts(parts);
+      setHasTechnicianTravelCost(hasTravelCostItem ? 1 : 0);
+    } else {
+      setSelectedTasks([]);
+      setSelectedParts([]);
+      setHasTechnicianTravelCost(1);
+    }
+  }, [invoiceItems, setSelectedTasks, setSelectedParts]);
+
   const handleAddTask = (task, quantity) => {
     if (!task || !quantity || quantity <= 0) {
       toast.error("لطفا خدمت و تعداد معتبر انتخاب کنید");
@@ -152,7 +193,11 @@ const BillForm = ({
   };
 
   const handleSubmitBill = async () => {
-    if (selectedTasks.length === 0 && selectedParts.length === 0) {
+    if (
+      selectedTasks.length === 0 &&
+      selectedParts.length === 0 &&
+      hasTechnicianTravelCost === 0
+    ) {
       toast.error("لطفا حداقل یک خدمت یا قطعه انتخاب کنید");
       return;
     }
@@ -217,20 +262,20 @@ const BillForm = ({
                     <div className="flex items-center gap-1">
                       <Wrench className="w-3 h-3 text-primary-600 flex-shrink-0" />
                       <span className="font-medium text-neutral-800 truncate">
-                        {technicianTravelCost.title}
+                        {technicianTravelCost?.title}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-1">
                       <span className="text-neutral-600">
-                        هزینه: {technicianTravelCost.price.toLocaleString()}
+                        هزینه: {technicianTravelCost?.price?.toLocaleString()}
                         تومان
                       </span>{" "}
                     </div>
 
                     <div className="flex items-center gap-1">
                       <span className="text-neutral-600">
-                        تعداد: {technicianTravelCost.quantity}
+                        تعداد: {technicianTravelCost?.quantity}
                       </span>{" "}
                     </div>
                   </div>
@@ -387,7 +432,9 @@ const BillForm = ({
             <button
               onClick={handleSubmitBill}
               disabled={
-                (selectedTasks.length === 0 && selectedParts.length === 0) ||
+                (selectedTasks.length === 0 &&
+                  selectedParts.length === 0 &&
+                  hasTechnicianTravelCost === 0) ||
                 isRegisteringBill
               }
               className={`px-6 py-2.5 bg-primary-500 text-white rounded-lg hover:bg-primary-600 disabled:bg-neutral-300 disabled:cursor-not-allowed transition-colors ${
@@ -397,8 +444,7 @@ const BillForm = ({
             >
               {isRegisteringBill ? (
                 <Loader2 className="w-4 h-4 animate-spin mx-auto" />
-              ) : (selectedRequest?.tasks && selectedRequest.tasks !== "") ||
-                (selectedRequest?.parts && selectedRequest.parts !== "") ? (
+              ) : invoiceItems && invoiceItems.length > 0 ? (
                 "بروزرسانی فاکتور"
               ) : (
                 "ثبت فاکتور"

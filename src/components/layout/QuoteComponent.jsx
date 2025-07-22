@@ -31,7 +31,7 @@ const QuoteComponent = () => {
     if (token) getQuotes();
   }, [token]);
 
-  if (!isOpen || !quote) return null;
+  if (!isOpen || !quote?.length) return null;
 
   return (
     <div className="absolute top-16 md:top-0 left-0 w-full h-fit z-10">

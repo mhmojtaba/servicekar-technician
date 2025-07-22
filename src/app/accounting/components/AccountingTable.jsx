@@ -98,7 +98,9 @@ const AccountingTable = ({ thead, tbody }) => {
             <tbody className="divide-y divide-gray-100">
               {tbody.map((item, index) => {
                 const selectedPayment_to_technician_type =
-                  payment_to_technician_type.find((s) => s.value == item.type);
+                  payment_to_technician_type.find(
+                    (s) => s.value == item.technician_type
+                  );
 
                 const technician_percent_price =
                   (item?.total_price * item?.technician_percent) / 100;
@@ -238,10 +240,10 @@ const AccountingTable = ({ thead, tbody }) => {
                     <td className="px-4 lg:px-6 py-4">
                       <div className="flex items-center space-x-1 space-x-reverse">
                         <span
-                          className={`text-sm font-bold ${getAmountColor(item?.type)}`}
+                          className={`text-sm font-bold ${getAmountColor(item?.technician_type)}`}
                         >
-                          {getAmountIcon(item?.type)}
-                          {formatPrice(item?.price)}
+                          {getAmountIcon(item?.technician_type)}
+                          {formatPrice(item?.technician_price)}
                         </span>
                         <span className="text-xs text-gray-500">تومان</span>
                       </div>
@@ -250,7 +252,7 @@ const AccountingTable = ({ thead, tbody }) => {
                     <td className="px-4 lg:px-6 py-4">
                       <span
                         className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getPaymentTypeBadgeColor(
-                          item.type
+                          item.technician_type
                         )}`}
                       >
                         <FiTag className="w-3 h-3 ml-1" />
