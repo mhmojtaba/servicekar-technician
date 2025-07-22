@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Search, ShoppingCart } from "lucide-react";
 import { toast } from "react-toastify";
 
@@ -6,11 +6,34 @@ const PartContent = ({ partList, selectedParts, onAddPart }) => {
   const [search, setSearch] = useState("");
   const [quantities, setQuantities] = useState({});
 
+  useEffect(() => {
+    if (partList && partList.length > 0) {
+      const initialQuantities = {};
+      partList.forEach((part) => {
+        if (!quantities[part.id]) {
+          initialQuantities[part.id] = "1";
+        }
+      });
+      if (Object.keys(initialQuantities).length > 0) {
+        setQuantities((prev) => ({ ...prev, ...initialQuantities }));
+      }
+    }
+  }, [partList]);
+
   const filteredPartList = partList.filter((part) =>
     part.title.toLowerCase().includes(search.toLowerCase())
   );
 
   const handleQuantityChange = (partId, value) => {
+    const numValue = parseFloat(value);
+    if (value === "" || isNaN(numValue) || numValue <= 0) {
+      setQuantities((prev) => ({
+        ...prev,
+        [partId]: "1",
+      }));
+      return;
+    }
+
     setQuantities((prev) => ({
       ...prev,
       [partId]: value,
@@ -18,17 +41,15 @@ const PartContent = ({ partList, selectedParts, onAddPart }) => {
   };
 
   const handleAddPart = (part) => {
-    const quantity = quantities[part.id];
-    if (!quantity || isNaN(parseFloat(quantity)) || parseFloat(quantity) <= 0) {
+    const quantity = quantities[part.id] || "1";
+    const numQuantity = parseFloat(quantity);
+
+    if (numQuantity <= 0) {
       toast.error("لطفا تعداد معتبر وارد کنید");
       return;
     }
 
-    onAddPart(part, parseFloat(quantity));
-    setQuantities((prev) => ({
-      ...prev,
-      [part.id]: "",
-    }));
+    onAddPart(part, numQuantity);
   };
 
   return (
@@ -76,7 +97,7 @@ const PartContent = ({ partList, selectedParts, onAddPart }) => {
                       type="number"
                       step="any"
                       min="0"
-                      value={quantities[part.id] || ""}
+                      value={quantities[part.id] || "1"}
                       onChange={(e) =>
                         handleQuantityChange(part.id, e.target.value)
                       }
@@ -86,10 +107,6 @@ const PartContent = ({ partList, selectedParts, onAddPart }) => {
                     />
                     <button
                       onClick={() => handleAddPart(part)}
-                      disabled={
-                        !quantities[part.id] ||
-                        parseFloat(quantities[part.id]) <= 0
-                      }
                       className="px-3 py-1 bg-primary-500 text-white rounded text-sm hover:bg-primary-600 transition-colors disabled:bg-neutral-300 disabled:cursor-not-allowed"
                     >
                       افزودن

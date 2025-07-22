@@ -1,6 +1,5 @@
 "use client";
 
-import { settings_main } from "@/services/authServices";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext();
@@ -8,7 +7,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     if (typeof window !== "undefined") {
-      const savedUser = localStorage.getItem("user");
+      const savedUser = localStorage.getItem("tech-user");
       return savedUser ? JSON.parse(savedUser) : null;
     }
     return null;

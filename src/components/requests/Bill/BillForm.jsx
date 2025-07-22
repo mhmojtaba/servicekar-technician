@@ -27,11 +27,6 @@ const BillForm = ({
   const { token } = useAuth();
   const { selectedRequest, technician_travel_cost } = useRequests();
 
-  console.log("selectedRequest", selectedRequest);
-  console.log("technician_travel_cost", technician_travel_cost);
-  console.log("selectedTasks", selectedTasks);
-  console.log("selectedParts", selectedParts);
-
   const [taskList, setTaskList] = useState([]);
   const [partList, setPartList] = useState([]);
   const [hasTechnicianTravelCost, setHasTechnicianTravelCost] = useState(1);
@@ -285,12 +280,12 @@ const BillForm = ({
               {selectedTasks.map((task) => (
                 <div
                   key={`task-${task.id}`}
-                  className="flex items-center justify-between p-2 bg-white rounded-lg text-xs"
+                  className="flex items-center justify-between p-2 bg-white rounded-lg text-xs w-full"
                 >
-                  <div className="flex-1 min-w-0">
+                  <div className="flex-1 w-full">
                     <div className="flex items-center gap-1">
                       <Wrench className="w-3 h-3 text-primary-600 flex-shrink-0" />
-                      <span className="font-medium text-neutral-800 truncate">
+                      <span className="font-medium text-neutral-800">
                         {task.title}
                       </span>
                     </div>

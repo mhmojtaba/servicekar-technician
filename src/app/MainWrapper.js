@@ -15,7 +15,7 @@ const MainWrapper = ({ children }) => {
 
   const checkAuth = () => {
     const token = localStorage.getItem("tech-token");
-    const storedUser = localStorage.getItem("user");
+    const storedUser = localStorage.getItem("tech-user");
 
     if (pathname === "/login" && token) {
       router.push("/");

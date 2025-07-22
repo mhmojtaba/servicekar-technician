@@ -115,7 +115,7 @@ const AddRequestModal = ({ isOpen, onClose }) => {
     { value: "جایگزین", label: "جایگزین" },
   ];
 
-  const [openSection, setOpenSection] = useState("personal");
+  const [openSection, setOpenSection] = useState("service");
   const sectionKeys = ["personal", "service", "device", "image", "location"];
 
   const handleSectionToggle = (key) => {
@@ -240,7 +240,11 @@ const AddRequestModal = ({ isOpen, onClose }) => {
     const checkMobileStatus = async () => {
       if (requestData.mobile && errors.mobile === false) {
         try {
-          const res = await getAddressWithMobile(requestData?.mobile);
+          const data = {
+            mobile: requestData?.mobile,
+            id_service: requestData?.id_service,
+          };
+          const res = await getAddressWithMobile(data);
           if (res?.msg === 2) {
             setIsBlocked(true);
           } else {
@@ -277,6 +281,48 @@ const AddRequestModal = ({ isOpen, onClose }) => {
     };
     getDeviceDataWithBarcode();
   }, [requestData.barcode]);
+
+  useEffect(() => {
+    if (selectedAddress !== null) {
+      setRequestData((prev) => ({
+        ...prev,
+        id_service: selectedAddress?.id_service || null,
+        requester_type: selectedAddress?.requester_type || null,
+        operation_type: selectedAddress?.operation_type || null,
+        first_name: selectedAddress?.first_name || "",
+        last_name: selectedAddress?.last_name || "",
+        address: selectedAddress?.address || "",
+        barcode: selectedAddress?.barcode || "",
+        brand_id: selectedAddress?.brand_id || null,
+        model_id: selectedAddress?.model_id || null,
+        install_location: selectedAddress?.install_location || "",
+        usage_location: selectedAddress?.usage_location || "",
+        construction_status: selectedAddress?.construction_status || "",
+        install_as: selectedAddress?.install_as || "",
+        building_area: selectedAddress?.building_area || "",
+        postal_code: selectedAddress?.postal_code || "",
+        recommender_mobile: selectedAddress?.recommender_mobile || "",
+        img: selectedAddress?.img || null,
+        install_date: selectedAddress?.install_date || "",
+        national_id: selectedAddress?.national_id || "",
+        birth_date: selectedAddress?.birth_date || "",
+        phone: selectedAddress?.phone || "",
+        manufacturer_serial: selectedAddress?.manufacturer_serial || "",
+        manufacturer_acceptance_code:
+          selectedAddress?.manufacturer_acceptance_code || "",
+        mobile: selectedAddress?.mobile || "",
+      }));
+      setLocation([
+        selectedAddress.latitude || 32.644397,
+        selectedAddress.longitude || 51.667455,
+      ]);
+      setImageUploadState({
+        isUploading: false,
+        previewUrl: selectedAddress?.img || null,
+        error: null,
+      });
+    }
+  }, [selectedAddress]);
 
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
@@ -432,7 +478,7 @@ const AddRequestModal = ({ isOpen, onClose }) => {
       first_name: false,
       last_name: false,
     });
-    setOpenSection("personal");
+    setOpenSection("service");
     onClose();
   };
 
@@ -491,6 +537,146 @@ const AddRequestModal = ({ isOpen, onClose }) => {
 
         <div className="flex-1 overflow-y-auto">
           <form onSubmit={handleSubmit} className="p-8 space-y-6">
+            <DataWrapper
+              title="اطلاعات سرویس"
+              description="نوع سرویس، برند و مدل دستگاه"
+              tab="service"
+              openSection={openSection}
+              handleSectionToggle={handleSectionToggle}
+              buttonClassName="bg-gradient-to-r from-secondary-50 to-secondary-100 hover:from-secondary-100 hover:to-secondary-200"
+              headerClassName="from-secondary-500 to-secondary-600"
+            >
+              <div className="p-6 space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-neutral-700">
+                      نام سرویس <span className="text-error-500">*</span>
+                    </label>
+                    <Select
+                      options={serviceOptions}
+                      value={serviceOptions.find(
+                        (option) => option.value == requestData.id_service
+                      )}
+                      onChange={handleServiceChange}
+                      styles={selectStyles}
+                      placeholder="سرویس مورد نظر را انتخاب کنید"
+                      isSearchable
+                      menuPortalTarget={
+                        typeof document !== "undefined" ? document.body : null
+                      }
+                      menuPosition="fixed"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-neutral-700">
+                      درخواست کننده <span className="text-error-500">*</span>
+                    </label>
+                    <Select
+                      options={requester_type}
+                      value={requester_type.find(
+                        (option) => option.value == requestData.requester_type
+                      )}
+                      onChange={(e) =>
+                        setRequestData({
+                          ...requestData,
+                          requester_type: e.value,
+                        })
+                      }
+                      styles={selectStyles}
+                      placeholder="نوع درخواست کننده را انتخاب کنید"
+                      isSearchable
+                      menuPortalTarget={
+                        typeof document !== "undefined" ? document.body : null
+                      }
+                      menuPosition="fixed"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-neutral-700">
+                      نام برند
+                    </label>
+                    <Select
+                      options={brandOptions}
+                      isDisabled={
+                        !requestData.id_service || brandOptions.length === 0
+                      }
+                      value={
+                        brandOptions.find(
+                          (option) => option.value == requestData.brand_id
+                        ) || null
+                      }
+                      onChange={handleBrandChange}
+                      styles={selectStyles}
+                      placeholder="نام برند را انتخاب کنید"
+                      isSearchable
+                      menuPosition="fixed"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-neutral-700">
+                      نام مدل
+                    </label>
+                    <Select
+                      options={modelOptions}
+                      isDisabled={
+                        !requestData.brand_id || modelOptions.length === 0
+                      }
+                      value={
+                        modelOptions.find(
+                          (option) => option.value == requestData.model_id
+                        ) || null
+                      }
+                      onChange={(e) =>
+                        setRequestData({
+                          ...requestData,
+                          model_id: e.value,
+                        })
+                      }
+                      styles={selectStyles}
+                      placeholder="نام مدل را انتخاب کنید"
+                      isSearchable
+                      menuPortalTarget={
+                        typeof document !== "undefined" ? document.body : null
+                      }
+                      menuPosition="fixed"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-neutral-700">
+                      نوع سرویس <span className="text-error-500">*</span>
+                    </label>
+                    <Select
+                      options={operation_type}
+                      value={operation_type.find(
+                        (option) => option.value == requestData.operation_type
+                      )}
+                      onChange={(e) =>
+                        setRequestData({
+                          ...requestData,
+                          operation_type: e.value,
+                        })
+                      }
+                      styles={selectStyles}
+                      placeholder="نوع سرویس را انتخاب کنید"
+                      isSearchable
+                      menuPortalTarget={
+                        typeof document !== "undefined" ? document.body : null
+                      }
+                      menuPosition="fixed"
+                    />
+                  </div>
+                </div>
+              </div>
+            </DataWrapper>
+
             <DataWrapper
               title="اطلاعات شخصی"
               description="نام، شماره تماس و اطلاعات هویتی"
@@ -798,146 +984,6 @@ const AddRequestModal = ({ isOpen, onClose }) => {
                 </div>
               </div>
             )}
-
-            <DataWrapper
-              title="اطلاعات سرویس"
-              description="نوع سرویس، برند و مدل دستگاه"
-              tab="service"
-              openSection={openSection}
-              handleSectionToggle={handleSectionToggle}
-              buttonClassName="bg-gradient-to-r from-secondary-50 to-secondary-100 hover:from-secondary-100 hover:to-secondary-200"
-              headerClassName="from-secondary-500 to-secondary-600"
-            >
-              <div className="p-6 space-y-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-neutral-700">
-                      نام سرویس <span className="text-error-500">*</span>
-                    </label>
-                    <Select
-                      options={serviceOptions}
-                      value={serviceOptions.find(
-                        (option) => option.value == requestData.id_service
-                      )}
-                      onChange={handleServiceChange}
-                      styles={selectStyles}
-                      placeholder="سرویس مورد نظر را انتخاب کنید"
-                      isSearchable
-                      menuPortalTarget={
-                        typeof document !== "undefined" ? document.body : null
-                      }
-                      menuPosition="fixed"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-neutral-700">
-                      درخواست کننده <span className="text-error-500">*</span>
-                    </label>
-                    <Select
-                      options={requester_type}
-                      value={requester_type.find(
-                        (option) => option.value == requestData.requester_type
-                      )}
-                      onChange={(e) =>
-                        setRequestData({
-                          ...requestData,
-                          requester_type: e.value,
-                        })
-                      }
-                      styles={selectStyles}
-                      placeholder="نوع درخواست کننده را انتخاب کنید"
-                      isSearchable
-                      menuPortalTarget={
-                        typeof document !== "undefined" ? document.body : null
-                      }
-                      menuPosition="fixed"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-neutral-700">
-                      نام برند
-                    </label>
-                    <Select
-                      options={brandOptions}
-                      isDisabled={
-                        !requestData.id_service || brandOptions.length === 0
-                      }
-                      value={
-                        brandOptions.find(
-                          (option) => option.value == requestData.brand_id
-                        ) || null
-                      }
-                      onChange={handleBrandChange}
-                      styles={selectStyles}
-                      placeholder="نام برند را انتخاب کنید"
-                      isSearchable
-                      menuPosition="fixed"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-neutral-700">
-                      نام مدل
-                    </label>
-                    <Select
-                      options={modelOptions}
-                      isDisabled={
-                        !requestData.brand_id || modelOptions.length === 0
-                      }
-                      value={
-                        modelOptions.find(
-                          (option) => option.value == requestData.model_id
-                        ) || null
-                      }
-                      onChange={(e) =>
-                        setRequestData({
-                          ...requestData,
-                          model_id: e.value,
-                        })
-                      }
-                      styles={selectStyles}
-                      placeholder="نام مدل را انتخاب کنید"
-                      isSearchable
-                      menuPortalTarget={
-                        typeof document !== "undefined" ? document.body : null
-                      }
-                      menuPosition="fixed"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-neutral-700">
-                      نوع سرویس <span className="text-error-500">*</span>
-                    </label>
-                    <Select
-                      options={operation_type}
-                      value={operation_type.find(
-                        (option) => option.value == requestData.operation_type
-                      )}
-                      onChange={(e) =>
-                        setRequestData({
-                          ...requestData,
-                          operation_type: e.value,
-                        })
-                      }
-                      styles={selectStyles}
-                      placeholder="نوع سرویس را انتخاب کنید"
-                      isSearchable
-                      menuPortalTarget={
-                        typeof document !== "undefined" ? document.body : null
-                      }
-                      menuPosition="fixed"
-                    />
-                  </div>
-                </div>
-              </div>
-            </DataWrapper>
 
             <DataWrapper
               title="اطلاعات دستگاه"

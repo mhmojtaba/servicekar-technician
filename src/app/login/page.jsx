@@ -58,10 +58,11 @@ const LoginPage = () => {
           first_name: response?.value?.first_name,
           last_name: response?.value?.last_name,
           mobile: response?.value?.mobile,
+          img: response?.value?.img,
         };
         setUser(userData);
         localStorage.setItem("tech-token", response?.token);
-        localStorage.setItem("user", JSON.stringify(userData));
+        localStorage.setItem("tech-user", JSON.stringify(userData));
         router.push("/");
         toast.success("ورود با موفقیت انجام شد");
       } else {

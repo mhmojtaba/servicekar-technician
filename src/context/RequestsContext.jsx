@@ -186,11 +186,11 @@ export const RequestsProvider = ({ children }) => {
     }
   };
 
-  const getAddressWithMobile = async (mobile) => {
+  const getAddressWithMobile = async (values) => {
     try {
       const data = {
         token,
-        mobile,
+        ...values,
       };
       const { data: response } = await mutateGetAddressWithMobile(data);
 

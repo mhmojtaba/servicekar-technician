@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Search, Wrench } from "lucide-react";
 import { toast } from "react-toastify";
 
@@ -6,11 +6,34 @@ const TaskContent = ({ taskList, selectedTasks, onAddTask }) => {
   const [search, setSearch] = useState("");
   const [quantities, setQuantities] = useState({});
 
+  useEffect(() => {
+    if (taskList && taskList.length > 0) {
+      const initialQuantities = {};
+      taskList.forEach((task) => {
+        if (!quantities[task.id]) {
+          initialQuantities[task.id] = "1";
+        }
+      });
+      if (Object.keys(initialQuantities).length > 0) {
+        setQuantities((prev) => ({ ...prev, ...initialQuantities }));
+      }
+    }
+  }, [taskList]);
+
   const filteredTaskList = taskList.filter((task) =>
     task.title.toLowerCase().includes(search.toLowerCase())
   );
 
   const handleQuantityChange = (taskId, value) => {
+    const numValue = parseFloat(value);
+    if (value === "" || isNaN(numValue) || numValue <= 0) {
+      setQuantities((prev) => ({
+        ...prev,
+        [taskId]: "1",
+      }));
+      return;
+    }
+
     setQuantities((prev) => ({
       ...prev,
       [taskId]: value,
@@ -18,17 +41,15 @@ const TaskContent = ({ taskList, selectedTasks, onAddTask }) => {
   };
 
   const handleAddTask = (task) => {
-    const quantity = quantities[task.id];
-    if (!quantity || isNaN(parseFloat(quantity)) || parseFloat(quantity) <= 0) {
+    const quantity = quantities[task.id] || "1";
+    const numQuantity = parseFloat(quantity);
+
+    if (numQuantity <= 0) {
       toast.error("لطفا تعداد معتبر وارد کنید");
       return;
     }
 
-    onAddTask(task, parseFloat(quantity));
-    setQuantities((prev) => ({
-      ...prev,
-      [task.id]: "",
-    }));
+    onAddTask(task, numQuantity);
   };
 
   return (
@@ -63,9 +84,7 @@ const TaskContent = ({ taskList, selectedTasks, onAddTask }) => {
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0">
-                    <h5 className="font-medium text-neutral-800 truncate">
-                      {task.title}
-                    </h5>
+                    <p className="font-medium text-neutral-800">{task.title}</p>
                     {/* <p className="text-sm text-neutral-600 mt-1">
                       {task.price.toLocaleString()} تومان
                     </p> */}
@@ -76,7 +95,7 @@ const TaskContent = ({ taskList, selectedTasks, onAddTask }) => {
                       type="number"
                       step="any"
                       min="0"
-                      value={quantities[task.id] || ""}
+                      value={quantities[task.id] || "1"}
                       onChange={(e) =>
                         handleQuantityChange(task.id, e.target.value)
                       }
@@ -86,10 +105,6 @@ const TaskContent = ({ taskList, selectedTasks, onAddTask }) => {
                     />
                     <button
                       onClick={() => handleAddTask(task)}
-                      disabled={
-                        !quantities[task.id] ||
-                        parseFloat(quantities[task.id]) <= 0
-                      }
                       className="px-3 py-1 bg-primary-500 text-white rounded text-sm hover:bg-primary-600 transition-colors disabled:bg-neutral-300 disabled:cursor-not-allowed"
                     >
                       افزودن
