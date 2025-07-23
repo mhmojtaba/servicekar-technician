@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText } from "lucide-react";
+import { FileText, Loader2 } from "lucide-react";
 
 import SearchAndAddRequests from "./SearchAndAddRequests";
 import { useRequests } from "@/context/RequestsContext";
@@ -12,7 +12,14 @@ import AddRequestModal from "./AddRequestModal";
 
 export default function RequestsMainPage() {
   const { token } = useAuth();
-  const { fetchRequests, requestsCount } = useRequests();
+  const {
+    fetchRequests,
+    requestsCount,
+    technician_report,
+    isGettingRequestsMain,
+    fetchRequestsMain,
+    fetchIncompleteRequests,
+  } = useRequests();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const [page, setPage] = useState(1);
@@ -57,6 +64,8 @@ export default function RequestsMainPage() {
   useEffect(() => {
     if (token) {
       handlePageChange(1);
+      fetchRequestsMain();
+      fetchIncompleteRequests();
     }
   }, [token]);
 
@@ -72,7 +81,7 @@ export default function RequestsMainPage() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="mb-8"
+          className="mb-8 flex flex-col lg:flex-row items-center gap-4 justify-between"
         >
           <div className="flex items-center gap-4 mb-4">
             <div className="p-3 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl shadow-lg">
@@ -86,6 +95,66 @@ export default function RequestsMainPage() {
                 جستجو، فیلتر و مدیریت درخواست‌های{" "}
               </p>
             </div>
+          </div>
+
+          <div className="flex items-center gap-4">
+            {isGettingRequestsMain ? (
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl p-4">
+                <Loader2 className="w-8 h-8 text-primary-100 animate-spin" />
+              </div>
+            ) : (
+              technician_report.map((item) => (
+                <div key={item.id} className="flex gap-3">
+                  <div
+                    className={`p-4 rounded-2xl shadow-lg ${
+                      Number(item?.total_paid) >= 0
+                        ? "bg-gradient-to-r from-green-500 to-green-600 text-white"
+                        : "bg-gradient-to-r from-red-500 to-red-600 text-white"
+                    }`}
+                  >
+                    <div className="text-sm font-medium mb-1">مانده حساب</div>
+                    <div className="text-lg font-bold">
+                      <span
+                        className="text-white ml-2"
+                        style={{ direction: "ltr" }}
+                        dir="ltr"
+                      >
+                        {Number(item?.total_paid).toLocaleString()}
+                      </span>
+                      <span className="text-white">تومان</span>
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl shadow-lg text-white">
+                    <div className="text-sm font-medium mb-2">
+                      امتیاز میانگین
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="flex">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <svg
+                            key={star}
+                            className={`w-5 h-5 ${
+                              star <= Math.round(item?.avg_rating || 0)
+                                ? "text-yellow-300 fill-current"
+                                : "text-gray-300 fill-current"
+                            }`}
+                            viewBox="0 0 20 20"
+                          >
+                            <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                          </svg>
+                        ))}
+                      </div>
+                      <span className="text-lg font-bold">
+                        {item?.avg_rating
+                          ? Number(item.avg_rating).toFixed(1)
+                          : "0.0"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </motion.div>
 

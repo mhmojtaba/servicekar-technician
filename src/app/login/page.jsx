@@ -58,7 +58,7 @@ const LoginPage = () => {
           first_name: response?.value?.first_name,
           last_name: response?.value?.last_name,
           mobile: response?.value?.mobile,
-          img: response?.value?.img,
+          img: response?.img,
         };
         setUser(userData);
         localStorage.setItem("tech-token", response?.token);

@@ -21,13 +21,14 @@ const ProfileInfo = () => {
     if (user) {
       setFirst_name(user.first_name || "");
       setLast_name(user.last_name || "");
-      setProfileImage(user.image || null);
+      setProfileImage(user.img || null);
+      setImagePreview(user.img || null);
     }
   }, [user]);
 
   const handleSave = () => {
     console.log(first_name, last_name);
-    setUser({ ...user, first_name, last_name, image: profileImage });
+    setUser({ ...user, first_name, last_name, img: profileImage });
     setIsEditingName(false);
   };
 
@@ -59,7 +60,7 @@ const ProfileInfo = () => {
       if (response.msg === 0 && response.path) {
         setProfileImage(response.path);
         setImagePreview(null);
-        setUser({ ...user, image: response.path });
+        setUser({ ...user, img: response.path });
       }
     } catch (error) {
       console.error("Upload error:", error);
@@ -72,7 +73,7 @@ const ProfileInfo = () => {
 
   return (
     <div className="space-y-6">
-      {/* Profile Image Section */}
+     
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -104,7 +105,7 @@ const ProfileInfo = () => {
                 </div>
               )}
 
-              <label className="absolute bottom-0 right-0 w-10 h-10 bg-accent-500 rounded-full flex items-center justify-center cursor-pointer hover:bg-accent-600 transition-colors shadow-lg border-2 border-white">
+              {/* <label className="absolute bottom-0 right-0 w-10 h-10 bg-accent-500 rounded-full flex items-center justify-center cursor-pointer hover:bg-accent-600 transition-colors shadow-lg border-2 border-white">
                 <Camera className="w-5 h-5 text-white" />
                 <input
                   type="file"
@@ -113,7 +114,7 @@ const ProfileInfo = () => {
                   className="hidden"
                   disabled={isUploadingImage}
                 />
-              </label>
+              </label> */}
             </div>
 
             <h2 className="text-2xl font-bold text-white mb-2">
@@ -130,7 +131,7 @@ const ProfileInfo = () => {
               <Edit3 className="w-5 h-5 text-primary-500" />
               اطلاعات شخصی
             </h3>
-            {!isEditingName && (
+            {/* {!isEditingName && (
               <button
                 onClick={() => setIsEditingName(true)}
                 className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors font-medium flex items-center gap-2"
@@ -138,7 +139,7 @@ const ProfileInfo = () => {
                 <Edit3 className="w-4 h-4" />
                 ویرایش
               </button>
-            )}
+            )} */}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

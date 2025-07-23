@@ -41,6 +41,7 @@ export const RequestsProvider = ({ children }) => {
   const [status_requests_technician, setStatus_requests_technician] = useState(
     []
   );
+  const [technician_report, setTechnician_report] = useState([]);
   const [message_confirm_work, setMessage_confirm_work] = useState("");
   const [suggestedAddresses, setSuggestedAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -287,6 +288,7 @@ export const RequestsProvider = ({ children }) => {
         setInstall_garanti_type_request(response?.install_garanti_type_request);
         setGaranti_sherkati(response?.garanti_sherkati);
         setTechnician_travel_cost(response?.technician_travel_cost);
+        setTechnician_report(response?.technician_report);
       } else {
         toast.error(response?.msg_text);
       }
@@ -388,7 +390,9 @@ export const RequestsProvider = ({ children }) => {
         isGettingInvoiceData,
         invoiceData,
         invoiceItems,
+        fetchIncompleteRequests,
         technician_travel_cost,
+        technician_report,
       }}
     >
       {children}

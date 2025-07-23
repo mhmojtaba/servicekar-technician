@@ -12,7 +12,7 @@ const MessagesPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="container mx-auto px-4 py-6 max-w-4xl h-full mt-8 md:mt-0"
+        className="container mx-auto px-4 py-6 max-w-4xl h-full pt-16 md:pt-8"
       >
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -20,7 +20,7 @@ const MessagesPage = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 overflow-hidden"
         >
-          <div className="h-[calc(100vh-50px)] flex flex-col">
+          <div className="h-[calc(100vh-100px)] flex flex-col">
             <TechnicianMessages />
           </div>
         </motion.div>

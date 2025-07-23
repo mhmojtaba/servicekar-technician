@@ -153,7 +153,7 @@ const TechnicianRatings = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="w-[95%] mx-auto px-0 h-full max-w-[1200px] flex flex-col mt-20 md:mt-0"
+      className="w-[95%] mx-auto px-0 h-full max-w-[1200px] flex flex-col mt-20 md:mt-6"
     >
       <motion.div
         initial={{ opacity: 0, y: -20 }}
