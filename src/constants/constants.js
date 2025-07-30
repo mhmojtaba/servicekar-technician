@@ -25,14 +25,14 @@ export const mainMeniRoutes = [
     path: "/profile/",
     icon: <UserIcon size={16} />,
   },
+  // {
+  //   id: 4,
+  //   name: "امتیازات",
+  //   path: "/scores/",
+  //   icon: <TrendingUpIcon size={16} />,
+  // },
   {
     id: 4,
-    name: "امتیازات",
-    path: "/scores/",
-    icon: <TrendingUpIcon size={16} />,
-  },
-  {
-    id: 5,
     name: "پیام رسان",
     path: "/messages/",
     icon: <MessageCircle size={16} />,

@@ -15,6 +15,7 @@ const PaymentStatusModal = ({ isOpen, onClose }) => {
   } = useRequests();
 
   const [selectedPaymentOption, setSelectedPaymentOption] = useState(null);
+  const [paymentOptionDescription, setPaymentOptionDescription] = useState("");
   const [currentPaymentOption, setCurrentPaymentOption] = useState(null);
 
   useEffect(() => {
@@ -24,6 +25,7 @@ const PaymentStatusModal = ({ isOpen, onClose }) => {
       );
       setSelectedPaymentOption(currentPayment);
       setCurrentPaymentOption(currentPayment);
+      setPaymentOptionDescription(currentPayment.description);
     }
   }, [selectedRequest, array_type_payment, isOpen]);
 
@@ -32,6 +34,7 @@ const PaymentStatusModal = ({ isOpen, onClose }) => {
       const data = {
         order_id: selectedRequest.id,
         payment_status: selectedPaymentOption.value,
+        description: paymentOptionDescription,
       };
       await updateRequestPayment(data);
       onClose();
@@ -90,8 +93,8 @@ const PaymentStatusModal = ({ isOpen, onClose }) => {
           </div>
         </div>
 
-        <div className="flex-1 p-8">
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 mb-8 border border-blue-100">
+        <div className="flex-1 py-4 px-8">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 mb-2 border border-blue-100">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
                 <FaCheckCircle className="text-white" size={16} />
@@ -156,6 +159,15 @@ const PaymentStatusModal = ({ isOpen, onClose }) => {
                   <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                 </div>
               )}
+            </div>
+            <div className="text-gray-600">
+              <label htmlFor="paymentOptionDescription">توضیحات</label>
+              <textarea
+                id="paymentOptionDescription"
+                className="w-full p-2 border border-gray-300 rounded-lg resize-none"
+                value={paymentOptionDescription}
+                onChange={(e) => setPaymentOptionDescription(e.target.value)}
+              />
             </div>
 
             {selectedPaymentOption && (

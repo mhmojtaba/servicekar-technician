@@ -25,20 +25,18 @@ const SetPeriodicServiceModal = ({ isOpen, onClose }) => {
     mutationFn: setPeriodicService,
   });
 
+  console.log(selectedRequest);
+
   useEffect(() => {
     if (isOpen) {
-      setServicePeriodMonths("");
+      setServicePeriodMonths(selectedRequest?.operation_type === 1 ? 24 : 12);
       setServicePeriodMonthsError("");
     }
   }, [isOpen]);
 
   const validateInput = (value) => {
-    const numValue = parseInt(value);
-    if (!value || value.trim() === "") {
+    if (!value || String(value).trim() === "") {
       return "لطفاً مدت زمان سرویس دوره ای را وارد کنید";
-    }
-    if (isNaN(numValue) || numValue < 1) {
-      return "مدت زمان سرویس دوره ای باید حداقل 1 ماه باشد";
     }
 
     return "";

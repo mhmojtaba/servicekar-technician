@@ -18,6 +18,7 @@ const RequestStatusModal = ({ isOpen, onClose }) => {
     useState(null);
   const [currentRequestStatusOption, setCurrentRequestStatusOption] =
     useState(null);
+  const [requestStatusDescription, setRequestStatusDescription] = useState("");
 
   useEffect(() => {
     if (selectedRequest && status_requests_technician) {
@@ -26,6 +27,7 @@ const RequestStatusModal = ({ isOpen, onClose }) => {
       );
       setSelectedRequestStatusOption(currentRequestStatus);
       setCurrentRequestStatusOption(currentRequestStatus);
+      setRequestStatusDescription(currentRequestStatus.description);
     }
   }, [selectedRequest, status_requests_technician, isOpen]);
 
@@ -34,6 +36,7 @@ const RequestStatusModal = ({ isOpen, onClose }) => {
       const data = {
         order_id: selectedRequest.id,
         status: selectedRequestStatusOption.value,
+        description: requestStatusDescription,
       };
       await updateRequestStatus(data);
       onClose();
@@ -92,8 +95,8 @@ const RequestStatusModal = ({ isOpen, onClose }) => {
           </div>
         </div>
 
-        <div className="flex-1 p-8">
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 mb-8 border border-blue-100">
+        <div className="flex-1 py-4 px-8">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 mb-2 border border-blue-100">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
                 <FaCheckCircle className="text-white" size={16} />
@@ -157,6 +160,15 @@ const RequestStatusModal = ({ isOpen, onClose }) => {
                   <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                 </div>
               )}
+            </div>
+            <div className="text-gray-600">
+              <label htmlFor="requestStatusDescription">توضیحات</label>
+              <textarea
+                id="requestStatusDescription"
+                className="w-full p-2 border border-gray-300 rounded-lg resize-none"
+                value={requestStatusDescription}
+                onChange={(e) => setRequestStatusDescription(e.target.value)}
+              />
             </div>
 
             {selectedRequestStatusOption && (

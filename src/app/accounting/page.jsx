@@ -110,8 +110,8 @@ const page = () => {
   };
 
   const getTotalAmountStatus = (amount) => {
-    if (amount > 0) return "بستانکار";
-    if (amount < 0) return "بدهکار";
+    if (amount < 0) return "بستانکار";
+    if (amount > 0) return "بدهکار";
     return "تسویه";
   };
 

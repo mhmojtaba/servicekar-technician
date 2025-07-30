@@ -126,15 +126,15 @@ const SearchAndAddRequests = ({ openAddModal, onSearch }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="bg-surface rounded-2xl shadow-card border border-neutral-200 p-4 sm:p-6 mb-3"
+      className=""
     >
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.1 }}
-        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6"
+        className="flex justify-end gap-4 mb-6"
       >
-        <div className="flex items-center gap-3">
+        {/* <div className="flex items-center gap-3">
           <div className="p-2 bg-primary-100 rounded-xl">
             <Search className="text-primary-600" size={20} />
           </div>
@@ -146,7 +146,7 @@ const SearchAndAddRequests = ({ openAddModal, onSearch }) => {
               درخواست‌های خود را جستجو و مدیریت کنید
             </p>
           </div>
-        </div>
+        </div> */}
         <motion.button
           onClick={openAddModal}
           whileHover={{ scale: 1.02, y: -1 }}
@@ -168,7 +168,7 @@ const SearchAndAddRequests = ({ openAddModal, onSearch }) => {
         </motion.button>
       </motion.div>
 
-      <div className="flex flex-col md:flex-row items-center justify-between gap-2">
+      {/* <div className="flex flex-col md:flex-row items-center justify-between gap-2">
         <div className="relative group w-full">
           <input
             type="text"
@@ -240,9 +240,9 @@ const SearchAndAddRequests = ({ openAddModal, onSearch }) => {
             </motion.button>
           )}
         </div>
-      </div>
+      </div> */}
 
-      <AnimatePresence>
+      {/* <AnimatePresence>
         {isFilterOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0, y: -10 }}
@@ -495,7 +495,7 @@ const SearchAndAddRequests = ({ openAddModal, onSearch }) => {
             </div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence> */}
     </motion.div>
   );
 };

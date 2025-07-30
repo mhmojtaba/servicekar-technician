@@ -9,6 +9,7 @@ import RequetsContents from "./RequetsContents";
 import Pagination from "@/common/Pagination";
 import { useAuth } from "@/context/AuthContext";
 import AddRequestModal from "./AddRequestModal";
+import RatingModal from "./RatingModal";
 
 export default function RequestsMainPage() {
   const { token } = useAuth();
@@ -21,7 +22,7 @@ export default function RequestsMainPage() {
     fetchIncompleteRequests,
   } = useRequests();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [searchFilters, setSearchFilters] = useState({});
   const perPage = 10;
@@ -68,6 +69,10 @@ export default function RequestsMainPage() {
       fetchIncompleteRequests();
     }
   }, [token]);
+
+  const openRatingModal = () => {
+    setIsRatingModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -125,7 +130,10 @@ export default function RequestsMainPage() {
                     </div>
                   </div>
 
-                  <div className="p-4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl shadow-lg text-white">
+                  <div
+                    className="p-4 bg-gradient-to-r cursor-pointer from-blue-500 to-blue-600 rounded-2xl shadow-lg text-white"
+                    onClick={openRatingModal}
+                  >
                     <div className="text-sm font-medium mb-2">
                       امتیاز میانگین
                     </div>
@@ -204,6 +212,10 @@ export default function RequestsMainPage() {
           <AddRequestModal
             isOpen={isAddModalOpen}
             onClose={() => setIsAddModalOpen(false)}
+          />
+          <RatingModal
+            isOpen={isRatingModalOpen}
+            onClose={() => setIsRatingModalOpen(false)}
           />
         </motion.div>
       </motion.div>

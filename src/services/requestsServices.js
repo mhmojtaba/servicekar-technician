@@ -271,3 +271,14 @@ export function getInvoiceData(data) {
     type: "technician",
   });
 }
+
+// rating
+export function getRatingData(token) {
+  return http.post("", {
+    token: token,
+    class_name: "reviews",
+    cnt_group: "service",
+    function_name: "get_reviews_summary",
+    type: "technician",
+  });
+}

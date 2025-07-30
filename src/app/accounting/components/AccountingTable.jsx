@@ -46,7 +46,7 @@ const AccountingTable = ({ thead, tbody }) => {
   };
 
   const getStatusText = (type) => {
-    return type == -1 ? "بدهکار" : "بستانکار";
+    return type == 1 ? "بدهکار" : "بستانکار";
   };
 
   const getStatusColor = (type) => {
@@ -80,7 +80,7 @@ const AccountingTable = ({ thead, tbody }) => {
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-      <div className="hidden md:block">
+      <div className="">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -112,24 +112,19 @@ const AccountingTable = ({ thead, tbody }) => {
                   >
                     <td className="px-4 lg:px-6 py-4">
                       <div className="flex items-center space-x-2 space-x-reverse">
-                        <div className="flex-shrink-0">
-                          <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
-                            <FiHash className="w-4 h-4 text-blue-600" />
-                          </div>
-                        </div>
-                        <span className="text-sm font-semibold text-gray-900">
-                          {item?.id}
+                        <span className="text-sm font-semibold text-gray-900 flex items-center">
+                          {item?.title}
+                          <span className="flex items-center text-xs mr-1 text-gray-500">
+                            (<FiHash className="w-4 h-4 text-blue-600" />
+                            {item?.id})
+                          </span>
                         </span>
                       </div>
                     </td>
 
-                    <td className="px-4 lg:px-6 py-4">
+                    {/* <td className="px-4 lg:px-6 py-4">
                       <div className="space-y-1">
-                        <div className="font-medium text-gray-900 text-sm leading-5">
-                          {item?.title}
-                        </div>
-
-                        {/* {item?.request_id ? (
+                        {item?.request_id ? (
                           <div className="flex items-center space-x-2 space-x-reverse">
                             <span className="text-xs text-gray-500">
                               درخواست #{item?.request_id}
@@ -221,11 +216,11 @@ const AccountingTable = ({ thead, tbody }) => {
                             </Popover>
                           </div>
                         ) : null} 
-                        */}
+                        
                       </div>
-                    </td>
+                    </td> */}
 
-                    <td className="px-4 lg:px-6 py-4">
+                    {/* <td className="px-4 lg:px-6 py-4">
                       <div className="max-w-xs">
                         <p className="text-sm text-gray-600 line-clamp-2">
                           {item?.description || (
@@ -235,6 +230,42 @@ const AccountingTable = ({ thead, tbody }) => {
                           )}
                         </p>
                       </div>
+                    </td> */}
+
+                    <td className="px-4 lg:px-6 py-4">
+                      {item?.technician_type == 1 ? (
+                        <div className="flex items-center space-x-1 space-x-reverse">
+                          <span
+                            className={`text-sm font-bold ${getAmountColor(item?.technician_type)}`}
+                          >
+                            {getAmountIcon(item?.technician_type)}
+                            {formatPrice(item?.technician_price)}
+                          </span>
+                          <span className="text-xs text-gray-500">تومان</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center space-x-1 space-x-reverse">
+                          ---
+                        </div>
+                      )}
+                    </td>
+
+                    <td className="px-4 lg:px-6 py-4">
+                      {item?.technician_type == -1 ? (
+                        <div className="flex items-center space-x-1 space-x-reverse">
+                          <span
+                            className={`text-sm font-bold ${getAmountColor(item?.technician_type)}`}
+                          >
+                            {getAmountIcon(item?.technician_type)}
+                            {formatPrice(item?.technician_price)}
+                          </span>
+                          <span className="text-xs text-gray-500">تومان</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center space-x-1 space-x-reverse">
+                          ---
+                        </div>
+                      )}
                     </td>
 
                     <td className="px-4 lg:px-6 py-4">
@@ -249,7 +280,7 @@ const AccountingTable = ({ thead, tbody }) => {
                       </div>
                     </td>
 
-                    <td className="px-4 lg:px-6 py-4">
+                    {/* <td className="px-4 lg:px-6 py-4">
                       <span
                         className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getPaymentTypeBadgeColor(
                           item.technician_type
@@ -258,7 +289,7 @@ const AccountingTable = ({ thead, tbody }) => {
                         <FiTag className="w-3 h-3 ml-1" />
                         {selectedPayment_to_technician_type?.label || "نامشخص"}
                       </span>
-                    </td>
+                    </td> */}
                   </tr>
                 );
               })}
@@ -267,7 +298,7 @@ const AccountingTable = ({ thead, tbody }) => {
         </div>
       </div>
 
-      <div className="md:hidden">
+      {/* <div className="hidden">
         <div className="divide-y divide-gray-100">
           {tbody.map((item, index) => {
             const selectedPayment_to_technician_type =
@@ -403,7 +434,7 @@ const AccountingTable = ({ thead, tbody }) => {
             );
           })}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

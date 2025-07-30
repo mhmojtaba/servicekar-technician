@@ -102,12 +102,7 @@ const BillModal = ({ isOpen, onClose }) => {
             invoiceItems={invoiceItems}
           />
         ) : (
-          <CompletedInvoiceView
-            invoiceData={invoiceData}
-            invoiceItems={invoiceItems}
-            isGettingInvoiceData={isGettingInvoiceData}
-            handleClose={handleClose}
-          />
+          <CompletedInvoiceView handleClose={handleClose} />
         )}
       </div>
     </motion.div>

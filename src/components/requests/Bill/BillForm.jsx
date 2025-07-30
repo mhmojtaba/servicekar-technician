@@ -215,7 +215,6 @@ const BillForm = ({
       const { data: response } = await mutateRegisterBill(billData);
       if (response.msg === 0) {
         toast.success(response.msg_text);
-        handleClose();
       } else {
         toast.error(response.msg_text);
       }

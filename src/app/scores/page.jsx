@@ -10,6 +10,7 @@ import TechnicianChartComponent from "./components/TechnicianChartComponent";
 
 import { useAuth } from "@/context/AuthContext";
 import { chart_review_report } from "@/services/requestsServices";
+import { notFound } from "next/navigation";
 
 const TechnicianRatings = () => {
   const { token } = useAuth();
@@ -25,7 +26,8 @@ const TechnicianRatings = () => {
   const [hasSearched, setHasSearched] = useState(false);
 
   useEffect(() => {
-    handleSearch();
+    // handleSearch();
+    notFound();
   }, []);
 
   const type_report_options = [
@@ -149,113 +151,114 @@ const TechnicianRatings = () => {
   );
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="w-[95%] mx-auto px-0 h-full max-w-[1200px] flex flex-col mt-20 md:mt-6"
-    >
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="mb-8"
-      >
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
-            <TrendingUp className="text-primary-600 text-lg" />
-          </div>
-          <div>
-            <h3 className="text-2xl md:text-3xl font-bold text-neutral-900 mt-2 mb-4">
-              گزارش امتیازات شما
-            </h3>
-            <p className="text-neutral-600">
-              در این بخش می‌توانید امتیازات و نظرات دریافتی خود را مشاهده و
-              تحلیل کنید
-            </p>
-          </div>
-        </div>
-      </motion.div>
+    <div></div>
+    // <motion.div
+    //   initial={{ opacity: 0 }}
+    //   animate={{ opacity: 1 }}
+    //   transition={{ duration: 0.5 }}
+    //   className="w-[95%] mx-auto px-0 h-full max-w-[1200px] flex flex-col mt-20 md:mt-6"
+    // >
+    //   <motion.div
+    //     initial={{ opacity: 0, y: -20 }}
+    //     animate={{ opacity: 1, y: 0 }}
+    //     transition={{ delay: 0.1 }}
+    //     className="mb-8"
+    //   >
+    //     <div className="flex items-center gap-3 mb-2">
+    //       <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+    //         <TrendingUp className="text-primary-600 text-lg" />
+    //       </div>
+    //       <div>
+    //         <h3 className="text-2xl md:text-3xl font-bold text-neutral-900 mt-2 mb-4">
+    //           گزارش امتیازات شما
+    //         </h3>
+    //         <p className="text-neutral-600">
+    //           در این بخش می‌توانید امتیازات و نظرات دریافتی خود را مشاهده و
+    //           تحلیل کنید
+    //         </p>
+    //       </div>
+    //     </div>
+    //   </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="flex-1 w-full flex flex-col bg-white rounded-xl shadow-sm p-6 mb-6"
-      >
-        <SearchAndFilter
-          filter={filter}
-          setFilter={handleFilterChange}
-          handleSearch={handleSearch}
-          isSearching={isPending}
-          type_report_options={type_report_options}
-          group_type_options={group_type_options}
-        />
-      </motion.div>
+    //   <motion.div
+    //     initial={{ opacity: 0, y: 20 }}
+    //     animate={{ opacity: 1, y: 0 }}
+    //     transition={{ delay: 0.2 }}
+    //     className="flex-1 w-full flex flex-col bg-white rounded-xl shadow-sm p-6 mb-6"
+    //   >
+    //     <SearchAndFilter
+    //       filter={filter}
+    //       setFilter={handleFilterChange}
+    //       handleSearch={handleSearch}
+    //       isSearching={isPending}
+    //       type_report_options={type_report_options}
+    //       group_type_options={group_type_options}
+    //     />
+    //   </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="bg-white rounded-lg shadow-lg min-h-[500px] overflow-hidden"
-      >
-        {error ? (
-          ErrorState
-        ) : chartData?.length > 0 ? (
-          <TechnicianChartComponent
-            chartData={chartData}
-            selectReportType={filter?.type_report}
-            selectGroupType={filter?.group_type}
-            isPending={isPending}
-            type_report_options={type_report_options}
-            group_type_options={group_type_options}
-          />
-        ) : (
-          EmptyState
-        )}
-      </motion.div>
+    //   <motion.div
+    //     initial={{ opacity: 0, y: 20 }}
+    //     animate={{ opacity: 1, y: 0 }}
+    //     transition={{ delay: 0.3 }}
+    //     className="bg-white rounded-lg shadow-lg min-h-[500px] overflow-hidden"
+    //   >
+    //     {error ? (
+    //       ErrorState
+    //     ) : chartData?.length > 0 ? (
+    //       <TechnicianChartComponent
+    //         chartData={chartData}
+    //         selectReportType={filter?.type_report}
+    //         selectGroupType={filter?.group_type}
+    //         isPending={isPending}
+    //         type_report_options={type_report_options}
+    //         group_type_options={group_type_options}
+    //       />
+    //     ) : (
+    //       EmptyState
+    //     )}
+    //   </motion.div>
 
-      {stats && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4"
-        >
-          <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-blue-100 text-sm">کل رکوردها</p>
-                <p className="text-2xl font-bold">{stats.totalRecords}</p>
-              </div>
-              <ChartArea className="w-8 h-8 text-blue-200" />
-            </div>
-          </div>
+    //   {stats && (
+    //     <motion.div
+    //       initial={{ opacity: 0, y: 20 }}
+    //       animate={{ opacity: 1, y: 0 }}
+    //       transition={{ delay: 0.4 }}
+    //       className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4"
+    //     >
+    //       <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-lg">
+    //         <div className="flex items-center justify-between">
+    //           <div>
+    //             <p className="text-blue-100 text-sm">کل رکوردها</p>
+    //             <p className="text-2xl font-bold">{stats.totalRecords}</p>
+    //           </div>
+    //           <ChartArea className="w-8 h-8 text-blue-200" />
+    //         </div>
+    //       </div>
 
-          <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-4 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-green-100 text-sm">کل نظرات</p>
-                <p className="text-2xl font-bold">{stats.totalReviews}</p>
-              </div>
-              <TrendingUp className="w-8 h-8 text-green-200" />
-            </div>
-          </div>
+    //       <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-4 rounded-lg">
+    //         <div className="flex items-center justify-between">
+    //           <div>
+    //             <p className="text-green-100 text-sm">کل نظرات</p>
+    //             <p className="text-2xl font-bold">{stats.totalReviews}</p>
+    //           </div>
+    //           <TrendingUp className="w-8 h-8 text-green-200" />
+    //         </div>
+    //       </div>
 
-          <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-4 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-purple-100 text-sm">میانگین امتیاز</p>
-                <p className="text-2xl font-bold">{stats.avgRating}</p>
-              </div>
-              <div className="w-8 h-8 text-purple-200 flex items-center justify-center">
-                <Star className="w-6 h-6" />
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      )}
-    </motion.div>
+    //       <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-4 rounded-lg">
+    //         <div className="flex items-center justify-between">
+    //           <div>
+    //             <p className="text-purple-100 text-sm">میانگین امتیاز</p>
+    //             <p className="text-2xl font-bold">{stats.avgRating}</p>
+    //           </div>
+    //           <div className="w-8 h-8 text-purple-200 flex items-center justify-center">
+    //             <Star className="w-6 h-6" />
+    //           </div>
+    //         </div>
+    //       </div>
+    //     </motion.div>
+    //   )}
+    // </motion.div>
   );
 };
 

@@ -17,9 +17,10 @@ import {
   Link,
   CheckCircle,
   ZoomIn,
-  ImagePlus,
+  // ImagePlus,
   Plus,
   Minus,
+  Settings2Icon,
 } from "lucide-react";
 
 import { useRequests } from "@/context/RequestsContext";
@@ -62,7 +63,7 @@ export default function RequestCard({
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 8:
+      case 9:
         return "bg-success-100 text-success-700 border-success-200";
       case 2:
         return "bg-error-100 text-error-700 border-error-200";
@@ -234,7 +235,7 @@ export default function RequestCard({
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-neutral-200 shadow-sm hover:shadow-md transition-shadow duration-200">
+              {/* <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-neutral-200 shadow-sm hover:shadow-md transition-shadow duration-200">
                 <div className="p-2.5 bg-primary-100 rounded-lg">
                   <Calendar className="w-4 h-4 text-primary-600" />
                 </div>
@@ -246,9 +247,9 @@ export default function RequestCard({
                     {request.device_count}
                   </p>
                 </div>
-              </div>
+              </div> */}
 
-              <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-neutral-200 shadow-sm hover:shadow-md transition-shadow duration-200">
+              <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-neutral-200 shadow-sm hover:shadow-md transition-shadow duration-200 max-h-fit">
                 <div className="p-2.5 bg-error-100 rounded-lg">
                   <CreditCard className="w-4 h-4 text-error-600" />
                 </div>
@@ -264,7 +265,7 @@ export default function RequestCard({
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-neutral-200 shadow-sm hover:shadow-md transition-shadow duration-200">
+              <div className="flex col-span-1 md:col-span-2 items-center gap-3 p-3 bg-white rounded-xl border border-neutral-200 shadow-sm hover:shadow-md transition-shadow duration-200">
                 <div className="p-2.5 bg-neutral-100 rounded-lg">
                   <MapPin className="w-4 h-4 text-neutral-600" />
                 </div>
@@ -273,7 +274,7 @@ export default function RequestCard({
                     آدرس
                   </p>
                   <p
-                    className="font-medium text-text text-sm truncate"
+                    className="font-medium text-text text-sm"
                     title={request.address}
                   >
                     {request.address}
@@ -311,7 +312,7 @@ export default function RequestCard({
                 <Settings className="w-4 h-4" />
                 عملیات اصلی
               </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 <button
                   onClick={handleEditAddress}
                   className={`flex items-center justify-center gap-2 h-12 px-4 bg-primary-50 hover:bg-primary-100 text-primary-700 rounded-xl border border-primary-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
@@ -326,29 +327,16 @@ export default function RequestCard({
                 </button>
 
                 <button
-                  onClick={handleChangePaymentStatus}
-                  className={`flex items-center justify-center gap-2 h-12 px-4 bg-accent-50 hover:bg-accent-100 text-accent-700 rounded-xl border border-accent-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
-                    completedRequest || canceledRequest
-                      ? "opacity-50 cursor-not-allowed"
-                      : ""
-                  }`}
-                  disabled={completedRequest || canceledRequest}
-                >
-                  <CreditCard className="w-4 h-4" />
-                  تغییر پرداخت
-                </button>
-
-                <button
                   onClick={handleChangeRequestStatus}
-                  className={`flex items-center justify-center gap-2 h-12 px-4 bg-secondary-50 hover:bg-secondary-100 text-secondary-700 rounded-xl border border-secondary-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
+                  className={`flex items-center justify-center gap-2 h-12 px-2 bg-secondary-50 hover:bg-secondary-100 text-secondary-700 rounded-xl border border-secondary-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
                     completedRequest || canceledRequest
                       ? "opacity-50 cursor-not-allowed"
                       : ""
                   }`}
                   disabled={completedRequest || canceledRequest}
                 >
-                  <CreditCard className="w-4 h-4" />
-                  تغییر وضعیت
+                  <Settings2Icon className="w-4 h-4" />
+                  تغییر وضعیت درخواست
                 </button>
 
                 <button
@@ -360,7 +348,7 @@ export default function RequestCard({
                   }`}
                   disabled={completedRequest || canceledRequest}
                 >
-                  <CreditCard className="w-4 h-4" />
+                  <Calendar className="w-4 h-4" />
                   تنظیم سرویس دوره ای
                 </button>
 
@@ -379,7 +367,7 @@ export default function RequestCard({
                 <FileText className="w-4 h-4" />
                 مدیریت سند و پرداخت
               </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                 <button
                   onClick={handleLabel}
                   className={`flex items-center justify-center gap-2 h-12 px-4 bg-secondary-50 hover:bg-secondary-100 text-secondary-700 rounded-xl border border-secondary-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
@@ -399,6 +387,19 @@ export default function RequestCard({
                 >
                   <FileText className="w-4 h-4" />
                   فاکتور
+                </button>
+
+                <button
+                  onClick={handleChangePaymentStatus}
+                  className={`flex items-center justify-center gap-2 h-12 px-4 bg-accent-50 hover:bg-accent-100 text-accent-700 rounded-xl border border-accent-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
+                    completedRequest || canceledRequest
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
+                  disabled={completedRequest || canceledRequest}
+                >
+                  <CreditCard className="w-4 h-4" />
+                  تغییر پرداخت
                 </button>
 
                 {/* <button

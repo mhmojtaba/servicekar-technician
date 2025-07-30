@@ -132,6 +132,8 @@ const CompleteModal = ({ isOpen, onClose }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [formData, setFormData] = useState({
     install_date: "",
+    first_name: "",
+    last_name: "",
     national_id: "",
     birth_date: "",
     manufacturer_serial: "",
@@ -155,6 +157,8 @@ const CompleteModal = ({ isOpen, onClose }) => {
   useEffect(() => {
     if (selectedRequest) {
       setFormData({
+        first_name: selectedRequest?.first_name || "",
+        last_name: selectedRequest?.last_name || "",
         national_id: selectedRequest?.national_id || "",
         birth_date: selectedRequest?.birth_date || "",
         manufacturer_serial: selectedRequest?.manufacturer_serial || "",
@@ -172,7 +176,7 @@ const CompleteModal = ({ isOpen, onClose }) => {
         postal_code: selectedRequest?.postal_code || "",
         install_garanti_type_request:
           selectedRequest?.install_garanti_type_request || "",
-        garanti_sherkati: selectedRequest?.garanti_sherkati || "",
+        garanti_sherkati: selectedRequest?.garanti_sherkati || "3",
         description: selectedRequest?.description || "",
       });
     }
@@ -199,6 +203,8 @@ const CompleteModal = ({ isOpen, onClose }) => {
 
     if (operationType === 1) {
       return {
+        first_name: "نام الزامی است",
+        last_name: "نام خانوادگی الزامی است",
         install_garanti_type_request: "نوع گارانتی الزامی است",
         national_id: "کد ملی الزامی است",
         birth_date: "تاریخ تولد الزامی است",
@@ -219,9 +225,12 @@ const CompleteModal = ({ isOpen, onClose }) => {
 
     if (operationType === 2) {
       return {
+        first_name: "نام الزامی است",
+        last_name: "نام خانوادگی الزامی است",
         garanti_sherkati: "گارانتی شرکت الزامی است",
         brand_id: "برند الزامی است",
         model_id: "مدل الزامی است",
+        images: "حداقل 1 تصویر الزامی است",
       };
     }
 
@@ -234,8 +243,14 @@ const CompleteModal = ({ isOpen, onClose }) => {
 
     Object.entries(requiredFields).forEach(([field, message]) => {
       if (field === "images") {
-        if (!formData.images || formData.images.length < 3) {
-          newErrors[field] = message;
+        if (selectedRequest?.operation_type === 1) {
+          if (!formData.images || formData.images.length < 3) {
+            newErrors[field] = message;
+          }
+        } else {
+          if (!formData.images || formData.images.length < 1) {
+            newErrors[field] = message;
+          }
         }
       } else if (!formData[field]) {
         newErrors[field] = message;
@@ -428,6 +443,28 @@ const CompleteModal = ({ isOpen, onClose }) => {
                     </div>
 
                     <div className="space-y-4 sm:space-y-6">
+                      <InputField
+                        label="نام"
+                        value={formData.first_name}
+                        onChange={(e) => {
+                          updateField("first_name", e.target.value);
+                        }}
+                        required={isFieldRequired("first_name")}
+                        error={errors.first_name}
+                        icon={<Hash className="w-4 h-4 sm:w-5 sm:h-5" />}
+                        placeholder="نام"
+                      />
+                      <InputField
+                        label="نام خانوادگی"
+                        value={formData.last_name}
+                        onChange={(e) => {
+                          updateField("last_name", e.target.value);
+                        }}
+                        required={isFieldRequired("last_name")}
+                        error={errors.last_name}
+                        icon={<Hash className="w-4 h-4 sm:w-5 sm:h-5" />}
+                        placeholder="1234567890"
+                      />
                       <InputField
                         label="کد ملی"
                         value={formData.national_id}
@@ -649,17 +686,19 @@ const CompleteModal = ({ isOpen, onClose }) => {
                         icon={<Shield className="w-4 h-4 sm:w-5 sm:h-5" />}
                       />
 
-                      <SelectField
-                        label="گارانتی شرکت"
-                        value={formData.garanti_sherkati}
-                        onChange={(value) =>
-                          updateField("garanti_sherkati", value)
-                        }
-                        options={garanti_sherkati}
-                        required={isFieldRequired("garanti_sherkati")}
-                        error={errors.garanti_sherkati}
-                        icon={<Shield className="w-4 h-4 sm:w-5 sm:h-5" />}
-                      />
+                      {selectedRequest?.operation_type == 2 && (
+                        <SelectField
+                          label="گارانتی شرکت"
+                          value={formData.garanti_sherkati}
+                          onChange={(value) =>
+                            updateField("garanti_sherkati", value)
+                          }
+                          options={garanti_sherkati}
+                          required={isFieldRequired("garanti_sherkati")}
+                          error={errors.garanti_sherkati}
+                          icon={<Shield className="w-4 h-4 sm:w-5 sm:h-5" />}
+                        />
+                      )}
                     </div>
                   </motion.section>
 

@@ -26,8 +26,8 @@ import {
 import { customSelectStyles } from "@/styles/customeStyles";
 import { useAuth } from "@/context/AuthContext";
 
-const SelectLocation = dynamic(
-  () => import("@/components/SelectLocation/SelectLocation"),
+const MapSection = dynamic(
+  () => import("@/components/SelectLocation/MapSection"),
   {
     loading: () => (
       <div className="flex items-center justify-center h-[250px] sm:h-[350px] md:h-[400px] bg-neutral-100">
@@ -90,6 +90,7 @@ const AddRequestModal = ({ isOpen, onClose }) => {
     building_area: "",
     postal_code: "",
     recommender_mobile: "",
+    description: "",
   });
 
   const [location, setLocation] = useState([32.644397, 51.667455]);
@@ -311,6 +312,7 @@ const AddRequestModal = ({ isOpen, onClose }) => {
         manufacturer_acceptance_code:
           selectedAddress?.manufacturer_acceptance_code || "",
         mobile: selectedAddress?.mobile || "",
+        description: selectedAddress?.description || "",
       }));
       setLocation([
         selectedAddress.latitude || 32.644397,
@@ -506,7 +508,6 @@ const AddRequestModal = ({ isOpen, onClose }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      onClick={handleClose}
     >
       <motion.div
         className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl mx-auto relative max-h-[95vh] flex flex-col overflow-hidden"
@@ -1020,7 +1021,7 @@ const AddRequestModal = ({ isOpen, onClose }) => {
 
                   <div className="space-y-2">
                     <label className="block text-sm font-semibold text-neutral-700">
-                      بارکد
+                      کد اشتراک
                     </label>
                     <input
                       style={{ direction: "ltr" }}
@@ -1032,7 +1033,7 @@ const AddRequestModal = ({ isOpen, onClose }) => {
                           barcode: e.target.value,
                         })
                       }
-                      placeholder="بارکد"
+                      placeholder="کد اشتراک"
                       className="w-full px-4 py-3 border border-neutral-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all placeholder:text-right"
                     />
                   </div>
@@ -1274,22 +1275,6 @@ const AddRequestModal = ({ isOpen, onClose }) => {
               <div className="p-6 space-y-6">
                 <div className="space-y-2">
                   <label className="block text-sm font-semibold text-neutral-700">
-                    انتخاب موقعیت <span className="text-error-500">*</span>
-                  </label>
-                  <div className="h-80 w-full rounded-xl overflow-hidden border-2 border-neutral-200 shadow-inner">
-                    <SelectLocation
-                      location={location}
-                      setLocation={setLocation}
-                    />
-                  </div>
-                  <p className="text-xs text-neutral-500 flex items-center">
-                    <span className="w-1 h-1 bg-neutral-400 rounded-full ml-2"></span>
-                    موقعیت مورد نظر را روی نقشه پیدا کنید
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block text-sm font-semibold text-neutral-700">
                     کد پستی
                   </label>
                   <input
@@ -1325,6 +1310,50 @@ const AddRequestModal = ({ isOpen, onClose }) => {
                     placeholder="آدرس کامل را وارد کنید..."
                     required
                   />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-neutral-700">
+                    توضیحات (اختیاری)
+                  </label>
+                  <textarea
+                    rows="4"
+                    value={requestData.description}
+                    onChange={(e) =>
+                      setRequestData({
+                        ...requestData,
+                        description: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-4 text-neutral-700 bg-white border border-neutral-300 rounded-xl focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all duration-200 resize-none placeholder:text-neutral-400 no-resize"
+                    placeholder="توضیحات مربوط به درخواست (اختیاری)"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-neutral-700">
+                    انتخاب موقعیت <span className="text-error-500">*</span>
+                  </label>
+                  <div className="h-80 w-full rounded-xl overflow-hidden border-2 border-neutral-200 shadow-inner">
+                    {/* <SelectLocation
+                      location={location}
+                      setLocation={setLocation}
+                    /> */}
+                    <MapSection
+                      location={
+                        location.length > 0
+                          ? { lat: location[0], lng: location[1] }
+                          : null
+                      }
+                      onChange={(lat, lng) => {
+                        setLocation([lat, lng]);
+                      }}
+                    />
+                  </div>
+                  <p className="text-xs text-neutral-500 flex items-center">
+                    <span className="w-1 h-1 bg-neutral-400 rounded-full ml-2"></span>
+                    موقعیت مورد نظر را روی نقشه پیدا کنید
+                  </p>
                 </div>
               </div>
             </DataWrapper>

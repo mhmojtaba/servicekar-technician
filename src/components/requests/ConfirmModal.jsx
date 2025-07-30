@@ -349,8 +349,8 @@ const ConfirmModal = ({ isOpen, onClose }) => {
                   </div>
                 )}
 
-                <div className="absolute bottom-4 flex items-center justify-center pointer-events-none">
-                  <p className="text-error-400 text-sm sm:text-base text-center px-4 flex gap-2 items-center">
+                <div className="absolute bottom-4 flex items-center justify-start pointer-events-none">
+                  <p className="text-error-400 text-sm sm:text-base px-4 flex gap-2 items-center">
                     <AlertCircle className="w-4 h-4" />
                     {message_confirm_work}
                   </p>
