@@ -27,7 +27,7 @@ const RequestStatusModal = ({ isOpen, onClose }) => {
       );
       setSelectedRequestStatusOption(currentRequestStatus);
       setCurrentRequestStatusOption(currentRequestStatus);
-      setRequestStatusDescription(currentRequestStatus.description);
+      setRequestStatusDescription(currentRequestStatus?.description || "");
     }
   }, [selectedRequest, status_requests_technician, isOpen]);
 

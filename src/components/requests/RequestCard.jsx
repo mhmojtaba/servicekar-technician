@@ -260,7 +260,7 @@ export default function RequestCard({
                   <span
                     className={`inline-block px-2.5 py-1 rounded-full border text-xs font-medium ${getPaymentStatusColor(request.type_payment)}`}
                   >
-                    {selectedPaymentStatus?.label}
+                    {selectedPaymentStatus?.label || "نامشخص"}
                   </span>
                 </div>
               </div>

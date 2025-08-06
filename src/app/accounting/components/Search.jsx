@@ -24,67 +24,67 @@ const Search = ({
     handleSearch(0);
   };
 
-  const customSelectStyles = {
-    control: (provided, state) => ({
-      ...provided,
-      minHeight: "52px",
-      borderColor: state.isFocused ? "#6366F1" : "#E5E7EB",
-      borderWidth: "2px",
-      borderRadius: "12px",
-      backgroundColor: state.isFocused ? "#FAFBFF" : "#FFFFFF",
-      boxShadow: state.isFocused
-        ? "0 0 0 4px rgba(99, 102, 241, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.1)"
-        : "0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-      transition: "all 0.2s ease-in-out",
-      "&:hover": {
-        borderColor: state.isFocused ? "#6366F1" : "#9CA3AF",
-        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-      },
-    }),
-    placeholder: (provided) => ({
-      ...provided,
-      color: "#9CA3AF",
-      fontSize: "15px",
-      fontWeight: "400",
-    }),
-    option: (provided, state) => ({
-      ...provided,
-      backgroundColor: state.isSelected
-        ? "#6366F1"
-        : state.isFocused
-          ? "#F0F9FF"
-          : "white",
-      color: state.isSelected ? "white" : "#1F2937",
-      fontSize: "15px",
-      fontWeight: "500",
-      padding: "12px 16px",
-      borderRadius: state.isFocused && !state.isSelected ? "8px" : "0px",
-      margin: state.isFocused && !state.isSelected ? "2px 4px" : "0px",
-      transition: "all 0.15s ease-in-out",
-      "&:hover": {
-        backgroundColor: state.isSelected ? "#6366F1" : "#F0F9FF",
-        transform: state.isSelected ? "none" : "translateX(2px)",
-      },
-    }),
-    singleValue: (provided) => ({
-      ...provided,
-      color: "#1F2937",
-      fontSize: "15px",
-      fontWeight: "500",
-    }),
-    menu: (provided) => ({
-      ...provided,
-      borderRadius: "12px",
-      boxShadow:
-        "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-      border: "1px solid #E5E7EB",
-      overflow: "hidden",
-    }),
-    menuList: (provided) => ({
-      ...provided,
-      padding: "8px",
-    }),
-  };
+  // const customSelectStyles = {
+  //   control: (provided, state) => ({
+  //     ...provided,
+  //     minHeight: "52px",
+  //     borderColor: state.isFocused ? "#6366F1" : "#E5E7EB",
+  //     borderWidth: "2px",
+  //     borderRadius: "12px",
+  //     backgroundColor: state.isFocused ? "#FAFBFF" : "#FFFFFF",
+  //     boxShadow: state.isFocused
+  //       ? "0 0 0 4px rgba(99, 102, 241, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.1)"
+  //       : "0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+  //     transition: "all 0.2s ease-in-out",
+  //     "&:hover": {
+  //       borderColor: state.isFocused ? "#6366F1" : "#9CA3AF",
+  //       boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+  //     },
+  //   }),
+  //   placeholder: (provided) => ({
+  //     ...provided,
+  //     color: "#9CA3AF",
+  //     fontSize: "15px",
+  //     fontWeight: "400",
+  //   }),
+  //   option: (provided, state) => ({
+  //     ...provided,
+  //     backgroundColor: state.isSelected
+  //       ? "#6366F1"
+  //       : state.isFocused
+  //         ? "#F0F9FF"
+  //         : "white",
+  //     color: state.isSelected ? "white" : "#1F2937",
+  //     fontSize: "15px",
+  //     fontWeight: "500",
+  //     padding: "12px 16px",
+  //     borderRadius: state.isFocused && !state.isSelected ? "8px" : "0px",
+  //     margin: state.isFocused && !state.isSelected ? "2px 4px" : "0px",
+  //     transition: "all 0.15s ease-in-out",
+  //     "&:hover": {
+  //       backgroundColor: state.isSelected ? "#6366F1" : "#F0F9FF",
+  //       transform: state.isSelected ? "none" : "translateX(2px)",
+  //     },
+  //   }),
+  //   singleValue: (provided) => ({
+  //     ...provided,
+  //     color: "#1F2937",
+  //     fontSize: "15px",
+  //     fontWeight: "500",
+  //   }),
+  //   menu: (provided) => ({
+  //     ...provided,
+  //     borderRadius: "12px",
+  //     boxShadow:
+  //       "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+  //     border: "1px solid #E5E7EB",
+  //     overflow: "hidden",
+  //   }),
+  //   menuList: (provided) => ({
+  //     ...provided,
+  //     padding: "8px",
+  //   }),
+  // };
 
   return (
     <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-8">
@@ -104,18 +104,17 @@ const Search = ({
 
       <div className="space-y-8">
         <div className="relative">
-          <label className="flex items-center text-base font-semibold text-gray-800 mb-4">
-            <div className="p-2 bg-indigo-50 rounded-lg ml-3">
-              <FiCreditCard className="text-indigo-600" size={18} />
-            </div>
-            نوع پرداخت
-            <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full mr-2 font-normal">
-              اختیاری
-            </span>
-          </label>
-
           <div className="relative group">
-            <Select
+            {/* <label className="flex items-center text-base font-semibold text-gray-800 mb-4">
+              <div className="p-2 bg-indigo-50 rounded-lg ml-3">
+                <FiCreditCard className="text-indigo-600" size={18} />
+              </div>
+              نوع پرداخت
+              <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full mr-2 font-normal">
+                اختیاری
+              </span>
+            </label>
+             <Select
               instanceId="payment-type-select"
               isLoading={isGettingRequestsMain}
               options={payment_to_technician_type}
@@ -138,14 +137,13 @@ const Search = ({
               className="react-select-container"
               classNamePrefix="react-select"
               isClearable
-            />
+            /> */}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
                   <Calendar className="w-4 h-4 text-primary-600" />
                   تاریخ شروع
-                  <span className="text-red-500">*</span>
                 </label>
                 <DatePicker
                   style={{
@@ -167,7 +165,6 @@ const Search = ({
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
                   <Calendar className="w-4 h-4 text-primary-600" />
                   تاریخ پایان
-                  <span className="text-red-500">*</span>
                 </label>
                 <DatePicker
                   style={{

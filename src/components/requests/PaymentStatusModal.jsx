@@ -25,7 +25,7 @@ const PaymentStatusModal = ({ isOpen, onClose }) => {
       );
       setSelectedPaymentOption(currentPayment);
       setCurrentPaymentOption(currentPayment);
-      setPaymentOptionDescription(currentPayment.description);
+      setPaymentOptionDescription(currentPayment?.description || "");
     }
   }, [selectedRequest, array_type_payment, isOpen]);
 
@@ -33,7 +33,7 @@ const PaymentStatusModal = ({ isOpen, onClose }) => {
     if (selectedPaymentOption && selectedRequest) {
       const data = {
         order_id: selectedRequest.id,
-        payment_status: selectedPaymentOption.value,
+        payment_status: selectedPaymentOption?.value,
         description: paymentOptionDescription,
       };
       await updateRequestPayment(data);
@@ -113,13 +113,12 @@ const PaymentStatusModal = ({ isOpen, onClose }) => {
               <div>
                 <span className="text-gray-600">وضعیت فعلی:</span>
                 <span className="font-semibold text-gray-800 mr-2">
-                  {currentPaymentOption?.label}
+                  {currentPaymentOption?.label || "نامشخص"}
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Payment Status Selection */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>

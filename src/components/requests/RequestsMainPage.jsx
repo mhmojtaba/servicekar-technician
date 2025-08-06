@@ -120,13 +120,16 @@ export default function RequestsMainPage() {
                     <div className="text-sm font-medium mb-1">مانده حساب</div>
                     <div className="text-lg font-bold">
                       <span
-                        className="text-white ml-2"
+                        className="text-white "
                         style={{ direction: "ltr" }}
                         dir="ltr"
                       >
-                        {Number(item?.total_paid).toLocaleString()}
+                        {Math.abs(item?.total_paid).toLocaleString()}
                       </span>
-                      <span className="text-white">تومان</span>
+                      <span className="text-white">&nbsp;تومان</span>
+                      <span className="text-white text-[10px] mr-2">
+                        ({item?.total_paid >= 0 ? "بستانکار" : "بدهکار"})
+                      </span>
                     </div>
                   </div>
 

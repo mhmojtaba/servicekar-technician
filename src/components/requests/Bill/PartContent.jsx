@@ -67,7 +67,7 @@ const PartContent = ({ partList, selectedParts, onAddPart }) => {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 min-h-[30vh] max-h-[30vh]">
+      <div className="flex-1 overflow-y-auto p-4 min-h-[22vh] max-h-[22vh]">
         {filteredPartList.length === 0 ? (
           <div className="text-center py-8">
             <div className="p-3 bg-neutral-100 rounded-full w-12 h-12 mx-auto mb-3">
@@ -80,11 +80,11 @@ const PartContent = ({ partList, selectedParts, onAddPart }) => {
             {filteredPartList.map((part) => (
               <div
                 key={part.id}
-                className="p-4 rounded-lg border border-neutral-200 hover:border-neutral-300 bg-white transition-all"
+                className="px-4 py-2 rounded-lg border border-neutral-200 hover:border-neutral-300 bg-white transition-all"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0">
-                    <h5 className="font-medium text-neutral-800 truncate">
+                    <h5 className="font-medium text-neutral-800 text-xs md:text-base">
                       {part.title}
                     </h5>
                     {/* <p className="text-sm text-neutral-600 mt-1">
@@ -101,7 +101,7 @@ const PartContent = ({ partList, selectedParts, onAddPart }) => {
                       onChange={(e) =>
                         handleQuantityChange(part.id, e.target.value)
                       }
-                      className="w-20 px-2 py-1 border border-neutral-300 rounded text-center text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                      className="w-8 px-2 py-1 border border-neutral-300 rounded text-center text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                       style={{ direction: "ltr" }}
                       placeholder="0"
                     />
