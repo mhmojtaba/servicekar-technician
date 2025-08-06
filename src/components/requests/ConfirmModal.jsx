@@ -70,7 +70,7 @@ const ConfirmModal = ({ isOpen, onClose }) => {
 
         const newSize = {
           width: containerWidth - 4,
-          height: isMobile ? 250 : 300,
+          height: isMobile ? 350 : 350,
         };
 
         setCanvasSize((prevSize) => {
@@ -170,9 +170,9 @@ const ConfirmModal = ({ isOpen, onClose }) => {
       newErrors.signature = "امضای مشتری الزامی است";
     }
 
-    if (!formData.type_payment) {
-      newErrors.type_payment = "انتخاب نوع پرداخت الزامی است";
-    }
+    // if (!formData.type_payment) {
+    //   newErrors.type_payment = "انتخاب نوع پرداخت الزامی است";
+    // }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -189,22 +189,21 @@ const ConfirmModal = ({ isOpen, onClose }) => {
         order_id: selectedRequest?.id,
         confirmation_code: formData.code,
         signature_img: formData.signature,
-        type_payment: formData.type_payment.value,
+        // type_payment: formData.type_payment.value,
+        confirm_message: message_confirm_work,
       };
-      console.log("submitData", submitData);
-      const response = await ConfirmRequest(submitData);
-      console.log("response", response);
-      const responseData = response?.data;
 
-      if (responseData.msg === 0) {
+      const { data: responseData } = await ConfirmRequest(submitData);
+
+      if (responseData?.msg === 0) {
         onClose();
         resetForm();
-        toast.success(responseData.msg_text);
+        toast.success(responseData?.msg_text);
       } else {
-        toast.error(responseData.msg_text);
+        toast.error(responseData?.msg_text);
         setErrors({
           submit:
-            responseData.msg_text ||
+            responseData?.msg_text ||
             "خطا در تایید درخواست. لطفاً دوباره تلاش کنید.",
         });
       }
@@ -287,7 +286,7 @@ const ConfirmModal = ({ isOpen, onClose }) => {
               )}
             </div>
 
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <label className="flex items-center gap-2 text-sm font-semibold text-neutral-700 mb-3">
                 <CreditCard className="w-4 h-4 text-accent-500" />
                 نوع پرداخت
@@ -308,7 +307,7 @@ const ConfirmModal = ({ isOpen, onClose }) => {
                   {errors.type_payment}
                 </p>
               )}
-            </div>
+            </div> */}
 
             <div className="mb-4">
               <label className="flex items-center gap-2 text-sm font-semibold text-neutral-700 mb-3">
@@ -394,7 +393,7 @@ const ConfirmModal = ({ isOpen, onClose }) => {
         </div>
 
         <div className="flex-shrink-0 border-t border-neutral-100 p-4 sm:p-6">
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col-reverse sm:flex-row gap-3">
             <button
               onClick={handleClose}
               className="flex-1 h-12 sm:h-14 px-6 py-4 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-xl transition-colors text-sm font-medium"

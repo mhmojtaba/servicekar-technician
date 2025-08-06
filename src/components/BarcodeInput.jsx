@@ -58,7 +58,7 @@ const BarcodeInput = ({ inputValue, setInputValue, id }) => {
                 type="text"
                 value={inputValue}
                 onChange={handleInputChange}
-                placeholder="کد برچسب"
+                placeholder="کد اشتراک"
                 className="w-full px-4 py-3 pr-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-lg placeholder:text-sm placeholder:text-gray-400"
               />
               {inputValue && (

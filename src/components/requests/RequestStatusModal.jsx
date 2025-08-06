@@ -27,7 +27,7 @@ const RequestStatusModal = ({ isOpen, onClose }) => {
       );
       setSelectedRequestStatusOption(currentRequestStatus);
       setCurrentRequestStatusOption(currentRequestStatus);
-      setRequestStatusDescription(currentRequestStatus.description);
+      setRequestStatusDescription(currentRequestStatus?.description || "");
     }
   }, [selectedRequest, status_requests_technician, isOpen]);
 
@@ -95,7 +95,7 @@ const RequestStatusModal = ({ isOpen, onClose }) => {
           </div>
         </div>
 
-        <div className="flex-1 py-4 px-8">
+        <div className="flex-1 max-h-[50vh] overflow-y-auto py-4 px-8">
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 mb-2 border border-blue-100">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">

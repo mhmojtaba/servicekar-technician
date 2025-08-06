@@ -93,12 +93,12 @@ function LabelsContent() {
       if (data.msg === 0) {
         setLabelList(data.devices || []);
       } else {
-        toast.error(data.msg_text || "خطا در دریافت لیست برچسب‌ها");
+        toast.error(data.msg_text || "خطا در دریافت لیست کداشتراک‌ها");
         setLabelList([]);
       }
     } catch (error) {
       console.error("Error fetching labels:", error);
-      toast.error("خطا در دریافت لیست برچسب‌ها");
+      toast.error("خطا در دریافت لیست کد اشتراک‌ها");
       setLabelList([]);
     }
   }, [requestId, token, mutateGetDeviceTags]);
@@ -114,15 +114,15 @@ function LabelsContent() {
       });
 
       if (data.msg === 0) {
-        toast.success(data.msg_text || "برچسب‌ها با موفقیت ثبت شدند");
+        toast.success(data.msg_text || "کد اشتراک‌ها با موفقیت ثبت شدند");
         setIsAddModalOpen(false);
         await fetchLabelList();
       } else {
-        toast.error(data.msg_text || "خطا در ثبت برچسب‌ها");
+        toast.error(data.msg_text || "خطا در ثبت کد اشتراک‌ها");
       }
     } catch (error) {
       console.error("Error adding labels:", error);
-      toast.error("خطا در ثبت برچسب‌ها");
+      toast.error("خطا در ثبت کد اشتراک‌ها");
     }
   };
 
@@ -137,14 +137,14 @@ function LabelsContent() {
       });
 
       if (data.msg === 0) {
-        toast.success(data.msg_text || "برچسب با موفقیت حذف شد");
+        toast.success(data.msg_text || "کد اشتراک با موفقیت حذف شد");
         await fetchLabelList();
       } else {
-        toast.error(data.msg_text || "خطا در حذف برچسب");
+        toast.error(data.msg_text || "خطا در حذف کد اشتراک");
       }
     } catch (error) {
       console.error("Error deleting label:", error);
-      toast.error("خطا در حذف برچسب");
+      toast.error("خطا در حذف کد اشتراک");
     }
   };
 
@@ -172,7 +172,7 @@ function LabelsContent() {
               <div className="flex justify-between items-center gap-3 w-full">
                 <div className="">
                   <h1 className="text-lg sm:text-xl font-semibold text-neutral-800">
-                    مدیریت برچسب‌ها
+                    مدیریت کد های اشتراک
                   </h1>
                   {selectedRequest && (
                     <p className="text-sm text-neutral-600 mt-1">
@@ -211,7 +211,7 @@ function LabelsContent() {
                   className="flex items-center justify-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-all duration-200 shadow-sm hover:shadow-md"
                 >
                   <Plus className="w-4 h-4" />
-                  <span className="text-sm sm:text-base">ثبت برچسب</span>
+                  <span className="text-sm sm:text-base">ثبت کد اشتراک</span>
                 </button> */}
               </div>
             </div>
@@ -223,7 +223,7 @@ function LabelsContent() {
                 <div className="text-center">
                   <Loader2 className="w-6 h-6 animate-spin text-primary-500 mx-auto mb-3" />
                   <p className="text-sm text-neutral-600">
-                    در حال بارگذاری برچسب‌ها...
+                    در حال بارگذاری کد های اشتراک...
                   </p>
                 </div>
               </div>
@@ -233,18 +233,18 @@ function LabelsContent() {
                   <Tag className="w-8 h-8 text-neutral-400" />
                 </div>
                 <h4 className="text-lg font-medium text-neutral-700 mb-2">
-                  برچسبی یافت نشد
+                  کد اشتراکی یافت نشد
                 </h4>
                 <p className="text-neutral-500 max-w-md mb-6">
-                  هنوز برچسبی برای این درخواست ثبت نشده است. برای شروع، روی دکمه
-                  "ثبت برچسب" کلیک کنید.
+                  هنوز کد اشتراکی برای این درخواست ثبت نشده است. برای شروع، روی
+                  دکمه "ثبت کد اشتراک" کلیک کنید.
                 </p>
                 <button
                   onClick={() => setIsAddModalOpen(true)}
                   className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-all duration-200"
                 >
                   <Plus className="w-4 h-4" />
-                  ثبت اولین برچسب
+                  ثبت اولین کد اشتراک
                 </button>
               </div>
             ) : (
@@ -253,7 +253,7 @@ function LabelsContent() {
                   <div className="flex items-center gap-2">
                     <Tag className="w-5 h-5 text-primary-600" />
                     <span className="text-sm font-medium text-primary-800">
-                      تعداد برچسب‌ها: {labelList.length}
+                      تعداد کد های اشتراک: {labelList.length}
                     </span>
                   </div>
                 </div>

@@ -90,10 +90,10 @@ export default function RequestsMainPage() {
         >
           <div className="flex items-center gap-4 mb-4">
             <div className="p-3 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl shadow-lg">
-              <FileText className="w-8 h-8 text-white" />
+              <FileText className="w-6 h-6 md:w-8 md:h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-text to-neutral-600 bg-clip-text text-transparent">
+              <h1 className="text-xl md:text-4xl font-bold bg-gradient-to-r from-text to-neutral-600 bg-clip-text text-transparent">
                 مدیریت درخواست‌ها
               </h1>
               <p className="text-neutral-500 mt-1 text-lg">
@@ -102,31 +102,34 @@ export default function RequestsMainPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-wrap">
             {isGettingRequestsMain ? (
               <div className="w-full h-full flex items-center justify-center bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl p-4">
                 <Loader2 className="w-8 h-8 text-primary-100 animate-spin" />
               </div>
             ) : (
               technician_report.map((item) => (
-                <div key={item.id} className="flex gap-3">
+                <div key={item.id} className="flex gap-3 max-w-[90%]">
                   <div
-                    className={`p-4 rounded-2xl shadow-lg ${
+                    className={`p-4 w-full rounded-2xl shadow-lg ${
                       Number(item?.total_paid) >= 0
                         ? "bg-gradient-to-r from-green-500 to-green-600 text-white"
                         : "bg-gradient-to-r from-red-500 to-red-600 text-white"
                     }`}
                   >
-                    <div className="text-sm font-medium mb-1">مانده حساب</div>
-                    <div className="text-lg font-bold">
+                    <div className="text-xs font-medium mb-1">مانده حساب</div>
+                    <div className="text-xs md:text-sm font-bold">
                       <span
-                        className="text-white ml-2"
+                        className="text-white "
                         style={{ direction: "ltr" }}
                         dir="ltr"
                       >
-                        {Number(item?.total_paid).toLocaleString()}
+                        {Math.abs(item?.total_paid).toLocaleString()}
                       </span>
-                      <span className="text-white">تومان</span>
+                      <span className="text-white">&nbsp;تومان</span>
+                      <span className="text-white text-[10px] md:text-sm mr-2">
+                        ({item?.total_paid >= 0 ? "بستانکار" : "بدهکار"})
+                      </span>
                     </div>
                   </div>
 
@@ -134,7 +137,7 @@ export default function RequestsMainPage() {
                     className="p-4 bg-gradient-to-r cursor-pointer from-blue-500 to-blue-600 rounded-2xl shadow-lg text-white"
                     onClick={openRatingModal}
                   >
-                    <div className="text-sm font-medium mb-2">
+                    <div className="text-xs md:text-sm font-medium mb-2">
                       امتیاز میانگین
                     </div>
                     <div className="flex items-center gap-2">
@@ -153,7 +156,7 @@ export default function RequestsMainPage() {
                           </svg>
                         ))}
                       </div>
-                      <span className="text-lg font-bold">
+                      <span className="text-xs md:text-sm font-bold">
                         {item?.avg_rating
                           ? Number(item.avg_rating).toFixed(1)
                           : "0.0"}

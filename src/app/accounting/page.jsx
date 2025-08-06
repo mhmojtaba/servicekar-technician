@@ -21,6 +21,7 @@ const page = () => {
   const count_per_page = 12;
 
   const [total_paid, setTotal_paid] = useState(0);
+  const [total_paid_balance, setTotal_paid_balance] = useState(0);
   const [accounting_list, setAccounting_list] = useState([]);
   const [total_count, setTotal_count] = useState(0);
   const [startDate, setStartDate] = useState(null);
@@ -72,6 +73,7 @@ const page = () => {
       const { data: response } = await mutateGetPaymentToTechnicianList(data);
       if (response.msg === 0) {
         setTotal_paid(response.total_paid);
+        setTotal_paid_balance(response.total_paid_balance);
         setAccounting_list(response.accounting);
         setTotal_count(response.count);
       } else {
@@ -110,8 +112,8 @@ const page = () => {
   };
 
   const getTotalAmountStatus = (amount) => {
-    if (amount < 0) return "بستانکار";
-    if (amount > 0) return "بدهکار";
+    if (amount > 0) return "بستانکار";
+    if (amount < 0) return "بدهکار";
     return "تسویه";
   };
 
@@ -246,6 +248,7 @@ const page = () => {
                       title="accounting"
                       thead={accountingThead}
                       tbody={accounting_list}
+                      total_paid_balance={total_paid_balance}
                     />
 
                     {totalPages > 1 && (

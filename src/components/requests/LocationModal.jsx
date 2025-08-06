@@ -10,8 +10,8 @@ import { addLocation } from "@/services/requestsServices";
 import { useAuth } from "@/context/AuthContext";
 import { useRequests } from "@/context/RequestsContext";
 
-const SelectLocation = dynamic(
-  () => import("@/components/SelectLocation/SelectLocation"),
+const MapSection = dynamic(
+  () => import("@/components/SelectLocation/MapSection"),
   {
     loading: () => (
       <div className="flex items-center justify-center h-[250px] sm:h-[350px] md:h-[400px] bg-neutral-100">
@@ -101,13 +101,13 @@ const LocationModal = ({ isOpen, onClose }) => {
                 </div>
               </div>
               <div className="relative">
-                <div className="h-[250px] sm:h-[350px] md:h-[400px] w-full bg-neutral-50">
-                  <SelectLocation
+                <div className="h-[300px] sm:h-[350px] md:h-[400px] w-full bg-neutral-50">
+                  <MapSection
+                    onChange={(lat, lng) => setLocation([lat, lng])}
                     location={location}
-                    setLocation={setLocation}
                   />
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/10 to-transparent h-12 pointer-events-none" />
+                {/* <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/10 to-transparent h-12 pointer-events-none" /> */}
               </div>
             </div>
 

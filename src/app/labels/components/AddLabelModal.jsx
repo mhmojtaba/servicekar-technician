@@ -25,7 +25,7 @@ const AddLabelModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
     e.preventDefault();
     const validLabels = labels.filter((label) => label.tag.trim() !== "");
     if (validLabels.length === 0) {
-      toast.error("لطفا یک برچسب وارد کنید");
+      toast.error("لطفا یک  کد اشتراک  وارد کنید");
       return;
     }
     onSubmit(validLabels);
@@ -57,7 +57,7 @@ const AddLabelModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
               <X className="w-5 h-5" />
             </button>
             <h3 className="text-lg sm:text-xl font-semibold text-neutral-800 text-center pr-10">
-              افزودن برچسب جدید
+              افزودن کد اشتراک جدید
             </h3>
           </div>
 
@@ -71,14 +71,14 @@ const AddLabelModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
                   >
                     <div className="flex items-center justify-between mb-4">
                       <h4 className="font-medium text-neutral-700 text-sm sm:text-base">
-                        برچسب {index + 1}
+                        کد اشتراک {index + 1}
                       </h4>
                       {index >= 1 && (
                         <button
                           type="button"
                           onClick={() => handleRemoveField(index)}
                           className="p-1.5 text-error-500 hover:bg-error-50 rounded-lg transition-colors"
-                          title="حذف برچسب"
+                          title="حذف کد اشتراک"
                         >
                           <Minus className="w-4 h-4" />
                         </button>
@@ -91,7 +91,7 @@ const AddLabelModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
                           className="block text-sm font-medium text-neutral-700 mb-2"
                           htmlFor="tag"
                         >
-                          شماره برچسب <span className="text-error-500">*</span>
+                          کد اشتراک <span className="text-error-500">*</span>
                         </label>
                         <BarcodeInput
                           id={"tag"}
@@ -111,7 +111,7 @@ const AddLabelModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
                           }
                           className="w-full px-4 py-3 text-sm text-neutral-700 bg-neutral-50 border border-neutral-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white transition-all duration-200 resize-none"
                           rows="3"
-                          placeholder="توضیحات مربوط به برچسب..."
+                          placeholder="توضیحات مربوط به کد اشتراک..."
                           disabled={isSubmitting}
                         />
                       </div>
@@ -131,7 +131,7 @@ const AddLabelModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
                 >
                   <Plus className="w-4 h-4" />
                   <span className="text-sm sm:text-base">
-                    افزودن برچسب جدید
+                    افزودن کد اشتراک جدید
                   </span>
                 </button>
 
@@ -160,7 +160,9 @@ const AddLabelModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
                         </span>
                       </>
                     ) : (
-                      <span className="text-sm sm:text-base">ثبت برچسب‌</span>
+                      <span className="text-sm sm:text-base">
+                        ثبت کد اشتراک
+                      </span>
                     )}
                   </button>
                 </div>

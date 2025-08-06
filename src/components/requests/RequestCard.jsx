@@ -21,6 +21,7 @@ import {
   Plus,
   Minus,
   Settings2Icon,
+  Edit,
 } from "lucide-react";
 
 import { useRequests } from "@/context/RequestsContext";
@@ -260,7 +261,7 @@ export default function RequestCard({
                   <span
                     className={`inline-block px-2.5 py-1 rounded-full border text-xs font-medium ${getPaymentStatusColor(request.type_payment)}`}
                   >
-                    {selectedPaymentStatus?.label}
+                    {selectedPaymentStatus?.label || "نامشخص"}
                   </span>
                 </div>
               </div>
@@ -312,23 +313,43 @@ export default function RequestCard({
                 <Settings className="w-4 h-4" />
                 عملیات اصلی
               </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                <div className="h-12">
+                  <NavigationModal
+                    lat={request.latitude}
+                    lng={request.longitude}
+                    disabled={completedRequest || canceledRequest}
+                  />
+                </div>
                 <button
                   onClick={handleEditAddress}
-                  className={`flex items-center justify-center gap-2 h-12 px-4 bg-primary-50 hover:bg-primary-100 text-primary-700 rounded-xl border border-primary-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
+                  className={`flex items-center justify-center gap-2 h-12 px-4 bg-accent-50 hover:bg-accent-100 text-accent-700 rounded-xl border border-accent-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
                     completedRequest || canceledRequest
                       ? "opacity-50 cursor-not-allowed"
                       : ""
                   }`}
                   disabled={completedRequest || canceledRequest}
                 >
-                  <MapPin className="w-4 h-4" />
+                  <Edit className="w-4 h-4" />
                   ویرایش آدرس
                 </button>
 
                 <button
+                  onClick={handleLabel}
+                  className={`flex items-center justify-center gap-2 h-12 px-4 bg-secondary-50 hover:bg-secondary-100 text-secondary-700 rounded-xl border border-secondary-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
+                    completedRequest || canceledRequest
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
+                  disabled={completedRequest || canceledRequest}
+                >
+                  <Tag className="w-4 h-4" />
+                  کد اشتراک
+                </button>
+
+                <button
                   onClick={handleChangeRequestStatus}
-                  className={`flex items-center justify-center gap-2 h-12 px-2 bg-secondary-50 hover:bg-secondary-100 text-secondary-700 rounded-xl border border-secondary-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
+                  className={`flex items-center justify-center gap-2 h-12 px-2 bg-error-50 hover:bg-error-100 text-error-700 rounded-xl border border-error-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
                     completedRequest || canceledRequest
                       ? "opacity-50 cursor-not-allowed"
                       : ""
@@ -351,14 +372,6 @@ export default function RequestCard({
                   <Calendar className="w-4 h-4" />
                   تنظیم سرویس دوره ای
                 </button>
-
-                <div className="h-12">
-                  <NavigationModal
-                    lat={request.latitude}
-                    lng={request.longitude}
-                    disabled={completedRequest || canceledRequest}
-                  />
-                </div>
               </div>
             </div>
 
@@ -367,20 +380,7 @@ export default function RequestCard({
                 <FileText className="w-4 h-4" />
                 مدیریت سند و پرداخت
               </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-                <button
-                  onClick={handleLabel}
-                  className={`flex items-center justify-center gap-2 h-12 px-4 bg-secondary-50 hover:bg-secondary-100 text-secondary-700 rounded-xl border border-secondary-200 transition-all duration-200 text-sm font-medium hover:shadow-sm ${
-                    completedRequest || canceledRequest
-                      ? "opacity-50 cursor-not-allowed"
-                      : ""
-                  }`}
-                  disabled={completedRequest || canceledRequest}
-                >
-                  <Tag className="w-4 h-4" />
-                  برچسب
-                </button>
-
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 <button
                   onClick={handleBill}
                   className={`flex items-center justify-center gap-2 h-12 px-4 bg-neutral-50 hover:bg-neutral-100 text-neutral-700 rounded-xl border border-neutral-200 transition-all duration-200 text-sm font-medium hover:shadow-sm `}
@@ -399,7 +399,7 @@ export default function RequestCard({
                   disabled={completedRequest || canceledRequest}
                 >
                   <CreditCard className="w-4 h-4" />
-                  تغییر پرداخت
+                  روش پرداخت
                 </button>
 
                 {/* <button
@@ -429,7 +429,7 @@ export default function RequestCard({
                   {isResendingCode ? (
                     <span>در حال ارسال...</span>
                   ) : (
-                    <span>ارسال مجدد کد</span>
+                    <span>ارسال کد تایید فاکتور</span>
                   )}
                 </button>
 

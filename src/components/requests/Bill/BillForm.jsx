@@ -230,7 +230,7 @@ const BillForm = ({
         {(selectedTasks.length > 0 ||
           selectedParts.length > 0 ||
           hasTechnicianTravelCost === 1) && (
-          <div className="px-4 sm:px-6 py-3 bg-primary-50 border-b border-primary-100 flex-shrink-0">
+          <div className="px-4 sm:px-6 py-1 bg-primary-50 border-b border-primary-100 flex-shrink-0">
             <div className="flex flex-wrap items-center gap-4 text-sm mb-3">
               <div className="flex items-center gap-2">
                 <Wrench className="w-4 h-4 text-primary-600" />
@@ -246,7 +246,7 @@ const BillForm = ({
               </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 max-h-24 overflow-y-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1 max-h-20 overflow-y-auto">
               {hasTechnicianTravelCost === 1 ? (
                 <div
                   key={`task-${technicianTravelCost.id}`}
@@ -255,23 +255,23 @@ const BillForm = ({
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1">
                       <Wrench className="w-3 h-3 text-primary-600 flex-shrink-0" />
-                      <span className="font-medium text-neutral-800 truncate">
+                      <span className="font-medium text-neutral-800 text-xs md:text-sm">
                         {technicianTravelCost?.title}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-1">
-                      <span className="text-neutral-600">
+                      <span className="text-neutral-600 text-xs md:text-sm">
                         هزینه: {technicianTravelCost?.price?.toLocaleString()}
                         تومان
                       </span>{" "}
                     </div>
 
-                    <div className="flex items-center gap-1">
-                      <span className="text-neutral-600">
+                    {/* <div className="flex items-center gap-1">
+                      <span className="text-neutral-600 text-xs md:text-sm">
                         تعداد: {technicianTravelCost?.quantity}
                       </span>{" "}
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               ) : null}
@@ -284,13 +284,13 @@ const BillForm = ({
                   <div className="flex-1 w-full">
                     <div className="flex items-center gap-1">
                       <Wrench className="w-3 h-3 text-primary-600 flex-shrink-0" />
-                      <span className="font-medium text-neutral-800">
+                      <span className="font-medium text-neutral-800 text-[8px] md:text-xs">
                         {task.title}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-1">
-                      <span className="text-neutral-600">
+                      <span className="text-neutral-600 text-[8px] md:text-xs">
                         تعداد: {task.quantity}
                       </span>{" "}
                     </div>
@@ -312,12 +312,12 @@ const BillForm = ({
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1">
                       <ShoppingCart className="w-3 h-3 text-primary-600 flex-shrink-0" />
-                      <span className="font-medium text-neutral-800 truncate">
+                      <span className="font-medium text-neutral-800 text-[8px] md:text-xs">
                         {part.title}
                       </span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <span className="text-neutral-600">
+                      <span className="text-neutral-600 text-[8px] md:text-xs">
                         تعداد: {part.quantity}
                       </span>{" "}
                     </div>
@@ -335,8 +335,8 @@ const BillForm = ({
           </div>
         )}
 
-        <div className="px-4 sm:px-6 py-3 border-b border-neutral-100 flex-shrink-0">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+        <div className="px-4 sm:px-6 py-1 border-b border-neutral-100 flex-shrink-0">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg border border-blue-100">
               <div className="flex items-center">
                 <input
@@ -357,7 +357,7 @@ const BillForm = ({
               </div>
             </div>
 
-            <div className="flex rounded-lg border border-neutral-200 overflow-hidden flex-1 sm:max-w-md">
+            <div className="flex rounded-lg border border-neutral-200 overflow-auto flex-1 sm:max-w-md">
               <button
                 className={`flex-1 px-4 py-2.5 text-sm font-medium transition-colors ${
                   currentTab === "task"
@@ -366,7 +366,7 @@ const BillForm = ({
                 }`}
                 onClick={() => setCurrentTab("task")}
               >
-                <div className="flex items-center justify-center gap-2">
+                <div className="flex items-center justify-center gap-2 text-[10px] md:text-base">
                   <Wrench className="w-4 h-4" />
                   خدمات
                 </div>
@@ -379,7 +379,7 @@ const BillForm = ({
                 }`}
                 onClick={() => setCurrentTab("part")}
               >
-                <div className="flex items-center justify-center gap-2">
+                <div className="flex items-center justify-center gap-2 text-[10px] md:text-base">
                   <ShoppingCart className="w-4 h-4" />
                   قطعات
                 </div>
@@ -417,12 +417,12 @@ const BillForm = ({
 
         <div className="px-4 sm:px-6 py-4 border-t border-neutral-100 bg-neutral-50/50 flex-shrink-0">
           <div className="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end">
-            <button
+            {/* <button
               onClick={handleClose}
               className="px-6 py-2.5 text-neutral-600 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
             >
               انصراف
-            </button>
+            </button> */}
             <button
               onClick={handleSubmitBill}
               disabled={

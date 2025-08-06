@@ -164,6 +164,7 @@ export default function MapSection({ location, onChange }) {
   const MapClickHandler = () => {
     useMapEvents({
       click(e) {
+        console.log(e.latlng);
         const { lat, lng } = e.latlng;
         onChange(lat, lng);
       },
@@ -173,6 +174,7 @@ export default function MapSection({ location, onChange }) {
 
   const getMarkerPosition = () => {
     if (location) {
+      console.log(location);
       if (Array.isArray(location) && location.length === 2) {
         return location;
       } else if (location.lat && location.lng) {

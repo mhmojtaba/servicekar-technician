@@ -539,8 +539,8 @@ const AddRequestModal = ({ isOpen, onClose }) => {
         <div className="flex-1 overflow-y-auto">
           <form onSubmit={handleSubmit} className="p-8 space-y-6">
             <DataWrapper
-              title="اطلاعات سرویس"
-              description="نوع سرویس، برند و مدل دستگاه"
+              title="اطلاعات درخواست"
+              description="نوع درخواست، برند و مدل دستگاه"
               tab="service"
               openSection={openSection}
               handleSectionToggle={handleSectionToggle}
@@ -551,7 +551,7 @@ const AddRequestModal = ({ isOpen, onClose }) => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="block text-sm font-semibold text-neutral-700">
-                      نام سرویس <span className="text-error-500">*</span>
+                      نام درخواست <span className="text-error-500">*</span>
                     </label>
                     <Select
                       options={serviceOptions}
@@ -560,7 +560,7 @@ const AddRequestModal = ({ isOpen, onClose }) => {
                       )}
                       onChange={handleServiceChange}
                       styles={selectStyles}
-                      placeholder="سرویس مورد نظر را انتخاب کنید"
+                      placeholder="درخواست مورد نظر را انتخاب کنید"
                       isSearchable
                       menuPortalTarget={
                         typeof document !== "undefined" ? document.body : null
@@ -652,7 +652,7 @@ const AddRequestModal = ({ isOpen, onClose }) => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="block text-sm font-semibold text-neutral-700">
-                      نوع سرویس <span className="text-error-500">*</span>
+                      نوع درخواست <span className="text-error-500">*</span>
                     </label>
                     <Select
                       options={operation_type}
@@ -666,7 +666,7 @@ const AddRequestModal = ({ isOpen, onClose }) => {
                         })
                       }
                       styles={selectStyles}
-                      placeholder="نوع سرویس را انتخاب کنید"
+                      placeholder="نوع درخواست را انتخاب کنید"
                       isSearchable
                       menuPortalTarget={
                         typeof document !== "undefined" ? document.body : null

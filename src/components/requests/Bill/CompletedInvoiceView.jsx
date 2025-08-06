@@ -14,6 +14,7 @@ import {
   Tag,
 } from "lucide-react";
 import { useRequests } from "@/context/RequestsContext";
+import logo from "@/assets/images/logo.png";
 
 const options = {
   filename: "invoice.pdf",
@@ -276,12 +277,13 @@ const CompletedInvoiceView = ({ handleClose }) => {
         ref={targetRef}
       >
         <div className="text-center mb-6 pb-4 border-b border-neutral-200">
-          <h2 className="text-xl sm:text-2xl font-bold text-neutral-800 mb-2">
+          <h2 className="text-2xl font-bold text-neutral-800 mb-2">
             فاکتور خدمات
           </h2>
-          <p className="text-sm sm:text-base text-neutral-600">
-            شرکت خدمات گشتر جزائری
-          </p>
+          <div className="flex items-center gap-2 justify-center">
+            <img src={logo.src} alt="logo" className="w-10 h-14 object-cover" />
+            <p className="text-neutral-600">شرکت خدمات گستر جزائری </p>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
@@ -388,6 +390,11 @@ const CompletedInvoiceView = ({ handleClose }) => {
                     className="max-h-20 mx-auto"
                   />
                 </div>
+                {invoiceData?.confirm_message && (
+                  <div className="text-sm text-neutral-600 mt-2">
+                    {invoiceData?.confirm_message}
+                  </div>
+                )}
               </div>
             )}
 

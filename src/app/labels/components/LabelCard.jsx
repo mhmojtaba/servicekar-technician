@@ -61,7 +61,7 @@ const LabelCard = ({ label, onDelete, isDeleting }) => {
           onClick={() => onDelete(label.code)}
           disabled={isDeleting}
           className="flex-shrink-0 relative p-2.5 text-neutral-400 hover:text-error-600 hover:bg-error-50 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed group-hover:bg-neutral-50/80 hover:shadow-md hover:scale-110 active:scale-95"
-          title="حذف برچسب"
+          title="حذف کد اشتراک"
         >
           <Trash className="w-4 h-4 transition-transform duration-200 " />
           <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-transparent to-error-50/20 opacity-0 hover:opacity-100 transition-opacity duration-300" />
